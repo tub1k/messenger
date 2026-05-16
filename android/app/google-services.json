@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "638572591682",
+    "project_id": "tubik-messenger",
+    "storage_bucket": "tubik-messenger.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638572591682:android:f6631438685e15e6b54bdb",
+        "android_client_info": {
+          "package_name": "com.example.messenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "DELETED_KEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
