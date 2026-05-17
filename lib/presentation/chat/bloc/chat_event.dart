@@ -17,6 +17,7 @@ class ChatStarted extends ChatEvent {
 class ChatMessageSent extends ChatEvent {
   final String text;
   final MessageType messageType;
+
   const ChatMessageSent(this.text, {required this.messageType});
 
   @override

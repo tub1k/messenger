@@ -30,7 +30,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final currentState = state;
       if (currentState is! ChatLoaded) return;
 
-      final optimisticMessage = MessageModel(id: DateTime.now().toString(), text: event.text, senderId: myId, timestamp: DateTime.now(), type: event.messageType);
+      final optimisticMessage = MessageModel(id: DateTime.now().toString(), text: event.text, senderId: myId, timestamp: DateTime.now(), type: event.messageType, isPending: true);
 
       emit(ChatLoaded(messages: [optimisticMessage]+currentState.messages));
 

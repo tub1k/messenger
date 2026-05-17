@@ -12,9 +12,18 @@ abstract class IChatRepository {
 
   Future<ChatModel> getChatObject(String chatID);
 
-  Future<List<MessageModel>> loadMessages(int messageAmount);
+  Future<List<MessageModel>> loadOlderMessages({
+    required String chatId,
+    required DateTime beforeTimestamp,
+    required int limit,
+  });
 
-  Stream<List<ChatModel>> getChats();
+  Stream<List<ChatModel>> getChats(String myId);
 
   Future<List<ChatModel>> getSavedChats();
+
+  Future<void> createChat({
+    String? chatName,
+    required List<String> userUids,
+  });
 }

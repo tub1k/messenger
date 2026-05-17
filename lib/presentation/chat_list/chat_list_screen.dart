@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
@@ -12,7 +13,7 @@ class ChatListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('W messenger')),
+      appBar: AppBar(title: Text('aura messenger')),
       body: BlocConsumer<ChatListBloc, ChatListState>(
         listener: (context, state) {
           if (state is ChatListLoaded) {
@@ -37,19 +38,21 @@ class ChatListScreen extends StatelessWidget {
                   subtitle: Text(chat.lastMessagePreview),
                   onTap: () {
                     final repo = context.read<IChatRepository>();
+                    final authState = context.read<AuthBloc>().state;
+                    final currentUserId = (authState is AuthSuccess) ? authState.userId : 'unknown';
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (navContext) => BlocProvider(
                           create: (blocContext) => ChatBloc(
                             repository: repo,
-                            myId: 'placeholder_id',
+                            myId: currentUserId,
                             chatId: chat.chatId,
                           )..add(ChatStarted(chat.chatId)),
                           child: ChatScreen(chat: chat),
                         ),
                       ),
-                    );
+                    );  
                   },
                 );
               },

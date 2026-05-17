@@ -18,7 +18,7 @@ class MessageModel extends Equatable {
     required this.type, this.isPending,
   });
 
-  factory MessageModel.fromMap(Map<String, dynamic> map, String? documentId) {
+  factory MessageModel.fromMap(Map<String, dynamic> map, String? documentId, {bool? isPending}) {
     String stringType = map['type'].toString();
     MessageType returnType;
     switch (stringType) {
@@ -35,9 +35,9 @@ class MessageModel extends Equatable {
       id: documentId ?? '',
       text: map['text'] ?? 'failed to load messages',
       senderId: map['senderId'] ?? '',
-      timestamp: map['createdAt']?.toDate() ?? DateTime(1970),
+      timestamp: map['createdAt']?.toDate() ?? DateTime.now(),
       type: returnType,
-      isPending: false,
+      isPending: isPending ?? false,
     );
   }
 
@@ -50,12 +50,14 @@ class ChatModel extends Equatable {
   final String chatId;
   final MessageModel lastMessage;
   final List<MessageModel> loadedMessages;
+  final String photoUrl;
 
   const ChatModel({
     required this.chatName,
     required this.chatId,
     required this.lastMessage,
     required this.loadedMessages,
+    required this.photoUrl,
   });
 
   String get lastMessagePreview {
