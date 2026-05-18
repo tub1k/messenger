@@ -13,16 +13,11 @@ class AuthSignUpEmail extends AuthEvent {
 class AuthSignInEmail extends AuthEvent {
   final String email;
   final String password;
-
+ 
   AuthSignInEmail({required this.email, required this.password});
 }
 
-class AuthGoToUsernameScreen extends AuthEvent {
-  final String email;
-  final String password;
-
-  AuthGoToUsernameScreen({required this.email, required this.password});
-}
+class AuthGoToUsernameScreen extends AuthEvent {}
 
 class AuthStarted extends AuthEvent {}
 

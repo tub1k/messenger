@@ -16,10 +16,5 @@ class AuthSuccess extends AuthState {
   AuthSuccess(this.userId);
 }
 
-class AuthEnterUsername extends AuthState {
-  final String email;
-  final String password;
-
-  AuthEnterUsername({required this.email, required this.password});
-}
-
+class AuthEnterUsername extends AuthState {}
+ 

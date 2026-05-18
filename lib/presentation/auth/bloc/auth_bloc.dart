@@ -58,7 +58,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     });
     on<AuthGoToUsernameScreen>((event, emit) async {
-      emit(AuthEnterUsername(email: event.email, password: event.password));
+      emit(AuthEnterUsername());
     });
 
     _authSubscription = _repository.authStateChanges.listen((uid) {
