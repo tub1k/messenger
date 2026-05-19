@@ -6,14 +6,36 @@ import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
+import 'package:messenger/presentation/create_chat/create_chat_sheet.dart';
 
-class ChatListScreen extends StatelessWidget {
+class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
+  @override
+  State<ChatListScreen> createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('aura messenger')),
+      floatingActionButton: IconButton.filled(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return CreateChatSheet();
+            },
+          );
+        },
+        icon: Icon(Icons.chat),
+        style: IconButton.styleFrom(
+          shape: const CircleBorder(),
+          backgroundColor: Colors.blue,
+          padding: EdgeInsets.all(16),
+        ),
+      ),
       body: BlocConsumer<ChatListBloc, ChatListState>(
         listener: (context, state) {
           if (state is ChatListLoaded) {
@@ -39,7 +61,9 @@ class ChatListScreen extends StatelessWidget {
                   onTap: () {
                     final repo = context.read<IChatRepository>();
                     final authState = context.read<AuthBloc>().state;
-                    final currentUserId = (authState is AuthSuccess) ? authState.userId : 'unknown';
+                    final currentUserId = (authState is AuthSuccess)
+                        ? authState.userId
+                        : 'unknown';
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -52,7 +76,7 @@ class ChatListScreen extends StatelessWidget {
                           child: ChatScreen(chat: chat),
                         ),
                       ),
-                    );  
+                    );
                   },
                 );
               },

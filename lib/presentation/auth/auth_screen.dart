@@ -148,7 +148,6 @@ class _AuthScreenState extends State<AuthScreen> {
                               Text('enter your unique user tag'),
                               TextField(
                                 controller: _usernameController,
-                                keyboardType: TextInputType.visiblePassword,
                               ),
                               SizedBox(height: 30),
                               Row(

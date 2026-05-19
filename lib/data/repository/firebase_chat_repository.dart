@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 
 class FirebaseChatRepository implements IChatRepository {
@@ -149,5 +150,26 @@ class FirebaseChatRepository implements IChatRepository {
 
     await _firestore.collection('chats').add(chatToAddMap);
     return Future.value();
+  }
+
+  @override
+  Future<BaseUserModel> getBaseUserByUsername(String username) async {
+    try {
+      final snapshot = await _firestore.collection('users').where('username', isEqualTo: username).get();
+      final data = snapshot.docs.firstOrNull?.data();
+
+      if (data == null) {throw 'failed to get user, make sure this username exists.';}
+
+      final model = BaseUserModel(
+        username: data['username'],
+        uid: data['uid'],
+        displayName: data['displayName'],
+        photoUrl: data['photoUrl'],
+      ); 
+
+      return model;
+    } catch (e) {
+      throw 'failed to get user: $e';
+    }
   }
 }

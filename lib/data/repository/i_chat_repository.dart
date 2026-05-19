@@ -1,4 +1,5 @@
 import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/models/user_model.dart';
 
 abstract class IChatRepository {
   Stream<List<MessageModel>> getMessages(String chatId);
@@ -26,4 +27,6 @@ abstract class IChatRepository {
     String? chatName,
     required List<String> userUids,
   });
+
+  Future<BaseUserModel> getBaseUserByUsername(String username);
 }

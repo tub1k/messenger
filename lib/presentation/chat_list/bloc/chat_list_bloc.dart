@@ -13,9 +13,6 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
   ChatListBloc(this._repository, {required this.myId}) : super(ChatListInitial()) {
     on<InitChatList>((event, emit) async {
       emit(ChatListLoading());
-      // List<ChatModel> savedChats = await _repository.getSavedChats();
-      // bool savedChatsLocal = true;
-      // emit(ChatListLoaded(chatList: savedChats, localSave: true));
       Stream<List<ChatModel>> chatListStream = _repository.getChats(myId);
       await emit.forEach<List<ChatModel>>(
         chatListStream,
@@ -27,6 +24,5 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
         },
       );
     });
-    on<LoadChatList>((event, emit) {});
   }
 }

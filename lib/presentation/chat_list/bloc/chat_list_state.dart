@@ -29,3 +29,4 @@ class ChatListFailed extends ChatListState {
 
   ChatListFailed(this.exception, {required this.chatList, this.errorText});
 }
+
