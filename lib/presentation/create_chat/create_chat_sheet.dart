@@ -37,7 +37,7 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
             backgroundColor: Colors.transparent,
             body: BlocConsumer<CreateChatBloc, CreateChatState>(
               listener: (context, state) {
-                if (state is CreateChatInitial && state.errorText != null) {
+                if (state.errorText != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.errorText ?? ''),
@@ -47,30 +47,76 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                 }
               },
               builder: (context, state) {
-                return Column(
-                  spacing: 10,
-                  children: [
-                    SizedBox(height: 10,),
-                    Text('New Chat', style: TextStyle(fontSize: 20),),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: TextField(
-                        controller: _addToChatController,
-                        decoration: InputDecoration(
-                          hintText: 'enter users tags to add them to chat',
+                final curState = state;
+                if (curState is CreateChatInitial) {
+                  return Column(
+                    spacing: 10,
+                    children: [
+                      SizedBox(height: 10),
+                      Text('New Chat', style: TextStyle(fontSize: 20)),
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: TextField(
+                          controller: _addToChatController,
+                          decoration: InputDecoration(
+                            hintText: 'enter users tags to add them to chat',
+                          ),
+                          onSubmitted: (text) {
+                            context.read<CreateChatBloc>().add(
+                              AddToCreateChatList(
+                                username: text.trim().toLowerCase(),
+                              ),
+                            );
+                            //_addToChatController.clear();
+                          },
                         ),
-                        onSubmitted: (text) {
-                          context.read<CreateChatBloc>().add(
-                            AddToCreateChatList(
-                              username: text.trim().toLowerCase(),
-                            ),
-                          );
-                          //_addToChatController.clear();
-                        },
                       ),
-                    ),
-                  ],
-                );
+                      Wrap(
+                        spacing: 8.0,
+                        children: curState.addedUsers.map((user) {
+                          return InputChip(
+                            label: Text(
+                              '${user.displayName} ${user.isUsernameEqualToDisplayName ? '' : '(@${user.username})'}',
+                            ),
+                            onDeleted: () {
+                              context.read<CreateChatBloc>().add(
+                                RemoveFromCreateChatList(
+                                  username: user.username ?? '',
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
+                      Expanded(
+                        child: SafeArea(
+                          child: Align(
+                            alignment: Alignment.bottomRight,
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: TextButton(
+                                onPressed: () {
+                                  context.read<CreateChatBloc>().add(
+                                    GoToSecondPage(
+                                      addedUsers: curState.addedUsers,
+                                    ),
+                                  );
+                                },
+                                child: Text('confirm'),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (curState is CreateChatSecond) {
+                  return Column(
+
+                  );
+                } else {
+                  return Placeholder();
+                }
               },
             ),
           );

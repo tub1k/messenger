@@ -8,6 +8,10 @@ class BaseUserModel extends Equatable {
 
   BaseUserModel({this.uid, this.photoUrl, this.displayName, this.username});
 
+  bool get isUsernameEqualToDisplayName {
+    return displayName == username;
+  }
+
   @override
   List<Object?> get props => [uid, photoUrl, displayName, username];
 }

@@ -1,10 +1,19 @@
 part of 'create_chat_bloc.dart';
 
-class CreateChatState {}
+abstract class CreateChatState {
+  final String? errorText;
+  CreateChatState({this.errorText});
+}
 
 class CreateChatInitial extends CreateChatState {
   final List<BaseUserModel> addedUsers;
-  final String? errorText;
+  
 
-  CreateChatInitial({required this.addedUsers, this.errorText});
+  CreateChatInitial({super.errorText, required this.addedUsers});
+}
+
+class CreateChatSecond extends CreateChatState {
+  final List<BaseUserModel> addedUsers;
+
+  CreateChatSecond({super.errorText, required this.addedUsers});
 }
