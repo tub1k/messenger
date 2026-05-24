@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your gallery to let you upload a form image.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to let you take a form photo.</string>
 </dict>
 </plist>

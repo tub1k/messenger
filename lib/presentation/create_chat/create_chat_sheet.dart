@@ -1,8 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
+import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/create_chat/bloc/create_chat_bloc.dart';
+import 'package:messenger/presentation/create_chat/create_chat_initial_column.dart';
+import 'package:messenger/presentation/create_chat/create_chat_second_column.dart';
 
 class CreateChatSheet extends StatefulWidget {
   const CreateChatSheet({super.key});
@@ -13,16 +20,22 @@ class CreateChatSheet extends StatefulWidget {
 
 class _CreateChatSheetState extends State<CreateChatSheet> {
   late TextEditingController _addToChatController;
+  late TextEditingController _chatNameController;
+
+  final _picker = ImagePicker();
+  Uint8List? selectedImage;
 
   @override
   void initState() {
     _addToChatController = TextEditingController();
+    _chatNameController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     _addToChatController.dispose();
+    _chatNameController.dispose();
     super.dispose();
   }
 
@@ -30,7 +43,7 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
   Widget build(BuildContext oldContext) {
     return BlocProvider(
       create: (context) =>
-          CreateChatBloc(repository: context.read<IChatRepository>()),
+          CreateChatBloc(repository: context.read<IChatRepository>(), myId: (context.read<AuthBloc>().state as AuthSuccess).userId),
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -45,77 +58,54 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                     ),
                   );
                 }
+                if (state is CreateChatMoveToChat) {
+                    final chat = state.chat;
+                    final repo = context.read<IChatRepository>();
+                    final authState = context.read<AuthBloc>().state;
+                    final currentUserId = (authState is AuthSuccess)
+                        ? authState.userId
+                        : 'unknown';
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (navContext) => BlocProvider(
+                          create: (blocContext) => ChatBloc(
+                            repository: repo,
+                            myId: currentUserId,
+                            chatId: chat.chatId,
+                          )..add(ChatStarted(chat.chatId)),
+                          child: ChatScreen(chat: chat),
+                        )));
+                }
               },
               builder: (context, state) {
                 final curState = state;
                 if (curState is CreateChatInitial) {
-                  return Column(
-                    spacing: 10,
-                    children: [
-                      SizedBox(height: 10),
-                      Text('New Chat', style: TextStyle(fontSize: 20)),
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: TextField(
-                          controller: _addToChatController,
-                          decoration: InputDecoration(
-                            hintText: 'enter users tags to add them to chat',
-                          ),
-                          onSubmitted: (text) {
-                            context.read<CreateChatBloc>().add(
-                              AddToCreateChatList(
-                                username: text.trim().toLowerCase(),
-                              ),
-                            );
-                            //_addToChatController.clear();
-                          },
-                        ),
-                      ),
-                      Wrap(
-                        spacing: 8.0,
-                        children: curState.addedUsers.map((user) {
-                          return InputChip(
-                            label: Text(
-                              '${user.displayName} ${user.isUsernameEqualToDisplayName ? '' : '(@${user.username})'}',
-                            ),
-                            onDeleted: () {
-                              context.read<CreateChatBloc>().add(
-                                RemoveFromCreateChatList(
-                                  username: user.username ?? '',
-                                ),
-                              );
-                            },
-                          );
-                        }).toList(),
-                      ),
-                      Expanded(
-                        child: SafeArea(
-                          child: Align(
-                            alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding: EdgeInsets.all(12),
-                              child: TextButton(
-                                onPressed: () {
-                                  context.read<CreateChatBloc>().add(
-                                    GoToSecondPage(
-                                      addedUsers: curState.addedUsers,
-                                    ),
-                                  );
-                                },
-                                child: Text('confirm'),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  return CreateChatInitialColumn(
+                    addToChatController: _addToChatController,
+                    curState: curState,
                   );
                 } else if (curState is CreateChatSecond) {
-                  return Column(
-
+                  return CreateChatSecondColumn(
+                    chatNameController: _chatNameController,
+                    selectedImage: selectedImage,
+                    curState: curState,
+                    onPickImage: () async {
+                      final XFile? pickedFile = await _picker.pickImage(
+                        source: ImageSource.gallery,
+                        imageQuality: 80,
+                      );
+                      final Uint8List? imageBytes = await pickedFile
+                          ?.readAsBytes();
+                      if (imageBytes != null) {
+                        setState(() {
+                          selectedImage = imageBytes;
+                        });
+                      }
+                    },
                   );
                 } else {
-                  return Placeholder();
+                  return Center(child: CircularProgressIndicator());
                 }
               },
             ),

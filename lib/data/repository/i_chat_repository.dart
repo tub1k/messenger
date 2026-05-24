@@ -11,7 +11,7 @@ abstract class IChatRepository {
     required MessageType type,
   });
 
-  Future<ChatModel> getChatObject(String chatID);
+  Future<ChatModel?> getChatObject(String chatID, String myId);
 
   Future<List<MessageModel>> loadOlderMessages({
     required String chatId,
@@ -23,10 +23,15 @@ abstract class IChatRepository {
 
   Future<List<ChatModel>> getSavedChats();
 
-  Future<void> createChat({
+  Future<String> createChat({
     String? chatName,
     required List<String> userUids,
   });
 
+  /// returns a base user model from username. contains only base info.
   Future<BaseUserModel> getBaseUserByUsername(String username);
+
+  /// gets a chat model by UIDs of users. If chat doesnt exist yet, returns null.
+  /// assumes that only one DM chat can exist between users at a time.
+  Future<ChatModel?> getDms(String uid1, String uid2, String myId);
 }

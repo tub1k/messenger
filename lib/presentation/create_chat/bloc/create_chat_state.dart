@@ -17,3 +17,11 @@ class CreateChatSecond extends CreateChatState {
 
   CreateChatSecond({super.errorText, required this.addedUsers});
 }
+
+class CreateChatMoveToChat extends CreateChatState {
+  final ChatModel chat;
+
+  CreateChatMoveToChat({super.errorText, required this.chat});
+}
+
+class CreateChatLoading extends CreateChatState {}

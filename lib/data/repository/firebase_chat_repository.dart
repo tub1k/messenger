@@ -6,9 +6,11 @@ import 'package:messenger/data/repository/i_chat_repository.dart';
 class FirebaseChatRepository implements IChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   @override
-  Future<ChatModel> getChatObject(String chatId) {
-    // TODO: implement getChatObject
-    throw UnimplementedError();
+  Future<ChatModel?> getChatObject(String chatId, String myId) async {
+    final snapshot = await _firestore.collection('chats').doc(chatId).get();
+    if (!snapshot.exists) return null;
+    final data = snapshot.data();
+    return data != null ? ChatModel.fromFirebase(data: data, docId: chatId, myId: myId) : null;
   }
 
   @override
@@ -20,39 +22,10 @@ class FirebaseChatRepository implements IChatRepository {
         .map((QuerySnapshot snapshot) {
           return snapshot.docs.map((DocumentSnapshot doc) {
             final data = doc.data() as Map<String, dynamic>;
-            final lastMessageMap = data['lastMessage'] as Map<String, dynamic>?;
-
-            String? chatName = 'Групповой чат';
-            String? photoUrl = '';
-            final participantsList = (data['participants'] as List<dynamic>);
-            final otherId = (participantsList.length == 2) ? participantsList.firstWhere((id) => id != myId, orElse: () => myId) : '';
-
-            if (data['chatName'] != null) {
-              chatName = data['chatName'];
-            } else if (participantsList.length == 2) {
-              chatName = data['memberNames']?[otherId];
-            }
-
-            if (data['photoUrl'] != null) {
-              photoUrl = data['photoUrl'];
-            } else if (participantsList.length == 2) {
-              photoUrl = data['memberPhotos']?[otherId];
-            }
-
-            return ChatModel(
-              photoUrl: photoUrl ?? '',
-              chatId: doc.id,
-              chatName: chatName ?? 'Групповой чат',
-              loadedMessages: const [],
-              lastMessage: lastMessageMap != null
-                  ? MessageModel.fromMap(lastMessageMap, '')
-                  : MessageModel(
-                      id: '',
-                      text: 'Нет сообщений',
-                      senderId: '',
-                      timestamp: DateTime.now(),
-                      type: MessageType.system,
-                    ),
+            return ChatModel.fromFirebase(
+              data: data,
+              docId: doc.id,
+              myId: myId,
             );
           }).toList();
         });
@@ -122,14 +95,16 @@ class FirebaseChatRepository implements IChatRepository {
   }
 
   @override
-  Future<void> createChat({
+  Future<String> createChat({
     String? chatName,
     required List<String> userUids,
   }) async {
     final Map<String, String> memberNames = {};
     final Map<String, String> memberPhotos = {};
 
-    final futures = userUids.map((uid) => _firestore.collection('users').doc(uid).get());
+    final futures = userUids.map(
+      (uid) => _firestore.collection('users').doc(uid).get(),
+    );
     final snapshots = await Future.wait(futures);
 
     for (var i in snapshots) {
@@ -148,28 +123,51 @@ class FirebaseChatRepository implements IChatRepository {
       chatToAddMap['chatName'] = chatName;
     }
 
-    await _firestore.collection('chats').add(chatToAddMap);
-    return Future.value();
+    final docRef = await _firestore.collection('chats').add(chatToAddMap);
+    return docRef.id;
   }
 
   @override
   Future<BaseUserModel> getBaseUserByUsername(String username) async {
     try {
-      final snapshot = await _firestore.collection('users').where('username', isEqualTo: username).get();
+      final snapshot = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .get();
       final data = snapshot.docs.firstOrNull?.data();
 
-      if (data == null) {throw 'failed to get user, make sure this username exists.';}
+      if (data == null) {
+        throw 'failed to get user, make sure this username exists.';
+      }
 
-      final model = BaseUserModel(
-        username: data['username'],
-        uid: data['uid'],
-        displayName: data['displayName'],
-        photoUrl: data['photoUrl'],
-      ); 
-
-      return model;
+      return BaseUserModel.fromFirebase(data: data);
     } catch (e) {
       throw 'failed to get user: $e';
+    }
+  }
+  // TODO: debug and fix this
+  @override
+  Future<ChatModel?> getDms(String uid1, String uid2, String myId) async {
+    try {
+      final results = await Future.wait([
+        _firestore
+            .collection('chats')
+            .where('participants', isEqualTo: [uid1, uid2])
+            .get(),
+        _firestore
+            .collection('chats')
+            .where('participants', isEqualTo: [uid2, uid1])
+            .get(),
+      ]);
+      final chatSnapshot = results.firstOrNull;
+      final doc = chatSnapshot?.docs.first;
+      if (doc != null) {
+        final data = doc.data(); // getting data of that one chat. assuming only one DM chat can exist between users
+        return ChatModel.fromFirebase(data: data, docId: doc.id, myId: myId);
+      }
+      else {return null;}
+    } catch (e) {
+      throw 'failed to check if DMs exist: $e';
     }
   }
 }

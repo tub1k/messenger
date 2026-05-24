@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 
@@ -7,12 +10,14 @@ part 'create_chat_state.dart';
 
 class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
   final IChatRepository _repository;
-  CreateChatBloc({required IChatRepository repository})
+  final String myId;
+  CreateChatBloc({required IChatRepository repository, required this.myId})
     : _repository = repository,
       super(CreateChatInitial(addedUsers: [])) {
     on<CreateChatEvent>((event, emit) {});
 
     on<AddToCreateChatList>((event, emit) async {
+      //TODO: add checking if its myid
       final currentState = state;
       if (currentState is CreateChatInitial) {
         try {
@@ -61,8 +66,51 @@ class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
       }
     });
 
-    on<GoToSecondPage>((event, emit) {
-      emit(CreateChatSecond(addedUsers: event.addedUsers));
+    on<GoToSecondPage>((event, emit) async {
+      final curState = state; // current state
+      final users = event.addedUsers.toList();
+      if (curState is! CreateChatInitial) return;
+      if (users.length == 1) {
+        emit(CreateChatLoading());
+        try {
+        final targetUserUid = users[0].uid; 
+        final dm = await _repository.getDms(
+          myId,
+          targetUserUid,
+          myId,
+        );
+        if (dm != null) {
+          emit(CreateChatMoveToChat(chat: dm));
+        } else {
+          final createdChatId = await _repository.createChat(
+            userUids: [myId, targetUserUid],
+          ); // TODO: make it emit loading and going to chat when chat is successfully created.
+          final createdChat = await _repository.getChatObject(
+            createdChatId,
+            myId,
+          );
+          if (createdChat != null) {
+            emit(CreateChatMoveToChat(chat: createdChat));
+          } else {
+            throw 'failed to create chat';
+          }
+        }} catch (e) {
+          emit(
+              CreateChatInitial(
+                addedUsers: users,
+                errorText: e.toString(),
+              ));
+        }
+      } else if (event.addedUsers.length > 1) {
+        emit(CreateChatSecond(addedUsers: users));
+      } else {
+        emit(
+          CreateChatInitial(
+            addedUsers: users,
+            errorText: 'Add someone first!',
+          ),
+        );
+      }
     });
   }
 }

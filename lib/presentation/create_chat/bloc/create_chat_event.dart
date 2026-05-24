@@ -19,3 +19,11 @@ class GoToSecondPage extends CreateChatEvent {
 
   GoToSecondPage({required this.addedUsers});
 }
+
+class CreateChat extends CreateChatEvent {
+  final List<BaseUserModel> addedUsers;
+  final String? chatName;
+  final Uint8List? photo;
+
+  CreateChat({required this.addedUsers, this.chatName, this.photo});
+}
