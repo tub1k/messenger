@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -28,8 +29,16 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final secondUser = widget.chat.getFirstUserThatIsntUID(context.myId!);
+    final hasValidUsername = widget.chat.participants.length == 2 && secondUser?.displayName != null;
     return Scaffold(
-      appBar: AppBar(title: Text(widget.chat.chatName)),
+      appBar: AppBar(
+        title: Column(
+          children: [
+            if (hasValidUsername) Text(secondUser!.displayName!) else Text(widget.chat.chatName),
+          ],
+        ),
+      ),
       body: BlocConsumer<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatLoaded) {
@@ -40,7 +49,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     itemCount: state.messages.length,
                     reverse: true,
                     itemBuilder: (context, index) {
-                    final bool isMe = state.messages[index].senderId == context.read<ChatBloc>().myId;
+                      final bool isMe =
+                          state.messages[index].senderId ==
+                          context.read<ChatBloc>().myId;
                       return MessageBubble(
                         message: state.messages[index],
                         isMe: isMe,

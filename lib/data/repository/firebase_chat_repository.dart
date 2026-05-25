@@ -160,7 +160,7 @@ class FirebaseChatRepository implements IChatRepository {
             .get(),
       ]);
       final chatSnapshot = results.firstOrNull;
-      final doc = chatSnapshot?.docs.first;
+      final doc = chatSnapshot?.docs.firstOrNull;
       if (doc != null) {
         final data = doc.data(); // getting data of that one chat. assuming only one DM chat can exist between users
         return ChatModel.fromFirebase(data: data, docId: doc.id, myId: myId);

@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+import 'package:messenger/data/models/user_model.dart';
 
 enum MessageType { text, image, system, unknown }
 
@@ -56,14 +58,29 @@ class ChatModel extends Equatable {
   final MessageModel lastMessage;
   final List<MessageModel> loadedMessages;
   final String photoUrl;
+  final Map<String, dynamic> memberNames;
+  final Map<String, dynamic> memberPhotos;
+  final List<String> participants;
+  late List<BaseUserModel> userModels;
 
-  const ChatModel({
+  ChatModel({
     required this.chatName,
     required this.chatId,
     required this.lastMessage,
     required this.loadedMessages,
     required this.photoUrl,
-  });
+    required this.memberPhotos,
+    required this.memberNames,
+    required this.participants,
+  }) {
+    userModels = participants.map((uid) {
+      return BaseUserModel(
+        uid: uid,
+        photoUrl: memberPhotos[uid],
+        displayName: memberNames[uid],
+      );
+    }).toList();
+  }
 
   factory ChatModel.fromFirebase({
     required Map<String, dynamic> data,
@@ -78,7 +95,9 @@ class ChatModel extends Equatable {
 
     String otherId = '';
     if (participantsList.length == 2) {
-      otherId = (participantsList[0] == myId) ? participantsList[1] : participantsList[0];
+      otherId = (participantsList[0] == myId)
+          ? participantsList[1]
+          : participantsList[0];
     }
 
     if (data['chatName'] != null) {
@@ -92,6 +111,9 @@ class ChatModel extends Equatable {
     } else if (participantsList.length == 2) {
       photoUrl = data['memberPhotos']?[otherId];
     }
+
+    final Map<String, dynamic> memberPhotos = data['memberPhotos'] ?? {};
+    final Map<String, dynamic> memberNames = data['memberNames'] ?? {};
 
     return ChatModel(
       photoUrl: photoUrl ?? '',
@@ -107,6 +129,9 @@ class ChatModel extends Equatable {
               timestamp: DateTime.now(),
               type: MessageType.system,
             ),
+      memberPhotos: memberPhotos,
+      memberNames: memberNames,
+      participants: participantsList,
     );
   }
 
@@ -118,6 +143,16 @@ class ChatModel extends Equatable {
     } else {
       return '???';
     }
+  }
+
+  BaseUserModel? getFirstUserThatIsntUID(String uid) {
+    print(userModels);
+    if (userModels.length >= 2) {
+      return userModels.firstWhereOrNull((userModel) {
+        return userModel.uid != uid;
+      });
+    }
+    return null;
   }
 
   @override

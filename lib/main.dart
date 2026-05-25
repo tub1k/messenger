@@ -10,6 +10,7 @@ import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:messenger/presentation/chat_list/chat_list_screen.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,7 +63,7 @@ class ChatListProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final myId = (context.read<AuthBloc>().state as AuthSuccess).userId;
+    final myId = context.myId!;
     return BlocProvider(
       create: (context) => ChatListBloc(
         context.read<IChatRepository>(),
