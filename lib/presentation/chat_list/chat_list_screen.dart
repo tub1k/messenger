@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
-import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/create_chat_sheet.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -64,10 +64,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   subtitle: Text(chat.lastMessagePreview),
                   onTap: () {
                     final repo = context.read<IChatRepository>();
-                    final authState = context.read<AuthBloc>().state;
-                    final currentUserId = (authState is AuthSuccess)
-                        ? authState.userId
-                        : 'unknown';
+                    final currentUserId = context.myId!;
                     Navigator.push(
                       context,
                       MaterialPageRoute(

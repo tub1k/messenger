@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
@@ -35,7 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         title: Column(
           children: [
-            if (hasValidUsername) Text(secondUser!.displayName!) else Text(widget.chat.chatName),
+            if (hasValidUsername) Text(secondUser!.displayName) else Text(widget.chat.chatName),
           ],
         ),
       ),

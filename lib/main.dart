@@ -14,9 +14,11 @@ import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   runApp(const MyApp());
 }
 
@@ -37,9 +39,8 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(
-              repository: context.read<IAuthRepository>(),
-            ),
+            create: (context) =>
+                AuthBloc(repository: context.read<IAuthRepository>()),
           ),
         ],
         child: MaterialApp(
@@ -49,12 +50,13 @@ class MyApp extends StatelessWidget {
               if (state is AuthSuccess) {
                 return const ChatListProvider();
               }
-              
+
               return const AuthScreen();
             },
+          ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -65,10 +67,9 @@ class ChatListProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     final myId = context.myId!;
     return BlocProvider(
-      create: (context) => ChatListBloc(
-        context.read<IChatRepository>(),
-        myId: myId, 
-      )..add(InitChatList()),
+      create: (context) =>
+          ChatListBloc(context.read<IChatRepository>(), myId: myId)
+            ..add(InitChatList()),
       child: const ChatListScreen(),
     );
   }

@@ -1,16 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 
 class FirebaseChatRepository implements IChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Map<String, BaseUserModel> _memoryUserCache = {};
+
   @override
   Future<ChatModel?> getChatObject(String chatId, String myId) async {
     final snapshot = await _firestore.collection('chats').doc(chatId).get();
     if (!snapshot.exists) return null;
     final data = snapshot.data();
-    return data != null ? ChatModel.fromFirebase(data: data, docId: chatId, myId: myId) : null;
+    if (data != null) {
+      final participants = List<String>.from(data['participants'] ?? []);
+      final userModels = await getBaseUsersFromListOfUIDs(participants);
+      return ChatModel.fromFirebase(data: data, docId: chatId, myId: myId, userModels: userModels);
+    } else {return null;}
   }
 
   @override
@@ -19,15 +26,22 @@ class FirebaseChatRepository implements IChatRepository {
         .collection('chats')
         .where('participants', arrayContains: myId)
         .snapshots()
-        .map((QuerySnapshot snapshot) {
-          return snapshot.docs.map((DocumentSnapshot doc) {
-            final data = doc.data() as Map<String, dynamic>;
-            return ChatModel.fromFirebase(
-              data: data,
-              docId: doc.id,
-              myId: myId,
-            );
-          }).toList();
+        .asyncMap((QuerySnapshot snapshot) async {
+          final chatFutures = snapshot.docs.map((DocumentSnapshot doc) async {
+          final data = doc.data() as Map<String, dynamic>;
+          
+          final participants = List<String>.from(data['participants'] ?? []);
+          final userModels = await getBaseUsersFromListOfUIDs(participants);
+          
+          return ChatModel.fromFirebase(
+            data: data,
+            docId: doc.id,
+            myId: myId,
+            userModels: userModels, 
+          );
+        }).toList();
+
+        return await Future.wait(chatFutures);
         });
   }
 
@@ -90,8 +104,16 @@ class FirebaseChatRepository implements IChatRepository {
       'type': type.name,
       'createdAt': FieldValue.serverTimestamp(),
     };
-    _firestore.collection('chats').doc(chatId).collection('messages').add(msg);
-    _firestore.collection('chats').doc(chatId).update({'lastMessage': msg});
+
+    final batch = _firestore.batch();
+
+    final messageRef = _firestore.collection('chats').doc(chatId).collection('messages').doc(); 
+    final chatRef = _firestore.collection('chats').doc(chatId);
+
+    batch.set(messageRef, msg);
+    batch.update(chatRef, {'lastMessage': msg});
+
+    await batch.commit();
   }
 
   @override
@@ -99,27 +121,11 @@ class FirebaseChatRepository implements IChatRepository {
     String? chatName,
     required List<String> userUids,
   }) async {
-    final Map<String, String> memberNames = {};
-    final Map<String, String> memberPhotos = {};
 
-    final futures = userUids.map(
-      (uid) => _firestore.collection('users').doc(uid).get(),
-    );
-    final snapshots = await Future.wait(futures);
-
-    for (var i in snapshots) {
-      final uid = i.id;
-      final userMap = i.data();
-      memberNames[uid] = userMap?['displayName'] as String? ?? 'unknown_user';
-      memberPhotos[uid] = userMap?['photoUrl'] as String? ?? '';
-    }
-
-    final chatToAddMap = {
+    Map<String, dynamic> chatToAddMap = {
       'participants': userUids,
-      'memberNames': memberNames,
-      'memberPhotos': memberPhotos,
     };
-    if (chatName != null) {
+    if (chatName != null) { 
       chatToAddMap['chatName'] = chatName;
     }
 
@@ -159,15 +165,49 @@ class FirebaseChatRepository implements IChatRepository {
             .where('participants', isEqualTo: [uid2, uid1])
             .get(),
       ]);
-      final chatSnapshot = results.firstOrNull;
-      final doc = chatSnapshot?.docs.firstOrNull;
+
+      final allDocs = results[0].docs+results[1].docs;
+        
+      final doc = allDocs.firstOrNull;
       if (doc != null) {
-        final data = doc.data(); // getting data of that one chat. assuming only one DM chat can exist between users
-        return ChatModel.fromFirebase(data: data, docId: doc.id, myId: myId);
+        final participants = List<String>.from(doc['participants'] ?? []);
+        final userModels = await getBaseUsersFromListOfUIDs(participants);
+        return ChatModel.fromFirebase(data: doc.data(), docId: doc.id, myId: myId, userModels: userModels);
       }
       else {return null;}
     } catch (e) {
       throw 'failed to check if DMs exist: $e';
     }
   }
+  
+  @override
+  Future<BaseUserModel> getBaseUserByUID(String uid) async {
+    if (_memoryUserCache.containsKey(uid)) {
+      return _memoryUserCache[uid]!;
+    }
+
+    try {
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(uid).get();
+      final data = snapshot.data();
+
+      if (data == null) {
+        throw 'failed to get user, make sure this UID exists.';
+      }
+      final user = BaseUserModel.fromFirebase(data: data);
+      _memoryUserCache[uid] = user; 
+
+      return user;
+    } catch (e) {
+      throw 'failed to get user: $e';
+    }
+  }
+  
+  @override
+  Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(List<String> uidList) async {
+    return Future.wait(uidList.map((uid) {return getBaseUserByUID(uid);}).toList());
+  }
+
+  
 }

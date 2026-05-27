@@ -1,3 +1,4 @@
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 
@@ -34,4 +35,11 @@ abstract class IChatRepository {
   /// gets a chat model by UIDs of users. If chat doesnt exist yet, returns null.
   /// assumes that only one DM chat can exist between users at a time.
   Future<ChatModel?> getDms(String uid1, String uid2, String myId);
+
+  /// returns a base user model from uid. contains only base info.
+  Future<BaseUserModel> getBaseUserByUID(String uid);
+
+  /// get baseusermodels from all users from a list of UIDs. 
+  /// mainly used for creating a chat model after downloading user UIDs from firebase.
+  Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(List<String> uidList); 
 }

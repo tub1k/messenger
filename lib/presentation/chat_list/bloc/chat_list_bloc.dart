@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 
 part 'chat_list_event.dart';

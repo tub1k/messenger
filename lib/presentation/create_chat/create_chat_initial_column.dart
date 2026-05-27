@@ -43,7 +43,7 @@ class CreateChatInitialColumn extends StatelessWidget {
               ),
               onDeleted: () {
                 context.read<CreateChatBloc>().add(
-                  RemoveFromCreateChatList(username: user.username ?? ''),
+                  RemoveFromCreateChatList(username: user.username),
                 );
               },
             );

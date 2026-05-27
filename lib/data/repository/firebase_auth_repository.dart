@@ -56,7 +56,6 @@ class FirebaseAuthRepository implements IAuthRepository {
               );
             },
           );
-      ;
       await _firestore
           .collection('users')
           .doc(uid)
@@ -74,7 +73,6 @@ class FirebaseAuthRepository implements IAuthRepository {
               throw Exception('Firestore Timeout при создании профиля юзера!');
             },
           );
-      ;
       return userCredential.user!.uid;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
