@@ -61,7 +61,7 @@ class FirebaseAuthRepository implements IAuthRepository {
           .doc(uid)
           .set({
             'uid': uid,
-            'displayName': 'New user',
+            'displayName': cleanUsername,
             'username': cleanUsername,
             'email': email,
             'photoUrl': '',

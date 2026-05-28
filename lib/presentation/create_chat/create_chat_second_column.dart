@@ -64,7 +64,11 @@ class CreateChatSecondColumn extends StatelessWidget {
                 child: TextButton(
                   onPressed: () {
                     context.read<CreateChatBloc>().add(
-                      CreateChat(addedUsers: curState.addedUsers, photo: selectedImage, chatName: chatNameController.text.trim()),
+                      CreateChat(
+                        addedUsers: curState.addedUsers,
+                        photo: selectedImage,
+                        chatName: chatNameController.text.trim(),
+                      ),
                     );
                     Navigator.pop(context);
                   },

@@ -22,6 +22,15 @@ class ChatModel extends Equatable {
     required this.userModels,
   });
 
+  ChatModel.empty()
+    : chatName = '',
+      photoUrl = '',
+      chatId = '',
+      participants = [''],
+      lastMessage = MessageModel.empty(),
+      loadedMessages = [],
+      userModels = [];
+
   factory ChatModel.fromFirebase({
     required Map<String, dynamic> data,
     required String docId,
@@ -39,15 +48,16 @@ class ChatModel extends Equatable {
       otherUser = (userModels[0].uid == myId) ? userModels[1] : userModels[0];
     }
 
+    print('$userModels $otherUser');
     if (data['chatName'] != null) {
       chatName = data['chatName'];
     } else if (userModels.length == 2) {
-      otherUser.displayName;
+      chatName = otherUser.displayName;
     }
 
     if (data['photoUrl'] != null) {
       photoUrl = data['photoUrl'];
-    } else if (participantsList.length == 2) {
+    } else if (userModels.length == 2) {
       photoUrl = otherUser.photoUrl;
     }
 

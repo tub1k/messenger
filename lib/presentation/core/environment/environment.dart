@@ -18,4 +18,9 @@ class Environment {
   static const String iosApiKey = String.fromEnvironment('IOS_API_KEY');
   static const String iosAppId = String.fromEnvironment('IOS_APP_ID');
   static const String iosBundleId = String.fromEnvironment('IOS_BUNDLE_ID');
+
+
+  // Supabase
+  static const String supabaseApiKey = String.fromEnvironment('SUPABASE_API_KEY');
+  static const String supabaseUrl = String.fromEnvironment('SUPABASE_URL');
 }

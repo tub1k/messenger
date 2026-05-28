@@ -4,7 +4,6 @@ import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
-import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -30,13 +29,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final secondUser = widget.chat.getFirstUserThatIsntUID(context.myId!);
-    final hasValidUsername = widget.chat.participants.length == 2 && secondUser?.displayName != null;
     return Scaffold(
       appBar: AppBar(
         title: Column(
           children: [
-            if (hasValidUsername) Text(secondUser!.displayName) else Text(widget.chat.chatName),
+            Text(widget.chat.chatName),
           ],
         ),
       ),

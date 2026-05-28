@@ -5,12 +5,16 @@ import 'package:messenger/data/repository/firebase_chat_repository.dart';
 import 'package:messenger/data/repository/i_auth_repository.dart';
 import 'package:messenger/data/repository/firebase_auth_repository.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/data/repository/supabase_storage_repository.dart';
 import 'package:messenger/firebase_options.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:messenger/presentation/chat_list/chat_list_screen.dart';
+import 'package:messenger/presentation/core/environment/environment.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +22,10 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await Supabase.initialize(
+    url: Environment.supabaseUrl,
+    anonKey: Environment.supabaseApiKey,
+  );
   }
   runApp(const MyApp());
 }
@@ -34,6 +42,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<IAuthRepository>(
           create: (context) => FirebaseAuthRepository(),
+        ),
+        RepositoryProvider<IStorageRepository>(
+          create: (context) => SupabaseStorageRepository(),
         ),
       ],
       child: MultiBlocProvider(

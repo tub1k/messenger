@@ -16,8 +16,15 @@ class FirebaseChatRepository implements IChatRepository {
     if (data != null) {
       final participants = List<String>.from(data['participants'] ?? []);
       final userModels = await getBaseUsersFromListOfUIDs(participants);
-      return ChatModel.fromFirebase(data: data, docId: chatId, myId: myId, userModels: userModels);
-    } else {return null;}
+      return ChatModel.fromFirebase(
+        data: data,
+        docId: chatId,
+        myId: myId,
+        userModels: userModels,
+      );
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -28,20 +35,25 @@ class FirebaseChatRepository implements IChatRepository {
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) async {
           final chatFutures = snapshot.docs.map((DocumentSnapshot doc) async {
-          final data = doc.data() as Map<String, dynamic>;
-          
-          final participants = List<String>.from(data['participants'] ?? []);
-          final userModels = await getBaseUsersFromListOfUIDs(participants);
-          
-          return ChatModel.fromFirebase(
-            data: data,
-            docId: doc.id,
-            myId: myId,
-            userModels: userModels, 
-          );
-        }).toList();
+            final data = doc.data() as Map<String, dynamic>;
 
-        return await Future.wait(chatFutures);
+            final participants = List<String>.from(data['participants'] ?? []);
+            final List<BaseUserModel> userModels;
+            try {
+                 userModels = await getBaseUsersFromListOfUIDs(participants);
+              } on Exception catch (_) {
+                return ChatModel.empty();
+              }
+
+            return ChatModel.fromFirebase(
+              data: data,
+              docId: doc.id,
+              myId: myId,
+              userModels: userModels,
+            );
+          }).toList();
+
+          return await Future.wait(chatFutures);
         });
   }
 
@@ -107,7 +119,11 @@ class FirebaseChatRepository implements IChatRepository {
 
     final batch = _firestore.batch();
 
-    final messageRef = _firestore.collection('chats').doc(chatId).collection('messages').doc(); 
+    final messageRef = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .doc();
     final chatRef = _firestore.collection('chats').doc(chatId);
 
     batch.set(messageRef, msg);
@@ -121,11 +137,8 @@ class FirebaseChatRepository implements IChatRepository {
     String? chatName,
     required List<String> userUids,
   }) async {
-
-    Map<String, dynamic> chatToAddMap = {
-      'participants': userUids,
-    };
-    if (chatName != null) { 
+    Map<String, dynamic> chatToAddMap = {'participants': userUids};
+    if (chatName != null) {
       chatToAddMap['chatName'] = chatName;
     }
 
@@ -151,6 +164,7 @@ class FirebaseChatRepository implements IChatRepository {
       throw 'failed to get user: $e';
     }
   }
+
   // TODO: debug and fix this
   @override
   Future<ChatModel?> getDms(String uid1, String uid2, String myId) async {
@@ -166,20 +180,26 @@ class FirebaseChatRepository implements IChatRepository {
             .get(),
       ]);
 
-      final allDocs = results[0].docs+results[1].docs;
-        
+      final allDocs = results[0].docs + results[1].docs;
+
       final doc = allDocs.firstOrNull;
       if (doc != null) {
         final participants = List<String>.from(doc['participants'] ?? []);
         final userModels = await getBaseUsersFromListOfUIDs(participants);
-        return ChatModel.fromFirebase(data: doc.data(), docId: doc.id, myId: myId, userModels: userModels);
+        return ChatModel.fromFirebase(
+          data: doc.data(),
+          docId: doc.id,
+          myId: myId,
+          userModels: userModels,
+        );
+      } else {
+        return null;
       }
-      else {return null;}
     } catch (e) {
       throw 'failed to check if DMs exist: $e';
     }
   }
-  
+
   @override
   Future<BaseUserModel> getBaseUserByUID(String uid) async {
     if (_memoryUserCache.containsKey(uid)) {
@@ -187,27 +207,29 @@ class FirebaseChatRepository implements IChatRepository {
     }
 
     try {
-      final snapshot = await _firestore
-          .collection('users')
-          .doc(uid).get();
+      final snapshot = await _firestore.collection('users').doc(uid).get();
       final data = snapshot.data();
 
       if (data == null) {
-        throw 'failed to get user, make sure this UID exists.';
+        throw 'failed to get user, make sure this UID exists. ($uid)';
       }
       final user = BaseUserModel.fromFirebase(data: data);
-      _memoryUserCache[uid] = user; 
+      _memoryUserCache[uid] = user;
 
       return user;
     } catch (e) {
       throw 'failed to get user: $e';
     }
   }
-  
-  @override
-  Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(List<String> uidList) async {
-    return Future.wait(uidList.map((uid) {return getBaseUserByUID(uid);}).toList());
-  }
 
-  
+  @override
+  Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(
+    List<String> uidList,
+  ) async {
+    return Future.wait(
+      uidList.map((uid) {
+        return getBaseUserByUID(uid);
+      }).toList(),
+    );
+  }
 }

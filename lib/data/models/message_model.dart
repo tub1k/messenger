@@ -19,6 +19,14 @@ class MessageModel extends Equatable {
     this.isPending,
   });
 
+  MessageModel.empty()
+    : id = '',
+      text = 'Нет сообщений',
+      senderId = '',
+      timestamp = DateTime(1970),
+      type = MessageType.system,
+      isPending = false;
+
   factory MessageModel.fromMap(
     Map<String, dynamic> map,
     String? documentId, {

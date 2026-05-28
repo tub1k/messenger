@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
@@ -42,8 +43,11 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
   @override
   Widget build(BuildContext oldContext) {
     return BlocProvider(
-      create: (context) =>
-          CreateChatBloc(repository: context.read<IChatRepository>(), myId: (context.read<AuthBloc>().state as AuthSuccess).userId),
+      create: (context) => CreateChatBloc(
+        repository: context.read<IChatRepository>(),
+        storageRepository: context.read<IStorageRepository>(),
+        myId: (context.read<AuthBloc>().state as AuthSuccess).userId,
+      ),
       child: Builder(
         builder: (context) {
           return Scaffold(
@@ -59,23 +63,25 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                   );
                 }
                 if (state is CreateChatMoveToChat) {
-                    final chat = state.chat;
-                    final repo = context.read<IChatRepository>();
-                    final authState = context.read<AuthBloc>().state;
-                    final currentUserId = (authState is AuthSuccess)
-                        ? authState.userId
-                        : 'unknown';
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (navContext) => BlocProvider(
-                          create: (blocContext) => ChatBloc(
-                            repository: repo,
-                            myId: currentUserId,
-                            chatId: chat.chatId,
-                          )..add(ChatStarted(chat.chatId)),
-                          child: ChatScreen(chat: chat),
-                        )));
+                  final chat = state.chat;
+                  final repo = context.read<IChatRepository>();
+                  final authState = context.read<AuthBloc>().state;
+                  final currentUserId = (authState is AuthSuccess)
+                      ? authState.userId
+                      : 'unknown';
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (navContext) => BlocProvider(
+                        create: (blocContext) => ChatBloc(
+                          repository: repo,
+                          myId: currentUserId,
+                          chatId: chat.chatId,
+                        )..add(ChatStarted(chat.chatId)),
+                        child: ChatScreen(chat: chat),
+                      ),
+                    ),
+                  );
                 }
               },
               builder: (context, state) {
@@ -93,7 +99,9 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                     onPickImage: () async {
                       final XFile? pickedFile = await _picker.pickImage(
                         source: ImageSource.gallery,
-                        imageQuality: 80,
+                        imageQuality: 60,
+                        maxWidth: 256,
+                        maxHeight: 256,
                       );
                       final Uint8List? imageBytes = await pickedFile
                           ?.readAsBytes();
