@@ -129,7 +129,7 @@ class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
           await _storageRepository.uploadImage(
             uploadedPhoto,
             'groupAvatars',
-            createdChatId,
+            'public/$createdChatId/avatar.png',
           );
         }
         final createdChat = await _repository.getChatObject(

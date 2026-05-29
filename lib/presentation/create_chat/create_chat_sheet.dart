@@ -8,6 +8,7 @@ import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/bloc/create_chat_bloc.dart';
 import 'package:messenger/presentation/create_chat/create_chat_initial_column.dart';
 import 'package:messenger/presentation/create_chat/create_chat_second_column.dart';
@@ -65,10 +66,7 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                 if (state is CreateChatMoveToChat) {
                   final chat = state.chat;
                   final repo = context.read<IChatRepository>();
-                  final authState = context.read<AuthBloc>().state;
-                  final currentUserId = (authState is AuthSuccess)
-                      ? authState.userId
-                      : 'unknown';
+                  final currentUserId = context.myId!;
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -100,8 +98,8 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                       final XFile? pickedFile = await _picker.pickImage(
                         source: ImageSource.gallery,
                         imageQuality: 60,
-                        maxWidth: 256,
-                        maxHeight: 256,
+                        maxWidth: 400,
+                        maxHeight: 400,
                       );
                       final Uint8List? imageBytes = await pickedFile
                           ?.readAsBytes();

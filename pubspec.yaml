@@ -15,7 +15,10 @@ dependencies:
   firebase_core: ^4.8.0
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   flutter_bloc: ^9.1.1
+  http: ^1.6.0
   image_picker: ^1.2.2
   mocktail: ^1.0.5
   supabase_flutter: ^2.12.4
@@ -27,3 +30,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true

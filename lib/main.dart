@@ -8,6 +8,7 @@ import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/data/repository/supabase_storage_repository.dart';
 import 'package:messenger/firebase_options.dart';
+import 'package:messenger/l10n/app_localizations.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
@@ -23,9 +24,9 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     await Supabase.initialize(
-    url: Environment.supabaseUrl,
-    anonKey: Environment.supabaseApiKey,
-  );
+      url: Environment.supabaseUrl,
+      anonKey: Environment.supabaseApiKey,
+    );
   }
   runApp(const MyApp());
 }
@@ -37,16 +38,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<IStorageRepository>(
+          create: (context) => SupabaseStorageRepository(),
+        ),
         RepositoryProvider<IChatRepository>(
-          create: (context) => FirebaseChatRepository(),
+          create: (context) => FirebaseChatRepository(
+            storageRepository: context.read<IStorageRepository>(),
+          ),
         ),
         RepositoryProvider<IAuthRepository>(
           create: (context) => FirebaseAuthRepository(),
         ),
-        RepositoryProvider<IStorageRepository>(
-          create: (context) => SupabaseStorageRepository(),
-        ),
       ],
+
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
@@ -55,7 +59,9 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          title: 'Aura Messenger',
+          title: context.l10n.auraMessenger,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               if (state is AuthSuccess) {

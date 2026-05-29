@@ -1,0 +1,9 @@
+{
+  "@@locale": "en",
+  "auraMessenger": "Aura messenger",
+  "newChat": "New Chat",
+  "addUserToChatHint": "Enter users tags to add them to chat",
+  "confirm": "confirm",
+  "failedToGetUser": "Failed to get user",
+  
+}

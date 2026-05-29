@@ -70,7 +70,6 @@ class CreateChatSecondColumn extends StatelessWidget {
                         chatName: chatNameController.text.trim(),
                       ),
                     );
-                    Navigator.pop(context);
                   },
                   child: Text('Create chat!'),
                 ),

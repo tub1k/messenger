@@ -60,6 +60,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
               itemBuilder: (context, index) {
                 final ChatModel chat = state.chatList[index];
                 return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: chat.photoUrl.length > 2
+                        ? NetworkImage(chat.photoUrl)
+                        : null,
+                    child: chat.photoUrl.length <= 2
+                        ? Text(chat.chatName[0].toUpperCase())
+                        : null,
+                  ),
                   title: Text(chat.chatName),
                   subtitle: Text(chat.lastMessagePreview),
                   onTap: () {

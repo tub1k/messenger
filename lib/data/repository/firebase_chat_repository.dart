@@ -3,10 +3,14 @@ import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_storage_repository.dart';
 
 class FirebaseChatRepository implements IChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Map<String, BaseUserModel> _memoryUserCache = {};
+  final IStorageRepository _storageRepository;
+
+  FirebaseChatRepository({required IStorageRepository storageRepository}) : _storageRepository = storageRepository;
 
   @override
   Future<ChatModel?> getChatObject(String chatId, String myId) async {
@@ -16,6 +20,7 @@ class FirebaseChatRepository implements IChatRepository {
     if (data != null) {
       final participants = List<String>.from(data['participants'] ?? []);
       final userModels = await getBaseUsersFromListOfUIDs(participants);
+      data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(chatId);
       return ChatModel.fromFirebase(
         data: data,
         docId: chatId,
@@ -44,6 +49,8 @@ class FirebaseChatRepository implements IChatRepository {
               } on Exception catch (_) {
                 return ChatModel.empty();
               }
+
+            data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(doc.id);
 
             return ChatModel.fromFirebase(
               data: data,
@@ -186,8 +193,10 @@ class FirebaseChatRepository implements IChatRepository {
       if (doc != null) {
         final participants = List<String>.from(doc['participants'] ?? []);
         final userModels = await getBaseUsersFromListOfUIDs(participants);
+        var data = doc.data();
+        data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(doc.id);
         return ChatModel.fromFirebase(
-          data: doc.data(),
+          data: data,
           docId: doc.id,
           myId: myId,
           userModels: userModels,
