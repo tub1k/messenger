@@ -6,16 +6,18 @@ import 'package:messenger/data/repository/i_auth_repository.dart';
 import 'package:messenger/data/repository/firebase_auth_repository.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/data/repository/settings_repository.dart';
 import 'package:messenger/data/repository/supabase_storage_repository.dart';
 import 'package:messenger/firebase_options.dart';
 import 'package:messenger/l10n/app_localizations.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
-import 'package:messenger/presentation/chat_list/chat_list_screen.dart';
 import 'package:messenger/presentation/core/environment/environment.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/main_scaffold/main_scaffold.dart';
+import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 void main() async {
@@ -24,21 +26,26 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    await Supabase.initialize(
-      url: Environment.supabaseUrl,
-      anonKey: Environment.supabaseApiKey,
-    );
   }
-  runApp(const MyApp());
+  await Supabase.initialize(
+    url: Environment.supabaseUrl,
+    anonKey: Environment.supabaseApiKey,
+  );
+  // initializing settings
+  final prefs = await SharedPreferences.getInstance();
+  final settingsRepository = SettingsRepository(prefs);
+  runApp(MyApp(settingsRepository: settingsRepository,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SettingsRepository settingsRepository;
+  const MyApp({super.key, required this.settingsRepository});
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<SettingsRepository>.value(value: settingsRepository),
         RepositoryProvider<IStorageRepository>(
           create: (context) => SupabaseStorageRepository(),
         ),
@@ -50,6 +57,7 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IAuthRepository>(
           create: (context) => FirebaseAuthRepository(),
         ),
+
       ],
 
       child: MultiBlocProvider(
@@ -58,19 +66,27 @@ class MyApp extends StatelessWidget {
             create: (context) =>
                 AuthBloc(repository: context.read<IAuthRepository>()),
           ),
-        ],
-        child: MaterialApp(
-          title: 'Aura messenger',
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          home: BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              if (state is AuthSuccess) {
-                return const ChatListProvider();
-              }
-              return const AuthScreen();
-            },
+          BlocProvider<SettingsBloc>(
+            create: (context) => SettingsBloc(context.read<SettingsRepository>()),
           ),
+        ],
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          builder: (context, settingsState) {
+            return MaterialApp(
+              title: 'Aura messenger',
+              locale: settingsState.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: BlocBuilder<AuthBloc, AuthState>(
+                builder: (context, authState) {
+                  if (authState is AuthSuccess) {
+                    return const ChatListProvider();
+                  }
+                  return const AuthScreen();
+                },
+              ),
+            );
+          },
         ),
       ),
     );

@@ -12,14 +12,24 @@ class AppLocalizationsRu extends AppLocalizations {
   String get auraMessenger => 'Aura мессенджер';
 
   @override
-  String get newChat => 'New Chat';
+  String get newChat => 'Новый Чат';
 
   @override
-  String get addUserToChatHint => 'Enter users tags to add them to chat';
+  String get addUserToChatHint =>
+      'впиши юзернейм человека для добавления в чат...';
 
   @override
-  String get confirm => 'confirm';
+  String get confirm => 'подтвердить';
 
   @override
-  String get failedToGetUser => 'Failed to get user';
+  String get failedToGetUser => 'Не удалочь получить пользователя';
+
+  @override
+  String get settings => 'Настройки';
+
+  @override
+  String get language => 'Язык';
+
+  @override
+  String get systemLang => 'Язык системы';
 }

@@ -1,4 +1,11 @@
 {
   "@@locale": "ru",
-  "auraMessenger": "Aura мессенджер"
+  "auraMessenger": "Aura мессенджер",
+  "newChat": "Новый Чат",
+  "addUserToChatHint": "впиши юзернейм человека для добавления в чат...",
+  "confirm": "подтвердить",
+  "failedToGetUser": "Не удалочь получить пользователя",
+  "settings": "Настройки",
+  "language": "Язык",
+  "systemLang": "Язык системы"
 }

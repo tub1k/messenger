@@ -127,6 +127,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to get user'**
   String get failedToGetUser;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @systemLang.
+  ///
+  /// In en, this message translates to:
+  /// **'System language'**
+  String get systemLang;
 }
 
 class _AppLocalizationsDelegate
