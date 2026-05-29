@@ -103,6 +103,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Aura messenger'**
   String get auraMessenger;
+
+  /// No description provided for @newChat.
+  ///
+  /// In en, this message translates to:
+  /// **'New Chat'**
+  String get newChat;
+
+  /// No description provided for @addUserToChatHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter users tags to add them to chat'**
+  String get addUserToChatHint;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'confirm'**
+  String get confirm;
+
+  /// No description provided for @failedToGetUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get user'**
+  String get failedToGetUser;
 }
 
 class _AppLocalizationsDelegate

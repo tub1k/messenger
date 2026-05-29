@@ -15,6 +15,7 @@ import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:messenger/presentation/chat_list/chat_list_screen.dart';
 import 'package:messenger/presentation/core/environment/environment.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
+import 'package:messenger/presentation/main_scaffold/main_scaffold.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 void main() async {
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
-          title: context.l10n.auraMessenger,
+          title: 'Aura messenger',
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           home: BlocBuilder<AuthBloc, AuthState>(
@@ -67,7 +68,6 @@ class MyApp extends StatelessWidget {
               if (state is AuthSuccess) {
                 return const ChatListProvider();
               }
-
               return const AuthScreen();
             },
           ),
@@ -87,7 +87,7 @@ class ChatListProvider extends StatelessWidget {
       create: (context) =>
           ChatListBloc(context.read<IChatRepository>(), myId: myId)
             ..add(InitChatList()),
-      child: const ChatListScreen(),
+      child: const MainScaffold(currentIndex: 0), 
     );
   }
 }

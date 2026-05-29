@@ -4,6 +4,5 @@
   "newChat": "New Chat",
   "addUserToChatHint": "Enter users tags to add them to chat",
   "confirm": "confirm",
-  "failedToGetUser": "Failed to get user",
-  
+  "failedToGetUser": "Failed to get user"
 }

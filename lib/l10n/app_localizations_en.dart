@@ -10,4 +10,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get auraMessenger => 'Aura messenger';
+
+  @override
+  String get newChat => 'New Chat';
+
+  @override
+  String get addUserToChatHint => 'Enter users tags to add them to chat';
+
+  @override
+  String get confirm => 'confirm';
+
+  @override
+  String get failedToGetUser => 'Failed to get user';
 }

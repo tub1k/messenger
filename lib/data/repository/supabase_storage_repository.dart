@@ -19,7 +19,7 @@ class SupabaseStorageRepository implements IStorageRepository {
       return storageResponse;
     } catch (e) {
       throw e.toString();
-    } // TODO: FIX
+    } 
   }
 
   @override

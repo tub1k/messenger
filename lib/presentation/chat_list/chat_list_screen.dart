@@ -19,7 +19,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('aura messenger')),
+      appBar: AppBar(title: Text(context.l10n.auraMessenger)),
       floatingActionButton: IconButton.filled(
         onPressed: () {
           showModalBottomSheet(
