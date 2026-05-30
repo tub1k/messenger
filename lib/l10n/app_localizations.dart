@@ -145,6 +145,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System language'**
   String get systemLang;
+
+  /// No description provided for @chats.
+  ///
+  /// In en, this message translates to:
+  /// **'Chats'**
+  String get chats;
+
+  /// No description provided for @addSomeoneFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Add someone first!'**
+  String get addSomeoneFirst;
+
+  /// No description provided for @chatName.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat Name'**
+  String get chatName;
+
+  /// No description provided for @addChatPicture.
+  ///
+  /// In en, this message translates to:
+  /// **'Add chat picture'**
+  String get addChatPicture;
+
+  /// No description provided for @createChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Create chat!'**
+  String get createChat;
+
+  /// No description provided for @failedToLoadChats.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load chats'**
+  String get failedToLoadChats;
+
+  /// No description provided for @unknownLoadingChatsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown error has happened while loading chats :('**
+  String get unknownLoadingChatsError;
+
+  /// No description provided for @updateToSeeThisMessageType.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the app to see this message type'**
+  String get updateToSeeThisMessageType;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _AppLocalizationsDelegate

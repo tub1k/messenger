@@ -73,6 +73,7 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                       builder: (navContext) => BlocProvider(
                         create: (blocContext) => ChatBloc(
                           repository: repo,
+                          storageRepository: context.read<IStorageRepository>(),
                           myId: currentUserId,
                           chatId: chat.chatId,
                         )..add(ChatStarted(chat.chatId)),

@@ -31,4 +31,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get systemLang => 'System language';
+
+  @override
+  String get chats => 'Chats';
+
+  @override
+  String get addSomeoneFirst => 'Add someone first!';
+
+  @override
+  String get chatName => 'Chat Name';
+
+  @override
+  String get addChatPicture => 'Add chat picture';
+
+  @override
+  String get createChat => 'Create chat!';
+
+  @override
+  String get failedToLoadChats => 'Failed to load chats';
+
+  @override
+  String get unknownLoadingChatsError =>
+      'Unknown error has happened while loading chats :(';
+
+  @override
+  String get updateToSeeThisMessageType =>
+      'Update the app to see this message type';
+
+  @override
+  String get error => 'Error';
 }

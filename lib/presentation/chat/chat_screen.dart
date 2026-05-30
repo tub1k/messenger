@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -15,6 +19,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController _controller;
+  final _imagePicker = ImagePicker();
+  List<Uint8List> selectedImages = [];
   @override
   void initState() {
     _controller = TextEditingController();
@@ -30,13 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          children: [
-            Text(widget.chat.chatName),
-          ],
-        ),
-      ),
+      appBar: AppBar(title: Column(children: [Text(widget.chat.chatName)])),
       body: BlocConsumer<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatLoaded) {
@@ -53,38 +53,66 @@ class _ChatScreenState extends State<ChatScreen> {
                       return MessageBubble(
                         message: state.messages[index],
                         isMe: isMe,
+                        chatId: widget.chat.chatId,
                       );
                     },
                   ),
                 ),
                 SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Expanded(child: TextField(controller: _controller)),
-                        Container(
-                          decoration: ShapeDecoration(
-                            shape: CircleBorder(),
-                            color: Colors.blue,
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              if (_controller.text.trim().isNotEmpty) {
-                                context.read<ChatBloc>().add(
-                                  ChatMessageSent(
-                                    _controller.text,
-                                    messageType: MessageType.text,
-                                  ),
-                                );
-                                _controller.clear();
-                              }
-                            },
-                            icon: Icon(Icons.send),
+                  child: Column(
+                    children: [
+                      if (state.images.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Wrap(
+                            spacing: 10,
+                            children: state.images.map((image) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.memory(
+                                  image,
+                                  width: 70,
+                                  height: 70,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.broken_image),
+                                ),
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ],
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(child: TextField(controller: _controller)),
+                            IconButton(
+                              onPressed: _showImagePicker,
+                              icon: Icon(Icons.attach_file),
+                            ),
+                            Container(
+                              decoration: ShapeDecoration(
+                                shape: CircleBorder(),
+                                color: Colors.blue,
+                              ),
+                              child: IconButton(
+                                onPressed: () {
+                                  if (_controller.text.trim().isNotEmpty) {
+                                    context.read<ChatBloc>().add(
+                                      ChatMessageSent(
+                                        _controller.text,
+                                        messageType: MessageType.text,
+                                      ),
+                                    );
+                                    _controller.clear();
+                                  }
+                                },
+                                icon: Icon(Icons.send),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -93,8 +121,36 @@ class _ChatScreenState extends State<ChatScreen> {
             return Center(child: CircularProgressIndicator());
           }
         },
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ChatLoaded) {
+            if (state.errorText != null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${context.l10n.error}: ${state.errorText}'),
+                ),
+              );
+            }
+          }
+        },
       ),
     );
+  }
+
+  void _showImagePicker() async {
+    final List<XFile> pickedFiles = await _imagePicker.pickMultiImage(
+      imageQuality: 65,
+      maxWidth: 1200,
+      maxHeight: 1200,
+      limit: 5,
+    );
+    final List<Uint8List> imageBytes = await Future.wait(
+      pickedFiles.map((pickedFile) async {
+        return await pickedFile.readAsBytes();
+      }).toList(),
+    );
+
+    if (mounted) {
+      context.read<ChatBloc>().add(ChatAddImage(images: imageBytes));
+    }
   }
 }

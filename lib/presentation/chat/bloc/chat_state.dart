@@ -10,9 +10,10 @@ class ChatInitial extends ChatState {
 class ChatLoaded extends ChatState {
   final List<MessageModel> messages;
   final String? errorText;
+  final List<Uint8List> images;
 
-  ChatLoaded({required this.messages, this.errorText});
+  ChatLoaded({required this.messages, this.errorText, required this.images});
   
   @override
-  List<Object?> get props => [messages, errorText];
+  List<Object?> get props => [messages, errorText, images.length, images.hashCode];
 }

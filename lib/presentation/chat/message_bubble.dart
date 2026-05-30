@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
+  final String chatId;
 
-  const MessageBubble({super.key, required this.message, required this.isMe});
+  const MessageBubble({
+    super.key,
+    required this.message,
+    required this.isMe,
+    required this.chatId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +55,7 @@ class MessageBubble extends StatelessWidget {
                 minWidth: 40,
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
-              child: _buildCellWidget(message),
+              child: _buildCellWidget(message, context, chatId),
             ),
             if (message.isPending ?? false)
               const Padding(
@@ -60,20 +69,80 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
-Widget _buildCellWidget(MessageModel msg) {
+Widget _buildCellWidget(MessageModel msg, BuildContext context, String chatId) {
   switch (msg.type) {
     case MessageType.text:
       return Text(msg.text);
     case MessageType.image:
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          msg.text,
-          errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.broken_image),
-        ),
+      return Builder(
+        builder: (context) {
+          if ((msg.isPending ?? false) && msg.optimisticImages != null) {
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ...msg.optimisticImages!.map((img) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.memory(
+                      img,
+                      height: 150,
+                      width: 150,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.broken_image),
+                    ),
+                  );
+                }),
+              ],
+            );
+          } else {
+            final urls = context.read<IStorageRepository>().getMessagePhotos(
+              chatId,
+              msg,
+            );
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ...urls.map((url) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      url,
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          height: 150,
+                          width: 150,
+                          color: Colors.black12,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) =>
+                          Container(
+                            width: 150,
+                            height: 150,
+                            color: Colors.black12,
+                            child: const Icon(Icons.broken_image)
+                            ),
+                    ),
+                  );
+                }),
+              ],
+            );
+          }
+        },
       );
     default:
-      return Text('Update the app to see this message type');
+      return Text(context.l10n.updateToSeeThisMessageType);
   }
 }

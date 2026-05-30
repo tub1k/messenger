@@ -1,156 +1,156 @@
-import 'dart:typed_data';
+  import 'dart:typed_data';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger/data/models/chat_model.dart';
-import 'package:messenger/data/models/user_model.dart';
-import 'package:messenger/data/repository/i_chat_repository.dart';
-import 'package:messenger/data/repository/i_storage_repository.dart';
+  import 'package:flutter_bloc/flutter_bloc.dart';
+  import 'package:messenger/data/models/chat_model.dart';
+  import 'package:messenger/data/models/user_model.dart';
+  import 'package:messenger/data/repository/i_chat_repository.dart';
+  import 'package:messenger/data/repository/i_storage_repository.dart';
 
-part 'create_chat_event.dart';
-part 'create_chat_state.dart';
+  part 'create_chat_event.dart';
+  part 'create_chat_state.dart';
 
-class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
-  final IChatRepository _repository;
-  final IStorageRepository _storageRepository;
-  final String myId;
-  CreateChatBloc({
-    required IChatRepository repository,
-    required this.myId,
-    required IStorageRepository storageRepository,
-  }) : _storageRepository = storageRepository,
-       _repository = repository,
-       super(CreateChatInitial(addedUsers: [])) {
-    on<CreateChatEvent>((event, emit) {});
+  class CreateChatBloc extends Bloc<CreateChatEvent, CreateChatState> {
+    final IChatRepository _repository;
+    final IStorageRepository _storageRepository;
+    final String myId;
+    CreateChatBloc({
+      required IChatRepository repository,
+      required this.myId,
+      required IStorageRepository storageRepository,
+    }) : _storageRepository = storageRepository,
+        _repository = repository,
+        super(CreateChatInitial(addedUsers: [])) {
+      on<CreateChatEvent>((event, emit) {});
 
-    on<AddToCreateChatList>((event, emit) async {
-      final currentState = state;
-      if (currentState is CreateChatInitial) {
-        try {
-          final newUser = await _repository.getBaseUserByUsername(
-            event.username,
-          );
-          if (newUser.uid == myId) {
-            throw 'you cant add yourself!';
+      on<AddToCreateChatList>((event, emit) async {
+        final currentState = state;
+        if (currentState is CreateChatInitial) {
+          try {
+            final newUser = await _repository.getBaseUserByUsername(
+              event.username,
+            );
+            if (newUser.uid == myId) {
+              throw 'you cant add yourself!';
+            }
+
+            if (currentState.addedUsers.contains(newUser)) {
+              throw 'user_in_list'; // TODO: do this
+            }
+            emit(
+              CreateChatInitial(addedUsers: currentState.addedUsers + [newUser]),
+            );
+          } catch (e) {
+            emit(
+              CreateChatInitial(
+                addedUsers: currentState.addedUsers,
+                errorText: e.toString(),
+              ),
+            );
           }
-
-          if (currentState.addedUsers.contains(newUser)) {
-            throw 'user already in list!';
-          }
+        } else {
           emit(
-            CreateChatInitial(addedUsers: currentState.addedUsers + [newUser]),
+            CreateChatInitial(
+              addedUsers: [],
+              errorText: 'tried to add user while on wrong screen',
+            ),
           );
+        }
+      });
+
+      on<RemoveFromCreateChatList>((event, emit) {
+        final currentState = state;
+        try {
+          if (currentState is CreateChatInitial) {
+            var newList = currentState.addedUsers;
+            newList.removeWhere((user) => user.username == event.username);
+            emit(CreateChatInitial(addedUsers: newList));
+          }
         } catch (e) {
           emit(
             CreateChatInitial(
-              addedUsers: currentState.addedUsers,
-              errorText: e.toString(),
+              addedUsers: [],
+              errorText: 'tried to add user while on wrong screen',
             ),
           );
         }
-      } else {
-        emit(
-          CreateChatInitial(
-            addedUsers: [],
-            errorText: 'tried to add user while on wrong screen',
-          ),
-        );
-      }
-    });
+      });
 
-    on<RemoveFromCreateChatList>((event, emit) {
-      final currentState = state;
-      try {
-        if (currentState is CreateChatInitial) {
-          var newList = currentState.addedUsers;
-          newList.removeWhere((user) => user.username == event.username);
-          emit(CreateChatInitial(addedUsers: newList));
-        }
-      } catch (e) {
-        emit(
-          CreateChatInitial(
-            addedUsers: [],
-            errorText: 'tried to add user while on wrong screen',
-          ),
-        );
-      }
-    });
-
-    on<GoToSecondPage>((event, emit) async {
-      final curState = state; // current state
-      final users = event.addedUsers.toList();
-      if (curState is! CreateChatInitial) return;
-      if (users.length == 1) {
-        emit(CreateChatLoading());
-        try {
-          final targetUserUid = users[0].uid;
-          final dm = await _repository.getDms(myId, targetUserUid, myId);
-          if (dm != null) {
-            emit(CreateChatMoveToChat(chat: dm));
-          } else {
-            final createdChatId = await _repository.createChat(
-              userUids: [myId, targetUserUid],
-            );
-            final createdChat = await _repository.getChatObject(
-              createdChatId,
-              myId,
-            );
-            if (createdChat != null) {
-              emit(CreateChatMoveToChat(chat: createdChat));
+      on<GoToSecondPage>((event, emit) async {
+        final curState = state; // current state
+        final users = event.addedUsers.toList();
+        if (curState is! CreateChatInitial) return;
+        if (users.length == 1) {
+          emit(CreateChatLoading());
+          try {
+            final targetUserUid = users[0].uid;
+            final dm = await _repository.getDms(myId, targetUserUid, myId);
+            if (dm != null) {
+              emit(CreateChatMoveToChat(chat: dm));
             } else {
-              throw 'failed to create chat';
+              final createdChatId = await _repository.createChat(
+                userUids: [myId, targetUserUid],
+              );
+              final createdChat = await _repository.getChatObject(
+                createdChatId,
+                myId,
+              );
+              if (createdChat != null) {
+                emit(CreateChatMoveToChat(chat: createdChat));
+              } else {
+                throw 'failed to create chat';
+              }
             }
+          } catch (e) {
+            emit(CreateChatInitial(addedUsers: users, errorText: e.toString()));
+          }
+        } else if (event.addedUsers.length > 1) {
+          emit(CreateChatSecond(addedUsers: users));
+        } else {
+          emit(
+            CreateChatInitial(addedUsers: users, errorText: 'Add someone first!'),
+          );
+        }
+      });
+
+      on<CreateChat>((event, emit) async {
+        final curState = state;
+        try {
+          final createdChatId = await _repository.createChat(
+            userUids: [
+              myId,
+              ...event.addedUsers.map((user) => user.uid),
+            ], // map all user IDs into the list
+            chatName: event.chatName,
+          );
+
+          final uploadedPhoto = event.photo;
+
+          if (uploadedPhoto != null) {
+            await _storageRepository.uploadImage(
+              uploadedPhoto,
+              'groupAvatars',
+              'public/$createdChatId/avatar.png',
+            );
+          }
+          final createdChat = await _repository.getChatObject(
+            createdChatId,
+            myId,
+          );
+          if (createdChat != null) {
+            emit(CreateChatMoveToChat(chat: createdChat));
+          } else {
+            throw 'failed to create chat';
           }
         } catch (e) {
-          emit(CreateChatInitial(addedUsers: users, errorText: e.toString()));
+          if (curState is CreateChatSecond) {
+            emit(
+              CreateChatSecond(
+                addedUsers: curState.addedUsers,
+                errorText: 'error creating chat: ${e.toString()}',
+              ),
+            );
+          }
         }
-      } else if (event.addedUsers.length > 1) {
-        emit(CreateChatSecond(addedUsers: users));
-      } else {
-        emit(
-          CreateChatInitial(addedUsers: users, errorText: 'Add someone first!'),
-        );
-      }
-    });
-
-    on<CreateChat>((event, emit) async {
-      final curState = state;
-      try {
-        final createdChatId = await _repository.createChat(
-          userUids: [
-            myId,
-            ...event.addedUsers.map((user) => user.uid),
-          ], // map all user IDs into the list
-          chatName: event.chatName,
-        );
-
-        final uploadedPhoto = event.photo;
-
-        if (uploadedPhoto != null) {
-          await _storageRepository.uploadImage(
-            uploadedPhoto,
-            'groupAvatars',
-            'public/$createdChatId/avatar.png',
-          );
-        }
-        final createdChat = await _repository.getChatObject(
-          createdChatId,
-          myId,
-        );
-        if (createdChat != null) {
-          emit(CreateChatMoveToChat(chat: createdChat));
-        } else {
-          throw 'failed to create chat';
-        }
-      } catch (e) {
-        if (curState is CreateChatSecond) {
-          emit(
-            CreateChatSecond(
-              addedUsers: curState.addedUsers,
-              errorText: 'error creating chat: ${e.toString()}',
-            ),
-          );
-        }
-      }
-    });
+      });
+    }
   }
-}

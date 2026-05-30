@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
@@ -46,7 +47,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
             if (state.errorText != null) {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text("Failed to load chats")));
+              ).showSnackBar(SnackBar(content: Text('${context.l10n.failedToLoadChats}, ${state.errorText}')));
             }
           }
         },
@@ -79,6 +80,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         builder: (navContext) => BlocProvider(
                           create: (blocContext) => ChatBloc(
                             repository: repo,
+                            storageRepository: context.read<IStorageRepository>(),
                             myId: currentUserId,
                             chatId: chat.chatId,
                           )..add(ChatStarted(chat.chatId)),

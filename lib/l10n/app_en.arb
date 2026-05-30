@@ -7,5 +7,14 @@
   "failedToGetUser": "Failed to get user",
   "settings": "Settings",
   "language": "Language",
-  "systemLang": "System language"
+  "systemLang": "System language",
+  "chats": "Chats",
+  "addSomeoneFirst": "Add someone first!",
+  "chatName": "Chat Name",
+  "addChatPicture": "Add chat picture",
+  "createChat": "Create chat!",
+  "failedToLoadChats": "Failed to load chats",
+  "unknownLoadingChatsError": "Unknown error has happened while loading chats :(",
+  "updateToSeeThisMessageType": "Update the app to see this message type",
+  "error": "Error"
 }

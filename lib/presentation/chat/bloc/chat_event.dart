@@ -23,3 +23,9 @@ class ChatMessageSent extends ChatEvent {
   @override
   List<Object?> get props => [text];
 }
+
+class ChatAddImage extends ChatEvent {
+  final List<Uint8List> images;
+
+  const ChatAddImage({required this.images});
+}

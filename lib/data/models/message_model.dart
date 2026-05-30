@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
 enum MessageType { text, image, system, unknown }
@@ -9,6 +11,8 @@ class MessageModel extends Equatable {
   final DateTime timestamp;
   final MessageType type;
   final bool? isPending;
+  final int? imageAmount;
+  final List<Uint8List>? optimisticImages;
 
   const MessageModel({
     required this.id,
@@ -17,6 +21,8 @@ class MessageModel extends Equatable {
     required this.timestamp,
     required this.type,
     this.isPending,
+    this.imageAmount,
+    this.optimisticImages,
   });
 
   MessageModel.empty()
@@ -25,7 +31,9 @@ class MessageModel extends Equatable {
       senderId = '',
       timestamp = DateTime(1970),
       type = MessageType.system,
-      isPending = false;
+      isPending = false,
+      imageAmount = 0,
+      optimisticImages = null;
 
   factory MessageModel.fromMap(
     Map<String, dynamic> map,
@@ -51,9 +59,9 @@ class MessageModel extends Equatable {
       timestamp: map['createdAt']?.toDate() ?? DateTime.now(),
       type: returnType,
       isPending: isPending ?? false,
+      imageAmount: map['imageAmount'],
     );
   }
-
   @override
   List<Object?> get props => [id, text, type, senderId, timestamp];
 }

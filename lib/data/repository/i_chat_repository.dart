@@ -5,11 +5,12 @@ import 'package:messenger/data/models/user_model.dart';
 abstract class IChatRepository {
   Stream<List<MessageModel>> getMessages(String chatId);
   
-  Future<void> sendMessage({
+  Future<String> sendMessage({
     required String chatId,
     required String text,
     required String senderId,
     required MessageType type,
+    int? imageAmount,
   });
 
   Future<ChatModel?> getChatObject(String chatID, String myId);

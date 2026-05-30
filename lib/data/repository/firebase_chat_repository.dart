@@ -111,11 +111,12 @@ class FirebaseChatRepository implements IChatRepository {
   }
 
   @override
-  Future<void> sendMessage({
+  Future<String> sendMessage({
     required String chatId,
     required String text,
     required String senderId,
     required MessageType type,
+    int? imageAmount,
   }) async {
     final msg = {
       'text': text,
@@ -123,6 +124,9 @@ class FirebaseChatRepository implements IChatRepository {
       'type': type.name,
       'createdAt': FieldValue.serverTimestamp(),
     };
+    if (imageAmount != null) {
+      msg['imageAmount'] = imageAmount;
+    }
 
     final batch = _firestore.batch();
 
@@ -137,6 +141,7 @@ class FirebaseChatRepository implements IChatRepository {
     batch.update(chatRef, {'lastMessage': msg});
 
     await batch.commit();
+    return messageRef.id;
   }
 
   @override

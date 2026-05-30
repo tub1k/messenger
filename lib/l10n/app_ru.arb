@@ -7,5 +7,14 @@
   "failedToGetUser": "Не удалочь получить пользователя",
   "settings": "Настройки",
   "language": "Язык",
-  "systemLang": "Язык системы"
+  "systemLang": "Язык системы",
+  "chats": "Чаты",
+  "addSomeoneFirst": "Сначала добавь участников!",
+  "chatName": "Название чата",
+  "addChatPicture": "Добавь картинку чата",
+  "createChat": "Создать чат!",
+  "failedToLoadChats": "Не удалось загрузить чаты",
+  "unknownLoadingChatsError": "Неизестная ошибка произошла во время загрузки чатов :(",
+  "updateToSeeThisMessageType": "Обновите приложение, чтобы увидеть этот тип сообщений",
+  "error": "Ошибка"
 }
