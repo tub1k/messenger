@@ -61,4 +61,29 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get error => 'Ошибка';
+
+  @override
+  String get chatNameHint => 'Мой чат';
+
+  @override
+  String get failedToCreateChat => 'Ошибка при создании чата';
+
+  @override
+  String get errorNetwork => 'Ошибка сети! Проверьте своё интернет соединение.';
+
+  @override
+  String get errorNotFound => 'Контент не найден.';
+
+  @override
+  String get errorUnauthorized => 'Сессия устарела. Войдите заново';
+
+  @override
+  String get errorUnknown => 'Что-то пошло не так.';
+
+  @override
+  String get triedToAddUserOnWrongScreen =>
+      'Попытка добавить пользователя на неправильном экране';
+
+  @override
+  String get cantAddYourself => 'Нельзя добавить самого себя!';
 }

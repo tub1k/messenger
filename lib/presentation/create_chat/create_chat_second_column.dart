@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/bloc/create_chat_bloc.dart';
 
 class CreateChatSecondColumn extends StatelessWidget {
@@ -27,12 +28,12 @@ class CreateChatSecondColumn extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         spacing: 10,
         children: [
-          const Text("Chat Name", style: TextStyle(fontSize: 24)),
+          Text(context.l10n.chatName, style: TextStyle(fontSize: 24)),
           TextField(
             controller: chatNameController,
-            decoration: const InputDecoration(hintText: 'My chat'),
+            decoration: InputDecoration(hintText: context.l10n.chatNameHint),
           ),
-          const Text("Add chat picture", style: TextStyle(fontSize: 24)),
+          Text(context.l10n.addChatPicture, style: TextStyle(fontSize: 24)),
           Ink(
             decoration: BoxDecoration(
               color: Colors.blue[100],
@@ -71,7 +72,7 @@ class CreateChatSecondColumn extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text('Create chat!'),
+                  child: Text(context.l10n.createChat),
                 ),
               ),
             ),

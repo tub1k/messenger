@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/bloc/create_chat_bloc.dart';
 
 class CreateChatInitialColumn extends StatelessWidget {
@@ -18,13 +19,13 @@ class CreateChatInitialColumn extends StatelessWidget {
       spacing: 10,
       children: [
         SizedBox(height: 10),
-        Text('New Chat', style: TextStyle(fontSize: 20)),
+        Text(context.l10n.newChat, style: TextStyle(fontSize: 20)),
         Padding(
           padding: EdgeInsets.all(16),
           child: TextField(
             controller: _addToChatController,
             decoration: InputDecoration(
-              hintText: 'enter users tags to add them to chat',
+              hintText: context.l10n.addUserToChatHint,
             ),
             onSubmitted: (text) {
               context.read<CreateChatBloc>().add(
@@ -61,7 +62,7 @@ class CreateChatInitialColumn extends StatelessWidget {
                       GoToSecondPage(addedUsers: curState.addedUsers),
                     );
                   },
-                  child: Text('confirm'),
+                  child: Text(context.l10n.confirm),
                 ),
               ),
             ),

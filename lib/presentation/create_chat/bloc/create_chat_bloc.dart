@@ -30,7 +30,7 @@
               event.username,
             );
             if (newUser.uid == myId) {
-              throw 'you cant add yourself!';
+              throw 'cantAddYourself';
             }
 
             if (currentState.addedUsers.contains(newUser)) {
@@ -51,7 +51,7 @@
           emit(
             CreateChatInitial(
               addedUsers: [],
-              errorText: 'tried to add user while on wrong screen',
+              errorText: 'triedToAddUserOnWrongScreen',
             ),
           );
         }
@@ -69,7 +69,7 @@
           emit(
             CreateChatInitial(
               addedUsers: [],
-              errorText: 'tried to add user while on wrong screen',
+              errorText: 'triedToAddUserOnWrongScreen',
             ),
           );
         }
@@ -97,7 +97,7 @@
               if (createdChat != null) {
                 emit(CreateChatMoveToChat(chat: createdChat));
               } else {
-                throw 'failed to create chat';
+                throw 'failed_to_create_chat';
               }
             }
           } catch (e) {
@@ -107,7 +107,7 @@
           emit(CreateChatSecond(addedUsers: users));
         } else {
           emit(
-            CreateChatInitial(addedUsers: users, errorText: 'Add someone first!'),
+            CreateChatInitial(addedUsers: users, errorText: 'add_someone_first'),
           );
         }
       });
@@ -139,14 +139,14 @@
           if (createdChat != null) {
             emit(CreateChatMoveToChat(chat: createdChat));
           } else {
-            throw 'failed to create chat';
+            throw 'failed_create_chat';
           }
         } catch (e) {
           if (curState is CreateChatSecond) {
             emit(
               CreateChatSecond(
                 addedUsers: curState.addedUsers,
-                errorText: 'error creating chat: ${e.toString()}',
+                errorText: e.toString(),
               ),
             );
           }

@@ -15,7 +15,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final String myId;
   final String chatId;
 
-  // Оставляем локальный список, чтобы стрим getMessages его не затирал
   List<Uint8List> _localPickedImages = [];
 
   ChatBloc({
@@ -29,7 +28,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatEvent>((event, emit) {});
 
     on<ChatStarted>((event, emit) async {
-      print('Блок запущен для чата: ${event.chatId}');
       await emit.forEach(
         _repository.getMessages(chatId),
         onData: (messages) {
@@ -94,12 +92,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           }).toList(),  
         );
 
-        print('✅ all images upload success');
-
         emit(ChatLoaded(messages: currentState.messages, images: const []));
 
       } catch (e) {
-        print('UPLOADING IMAGE ERROR: $e');
         emit(
           ChatLoaded(
             messages: currentState.messages,

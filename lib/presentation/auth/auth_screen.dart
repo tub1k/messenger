@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
+import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 
-enum AuthScreenStep {initial, username}
+enum AuthScreenStep { initial, username }
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -22,7 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _usernameController = TextEditingController();
-    
+
     super.initState();
   }
 
@@ -40,10 +41,17 @@ class _AuthScreenState extends State<AuthScreen> {
       listener: (context, state) {
         if (state is AuthInitial) {
           screen = AuthScreenStep.initial;
-          final errorText = state.errorText;
-          if (errorText != null) {
+          if (state.errorText != null) {
+            final errorHandler = ErrorHandler.from(state.errorText!);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(errorText), backgroundColor: Colors.red),
+              SnackBar(
+                content: Text(
+                  (errorHandler == AppErrorType.unknown)
+                      ? state.errorText!
+                      : errorHandler.localizedMessage(context),
+                ),
+                backgroundColor: Colors.red,
+              ),
             );
           }
         } else if (state is AuthEnterUsername) {
@@ -80,7 +88,8 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                               SizedBox(height: 30),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   InkWell(
                                     child: Container(
@@ -146,12 +155,11 @@ class _AuthScreenState extends State<AuthScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text('enter your unique user tag'),
-                              TextField(
-                                controller: _usernameController,
-                              ),
+                              TextField(controller: _usernameController),
                               SizedBox(height: 30),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   InkWell(
                                     child: Container(

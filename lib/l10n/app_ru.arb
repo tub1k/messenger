@@ -16,5 +16,13 @@
   "failedToLoadChats": "Не удалось загрузить чаты",
   "unknownLoadingChatsError": "Неизестная ошибка произошла во время загрузки чатов :(",
   "updateToSeeThisMessageType": "Обновите приложение, чтобы увидеть этот тип сообщений",
-  "error": "Ошибка"
+  "error": "Ошибка",
+  "chatNameHint": "Мой чат",
+  "failedToCreateChat": "Ошибка при создании чата",
+  "errorNetwork": "Ошибка сети! Проверьте своё интернет соединение.",
+  "errorNotFound": "Контент не найден.",
+  "errorUnauthorized": "Сессия устарела. Войдите заново",
+  "errorUnknown": "Что-то пошло не так.",
+  "triedToAddUserOnWrongScreen": "Попытка добавить пользователя на неправильном экране",
+  "cantAddYourself": "Нельзя добавить самого себя!"
 }

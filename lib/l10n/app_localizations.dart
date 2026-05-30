@@ -199,6 +199,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @chatNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'My Chat'**
+  String get chatNameHint;
+
+  /// No description provided for @failedToCreateChat.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create chat'**
+  String get failedToCreateChat;
+
+  /// No description provided for @errorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error! Check your internet connection.'**
+  String get errorNetwork;
+
+  /// No description provided for @errorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Content not found.'**
+  String get errorNotFound;
+
+  /// No description provided for @errorUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'Session timed out. Please re-login.'**
+  String get errorUnauthorized;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get errorUnknown;
+
+  /// No description provided for @triedToAddUserOnWrongScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Tried to add user while on wrong screen'**
+  String get triedToAddUserOnWrongScreen;
+
+  /// No description provided for @cantAddYourself.
+  ///
+  /// In en, this message translates to:
+  /// **'you cant add yourself!'**
+  String get cantAddYourself;
 }
 
 class _AppLocalizationsDelegate

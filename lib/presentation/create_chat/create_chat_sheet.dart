@@ -8,6 +8,7 @@ import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
+import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/bloc/create_chat_bloc.dart';
 import 'package:messenger/presentation/create_chat/create_chat_initial_column.dart';
@@ -56,9 +57,14 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
             body: BlocConsumer<CreateChatBloc, CreateChatState>(
               listener: (context, state) {
                 if (state.errorText != null) {
+                  final errorHandler = ErrorHandler.from(state.errorText!);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(state.errorText ?? ''),
+                      content: Text(
+                        (errorHandler == AppErrorType.unknown)
+                            ? state.errorText!
+                            : errorHandler.localizedMessage(context),
+                      ),
                       backgroundColor: Colors.red,
                     ),
                   );

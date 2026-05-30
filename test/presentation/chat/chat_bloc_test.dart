@@ -1,15 +1,18 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 
 class MockChatRepository extends Mock implements IChatRepository {}
+class MockStorageRepository extends Mock implements IStorageRepository {}
 
 void main() {
   late MockChatRepository mockRepository;
   late ChatBloc chatBloc;
+  late MockStorageRepository mockStorageRepository;
   final myId = 'exampleid';
   final chatId = 'sigmachat';
 
@@ -19,7 +22,8 @@ void main() {
 
   setUp(() {
     mockRepository = MockChatRepository();
-    chatBloc = ChatBloc(repository: mockRepository, myId: myId, chatId: chatId);
+    mockStorageRepository = MockStorageRepository();
+    chatBloc = ChatBloc(repository: mockRepository, myId: myId, chatId: chatId, storageRepository: mockStorageRepository);
   });
 
   tearDown(() {
@@ -41,7 +45,7 @@ void main() {
       return chatBloc;
     },
 
-    seed: () => ChatLoaded(messages: const []),
+    seed: () => ChatLoaded(messages: const [], images: const []),
 
     act: (bloc) => bloc.add(
       const ChatMessageSent('Тестовый привет', messageType: MessageType.text),

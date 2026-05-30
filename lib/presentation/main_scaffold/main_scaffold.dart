@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messenger/presentation/chat_list/chat_list_screen.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/settings/settings_screen.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -58,11 +59,11 @@ class _MainScaffoldState extends State<MainScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => _onTabTapped(index),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chats'),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: context.l10n.chats),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings',
+            label: context.l10n.settings,
           ),
         ],
       ),

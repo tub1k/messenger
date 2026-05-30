@@ -60,4 +60,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get chatNameHint => 'My Chat';
+
+  @override
+  String get failedToCreateChat => 'Failed to create chat';
+
+  @override
+  String get errorNetwork => 'Network error! Check your internet connection.';
+
+  @override
+  String get errorNotFound => 'Content not found.';
+
+  @override
+  String get errorUnauthorized => 'Session timed out. Please re-login.';
+
+  @override
+  String get errorUnknown => 'Something went wrong.';
+
+  @override
+  String get triedToAddUserOnWrongScreen =>
+      'Tried to add user while on wrong screen';
+
+  @override
+  String get cantAddYourself => 'you cant add yourself!';
 }

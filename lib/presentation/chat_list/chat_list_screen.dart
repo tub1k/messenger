@@ -6,6 +6,7 @@ import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
+import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/create_chat_sheet.dart';
 
@@ -45,9 +46,17 @@ class _ChatListScreenState extends State<ChatListScreen> {
         listener: (context, state) {
           if (state is ChatListLoaded) {
             if (state.errorText != null) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('${context.l10n.failedToLoadChats}, ${state.errorText}')));
+              final errorHandler = ErrorHandler.from(state.errorText!);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    (errorHandler == AppErrorType.unknown)
+                        ? state.errorText!
+                        : errorHandler.localizedMessage(context),
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
           }
         },
@@ -80,7 +89,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         builder: (navContext) => BlocProvider(
                           create: (blocContext) => ChatBloc(
                             repository: repo,
-                            storageRepository: context.read<IStorageRepository>(),
+                            storageRepository: context
+                                .read<IStorageRepository>(),
                             myId: currentUserId,
                             chatId: chat.chatId,
                           )..add(ChatStarted(chat.chatId)),
@@ -95,8 +105,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
           } else if (state is ChatListFailed) {
             return Center(
               child: Text(
-                state.errorText ??
-                    'Unknown error has happened while loading chats :(',
+                state.errorText ?? context.l10n.unknownLoadingChatsError,
               ),
             );
           }

@@ -7,7 +7,7 @@ import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
-import 'package:messenger/presentation/core/extensions/content_extensions.dart';
+import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -124,9 +124,15 @@ class _ChatScreenState extends State<ChatScreen> {
         listener: (context, state) {
           if (state is ChatLoaded) {
             if (state.errorText != null) {
+              final errorHandler = ErrorHandler.from(state.errorText!);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('${context.l10n.error}: ${state.errorText}'),
+                  content: Text(
+                    (errorHandler == AppErrorType.unknown)
+                        ? state.errorText!
+                        : errorHandler.localizedMessage(context),
+                  ),
+                  backgroundColor: Colors.red,
                 ),
               );
             }

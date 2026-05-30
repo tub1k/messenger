@@ -16,5 +16,13 @@
   "failedToLoadChats": "Failed to load chats",
   "unknownLoadingChatsError": "Unknown error has happened while loading chats :(",
   "updateToSeeThisMessageType": "Update the app to see this message type",
-  "error": "Error"
+  "error": "Error",
+  "chatNameHint": "My Chat",
+  "failedToCreateChat": "Failed to create chat",
+  "errorNetwork": "Network error! Check your internet connection.",
+  "errorNotFound": "Content not found.",
+  "errorUnauthorized": "Session timed out. Please re-login.",
+  "errorUnknown": "Something went wrong.",
+  "triedToAddUserOnWrongScreen": "Tried to add user while on wrong screen",
+  "cantAddYourself": "you cant add yourself!"
 }
