@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_image_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
 
 part 'chat_event.dart';
@@ -12,6 +13,7 @@ part 'chat_state.dart';
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final IChatRepository _repository;
   final IStorageRepository _storageRepository;
+  final IImageRepository _imageRepository;
   final String myId;
   final String chatId;
 
@@ -21,8 +23,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required IChatRepository repository,
     required this.myId,
     required this.chatId,
-    required IStorageRepository storageRepository,
-  }) : _storageRepository = storageRepository,
+    required IStorageRepository storageRepository, required IImageRepository imageRepository,
+  }) : _imageRepository = imageRepository, _storageRepository = storageRepository,
        _repository = repository,
        super(ChatInitial()) {
     on<ChatEvent>((event, emit) {});
@@ -31,7 +33,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       await emit.forEach(
         _repository.getMessages(chatId),
         onData: (messages) {
-          return ChatLoaded(messages: messages, images: [..._localPickedImages]);
+          return ChatLoaded(
+            messages: messages,
+            images: [..._localPickedImages],
+          );
         },
         onError: (error, _) {
           return ChatLoaded(
@@ -63,6 +68,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         type: type,
         isPending: true,
         optimisticImages: imagesToUpload,
+        sender: await _repository.getBaseUserByUID(myId),
       );
 
       emit(
@@ -89,11 +95,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               'chatMedia',
               'public/$chatId/$messageId/${entry.key}.png',
             );
-          }).toList(),  
+          }).toList(),
         );
 
         emit(ChatLoaded(messages: currentState.messages, images: const []));
-
       } catch (e) {
         emit(
           ChatLoaded(
@@ -113,11 +118,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         currentMessages = (state as ChatLoaded).messages;
       }
       emit(
-        ChatLoaded(
-          messages: currentMessages,
-          images: [..._localPickedImages],
-        ),
+        ChatLoaded(messages: currentMessages, images: [..._localPickedImages]),
       );
+    });
+
+    on<ChatDownloadImage>((event, emit) async {
+      List<MessageModel> currentMessages = [];
+      if (state is ChatLoaded) {
+        currentMessages = (state as ChatLoaded).messages;
+      }
+      try {
+        emit(ChatLoaded(messages: currentMessages, images: _localPickedImages, errorText: "loading_started"));
+        await _imageRepository.saveImageToGallery(event.imageUrl);
+        emit(ChatLoaded(messages: currentMessages, images: _localPickedImages, errorText: "loading_success"));
+      } catch (e) {
+        emit(ChatLoaded(messages: currentMessages, images: _localPickedImages, errorText: e.toString()));
+      }
     });
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_image_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
@@ -91,6 +92,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             repository: repo,
                             storageRepository: context
                                 .read<IStorageRepository>(),
+                            imageRepository: context.read<IImageRepository>(),
                             myId: currentUserId,
                             chatId: chat.chatId,
                           )..add(ChatStarted(chat.chatId)),

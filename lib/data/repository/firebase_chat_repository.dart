@@ -10,7 +10,8 @@ class FirebaseChatRepository implements IChatRepository {
   final Map<String, BaseUserModel> _memoryUserCache = {};
   final IStorageRepository _storageRepository;
 
-  FirebaseChatRepository({required IStorageRepository storageRepository}) : _storageRepository = storageRepository;
+  FirebaseChatRepository({required IStorageRepository storageRepository})
+    : _storageRepository = storageRepository;
 
   @override
   Future<ChatModel?> getChatObject(String chatId, String myId) async {
@@ -21,11 +22,16 @@ class FirebaseChatRepository implements IChatRepository {
       final participants = List<String>.from(data['participants'] ?? []);
       final userModels = await getBaseUsersFromListOfUIDs(participants);
       data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(chatId);
+
+
       return ChatModel.fromFirebase(
         data: data,
         docId: chatId,
         myId: myId,
         userModels: userModels,
+        lastMessageSender: (data['lastMessage']?['senderId'] != null)
+              ? await getBaseUserByUID(data['lastMessage']['senderId'])
+              : null,
       );
     } else {
       return null;
@@ -45,18 +51,25 @@ class FirebaseChatRepository implements IChatRepository {
             final participants = List<String>.from(data['participants'] ?? []);
             final List<BaseUserModel> userModels;
             try {
-                 userModels = await getBaseUsersFromListOfUIDs(participants);
-              } on Exception catch (_) {
-                return ChatModel.empty();
-              }
+              userModels = await getBaseUsersFromListOfUIDs(participants);
+            } on Exception catch (_) {
+              return ChatModel.empty();
+            }
 
-            data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(doc.id);
+            data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(
+              doc.id,
+            );
+
+            final lastMessageSender = (data['lastMessage']?['senderId'] != null)
+              ? await getBaseUserByUID(data['lastMessage']['senderId'])
+              : null;
 
             return ChatModel.fromFirebase(
               data: data,
               docId: doc.id,
               myId: myId,
               userModels: userModels,
+              lastMessageSender: lastMessageSender
             );
           }).toList();
 
@@ -72,13 +85,16 @@ class FirebaseChatRepository implements IChatRepository {
         .collection('messages')
         .orderBy('createdAt', descending: true)
         .limit(20)
-        .snapshots()
-        .map((QuerySnapshot snapshot) {
-          return snapshot.docs.map((DocumentSnapshot doc) {
+        .snapshots().asyncMap((QuerySnapshot snapshot) async {
+          final messageFutures = snapshot.docs.map((doc) async {
             final data = doc.data() as Map<String, dynamic>;
             final isPending = doc.metadata.hasPendingWrites;
-            return MessageModel.fromMap(data, doc.id, isPending: isPending);
-          }).toList();
+
+            final sender = await getBaseUserByUID(data['senderId']);
+            return MessageModel.fromMap(data, doc.id, isPending: isPending, sender: sender);
+          });
+
+          return Future.wait(messageFutures);
         });
   }
 
@@ -105,9 +121,18 @@ class FirebaseChatRepository implements IChatRepository {
         .limit(limit)
         .get();
 
-    return query.docs
-        .map((doc) => MessageModel.fromMap(doc.data(), doc.id))
-        .toList();
+    final messageFutures = query.docs.map((doc) async {
+      final data = doc.data();
+      final senderId = data['senderId'] ?? '';
+      
+      final sender = await getBaseUserByUID(senderId);
+      
+      return MessageModel.fromMap(data, doc.id, sender: sender);
+    }).toList(); 
+
+    final List<MessageModel> messages = await Future.wait(messageFutures);
+
+    return messages;
   }
 
   @override
@@ -177,7 +202,6 @@ class FirebaseChatRepository implements IChatRepository {
     }
   }
 
-  // TODO: debug and fix this
   @override
   Future<ChatModel?> getDms(String uid1, String uid2, String myId) async {
     try {
@@ -205,6 +229,9 @@ class FirebaseChatRepository implements IChatRepository {
           docId: doc.id,
           myId: myId,
           userModels: userModels,
+          lastMessageSender: (data['lastMessage']?['senderId'] != null)
+              ? await getBaseUserByUID(data['lastMessage']['senderId'])
+              : null,
         );
       } else {
         return null;

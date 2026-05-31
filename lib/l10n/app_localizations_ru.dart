@@ -86,4 +86,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get cantAddYourself => 'Нельзя добавить самого себя!';
+
+  @override
+  String get galleryPermissionDenied =>
+      'Нет разрешения на сохранение в галерею';
+
+  @override
+  String get loadingSuccess => 'Фото успешно сохранено!';
+
+  @override
+  String get loadingStarted => 'Начали загрузку изображения...';
 }

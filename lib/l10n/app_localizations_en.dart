@@ -85,4 +85,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cantAddYourself => 'you cant add yourself!';
+
+  @override
+  String get galleryPermissionDenied => 'Gallery permission denied.';
+
+  @override
+  String get loadingSuccess => 'Image downloaded successfully!';
+
+  @override
+  String get loadingStarted => 'Started image download...';
 }

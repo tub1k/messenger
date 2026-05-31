@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
+import 'package:messenger/data/models/user_model.dart';
 
 enum MessageType { text, image, system, unknown }
 
@@ -13,6 +14,7 @@ class MessageModel extends Equatable {
   final bool? isPending;
   final int? imageAmount;
   final List<Uint8List>? optimisticImages;
+  final BaseUserModel sender;
 
   const MessageModel({
     required this.id,
@@ -23,6 +25,7 @@ class MessageModel extends Equatable {
     this.isPending,
     this.imageAmount,
     this.optimisticImages,
+    required this.sender,
   });
 
   MessageModel.empty()
@@ -33,12 +36,14 @@ class MessageModel extends Equatable {
       type = MessageType.system,
       isPending = false,
       imageAmount = 0,
-      optimisticImages = null;
+      optimisticImages = null,
+      sender = BaseUserModel.empty();
 
   factory MessageModel.fromMap(
     Map<String, dynamic> map,
     String? documentId, {
     bool? isPending,
+    required BaseUserModel sender,
   }) {
     String stringType = map['type'].toString();
     MessageType returnType;
@@ -60,6 +65,7 @@ class MessageModel extends Equatable {
       type: returnType,
       isPending: isPending ?? false,
       imageAmount: map['imageAmount'],
+      sender: sender
     );
   }
   @override

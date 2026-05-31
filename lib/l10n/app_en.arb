@@ -24,5 +24,8 @@
   "errorUnauthorized": "Session timed out. Please re-login.",
   "errorUnknown": "Something went wrong.",
   "triedToAddUserOnWrongScreen": "Tried to add user while on wrong screen",
-  "cantAddYourself": "you cant add yourself!"
+  "cantAddYourself": "you cant add yourself!",
+  "galleryPermissionDenied": "Gallery permission denied.",
+  "loadingSuccess": "Image downloaded successfully!",
+  "loadingStarted": "Started image download..."
 }

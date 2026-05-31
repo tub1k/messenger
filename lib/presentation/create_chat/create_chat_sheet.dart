@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_image_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
@@ -80,6 +81,7 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                         create: (blocContext) => ChatBloc(
                           repository: repo,
                           storageRepository: context.read<IStorageRepository>(),
+                          imageRepository: context.read<IImageRepository>(),
                           myId: currentUserId,
                           chatId: chat.chatId,
                         )..add(ChatStarted(chat.chatId)),

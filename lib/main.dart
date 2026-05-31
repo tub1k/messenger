@@ -5,7 +5,9 @@ import 'package:messenger/data/repository/firebase_chat_repository.dart';
 import 'package:messenger/data/repository/i_auth_repository.dart';
 import 'package:messenger/data/repository/firebase_auth_repository.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/data/repository/i_image_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/data/repository/image_repository_impl.dart';
 import 'package:messenger/data/repository/settings_repository.dart';
 import 'package:messenger/data/repository/supabase_storage_repository.dart';
 import 'package:messenger/firebase_options.dart';
@@ -56,6 +58,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<IAuthRepository>(
           create: (context) => FirebaseAuthRepository(),
+        ),
+        RepositoryProvider<IImageRepository>(
+          create: (context) => ImageRepositoryImpl(),
         ),
 
       ],

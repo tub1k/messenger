@@ -36,6 +36,7 @@ class ChatModel extends Equatable {
     required String docId,
     required String myId,
     required List<BaseUserModel> userModels,
+    required BaseUserModel? lastMessageSender
   }) {
     final lastMessageMap = data['lastMessage'] as Map<String, dynamic>?;
 
@@ -66,15 +67,9 @@ class ChatModel extends Equatable {
       chatId: docId,
       chatName: chatName ?? 'Групповой чат',
       loadedMessages: const [],
-      lastMessage: lastMessageMap != null
-          ? MessageModel.fromMap(lastMessageMap, '')
-          : MessageModel(
-              id: '',
-              text: 'Нет сообщений',
-              senderId: '',
-              timestamp: DateTime.now(),
-              type: MessageType.system,
-            ),
+      lastMessage: (lastMessageMap != null && lastMessageSender != null)
+          ? MessageModel.fromMap(lastMessageMap, '', sender: lastMessageSender)
+          : MessageModel.empty(),
       participants: participantsList,
       userModels: userModels,
     );

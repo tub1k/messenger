@@ -8,6 +8,7 @@ import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
 import 'package:messenger/presentation/core/error_handler/error_handler.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -123,7 +124,21 @@ class _ChatScreenState extends State<ChatScreen> {
         },
         listener: (context, state) {
           if (state is ChatLoaded) {
-            if (state.errorText != null) {
+            if (state.errorText == 'loading_started') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(context.l10n.loadingStarted),
+                  backgroundColor: const Color.fromARGB(255, 50, 169, 238),
+                ),
+              );
+            } else if (state.errorText == 'loading_success') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(context.l10n.loadingSuccess),
+                  backgroundColor: const Color.fromARGB(255, 50, 238, 106),
+                ),
+              );
+            } else if (state.errorText != null) {
               final errorHandler = ErrorHandler.from(state.errorText!);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

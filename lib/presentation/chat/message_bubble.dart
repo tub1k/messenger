@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 
 class MessageBubble extends StatelessWidget {
@@ -104,36 +106,58 @@ Widget _buildCellWidget(MessageModel msg, BuildContext context, String chatId) {
               spacing: 8,
               runSpacing: 8,
               children: [
-                ...urls.map((url) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.network(
-                      url,
-                      height: 150,
-                      width: 150,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 150,
-                          width: 150,
-                          color: Colors.black12,
-                          child: const Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
+                ...urls.asMap().entries.map((url) {
+                  return GestureDetector(
+                    onTap: () {
+                      final chatBloc = context.read<ChatBloc>();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider.value(
+                            value: chatBloc,
+                            child: GalleryScreen(
+                              imageUrls: urls,
+                              initialIndex: url.key,
+                              displayName: msg.sender.displayName,
                             ),
                           ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) =>
-                          Container(
-                            width: 150,
-                            height: 150,
-                            color: Colors.black12,
-                            child: const Icon(Icons.broken_image)
-                            ),
+                        ),
+                      );
+                    },
+                    child: Hero(
+                      tag: url.value,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          url.value,
+                          height: 150,
+                          width: 150,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              height: 150,
+                              width: 150,
+                              color: Colors.black12,
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                width: 150,
+                                height: 150,
+                                color: Colors.black12,
+                                child: const Icon(Icons.broken_image),
+                              ),
+                        ),
+                      ),
                     ),
                   );
                 }),

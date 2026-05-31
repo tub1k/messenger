@@ -24,5 +24,8 @@
   "errorUnauthorized": "Сессия устарела. Войдите заново",
   "errorUnknown": "Что-то пошло не так.",
   "triedToAddUserOnWrongScreen": "Попытка добавить пользователя на неправильном экране",
-  "cantAddYourself": "Нельзя добавить самого себя!"
+  "cantAddYourself": "Нельзя добавить самого себя!",
+  "galleryPermissionDenied": "Нет разрешения на сохранение в галерею",
+  "loadingSuccess": "Фото успешно сохранено!",
+  "loadingStarted": "Начали загрузку изображения..."
 }

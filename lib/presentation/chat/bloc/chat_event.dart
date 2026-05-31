@@ -29,3 +29,9 @@ class ChatAddImage extends ChatEvent {
 
   const ChatAddImage({required this.images});
 }
+
+class ChatDownloadImage extends ChatEvent {
+  final String imageUrl;
+
+  ChatDownloadImage({required this.imageUrl});
+}

@@ -247,6 +247,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'you cant add yourself!'**
   String get cantAddYourself;
+
+  /// No description provided for @galleryPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery permission denied.'**
+  String get galleryPermissionDenied;
+
+  /// No description provided for @loadingSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Image downloaded successfully!'**
+  String get loadingSuccess;
+
+  /// No description provided for @loadingStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Started image download...'**
+  String get loadingStarted;
 }
 
 class _AppLocalizationsDelegate
