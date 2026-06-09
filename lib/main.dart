@@ -21,6 +21,7 @@ import 'package:messenger/presentation/main_scaffold/main_scaffold.dart';
 import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
+import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,8 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final settingsRepository = SettingsRepository(prefs);
   runApp(MyApp(settingsRepository: settingsRepository,));
+  // init timeago
+  _initializeTimeAgo();
 }
 
 class MyApp extends StatelessWidget {
@@ -111,4 +114,10 @@ class ChatListProvider extends StatelessWidget {
       child: const MainScaffold(currentIndex: 0), 
     );
   }
+}
+
+void _initializeTimeAgo() {
+  timeago.setLocaleMessages('ru', timeago.RuMessages());
+  timeago.setLocaleMessages('en_short', timeago.EnShortMessages());
+  timeago.setLocaleMessages('ru_short', timeago.RuShortMessages());
 }

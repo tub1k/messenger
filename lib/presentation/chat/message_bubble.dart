@@ -5,6 +5,7 @@ import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
+import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
@@ -57,7 +58,21 @@ class MessageBubble extends StatelessWidget {
                 minWidth: 40,
                 maxWidth: MediaQuery.of(context).size.width * 0.7,
               ),
-              child: _buildCellWidget(message, context, chatId),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  RelativeTimeText(
+                    dateTime: message.timestamp,
+                    isShort: true,
+                    style: TextStyle(color: Colors.black38),
+                  ),
+                  SizedBox(width: 8),
+                  Flexible(
+                    child: _buildCellWidget(message, context, chatId, isMe),
+                  ),
+                ],
+              ),
             ),
             if (message.isPending ?? false)
               const Padding(
@@ -71,10 +86,18 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
-Widget _buildCellWidget(MessageModel msg, BuildContext context, String chatId) {
+Widget _buildCellWidget(
+  MessageModel msg,
+  BuildContext context,
+  String chatId,
+  bool isMe,
+) {
   switch (msg.type) {
     case MessageType.text:
-      return Text(msg.text);
+      return Text(
+        msg.text,
+        style: TextStyle(color: isMe ? Colors.white : Colors.black),
+      );
     case MessageType.image:
       return Builder(
         builder: (context) {
@@ -84,14 +107,14 @@ Widget _buildCellWidget(MessageModel msg, BuildContext context, String chatId) {
               runSpacing: 8,
               children: [
                 ...msg.optimisticImages!.map((img) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
+                  return Container(
+                    color: Colors.black,
                     child: Image.memory(
                       img,
                       height: 150,
                       width: 150,
                       errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image),
+                          const Icon(Icons.broken_image, color: Colors.white,),
                     ),
                   );
                 }),
@@ -117,7 +140,7 @@ Widget _buildCellWidget(MessageModel msg, BuildContext context, String chatId) {
                             child: GalleryScreen(
                               imageUrls: urls,
                               initialIndex: url.key,
-                              displayName: msg.sender.displayName,
+                              msg: msg,
                             ),
                           ),
                         ),
@@ -127,35 +150,38 @@ Widget _buildCellWidget(MessageModel msg, BuildContext context, String chatId) {
                       tag: url.value,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.network(
-                          url.value,
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              height: 150,
-                              width: 150,
-                              color: Colors.black12,
-                              child: const Center(
-                                child: SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                        child: Container(
+                          color: Colors.black,
+                          child: Image.network(
+                            url.value,
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                height: 150,
+                                width: 150,
+                                color: Colors.black12,
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                                width: 150,
-                                height: 150,
-                                color: Colors.black12,
-                                child: const Icon(Icons.broken_image),
-                              ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                                  width: 150,
+                                  height: 150,
+                                  color: Colors.black12,
+                                  child: const Icon(Icons.broken_image, color: Colors.white,),
+                                ),
+                          ),
                         ),
                       ),
                     ),

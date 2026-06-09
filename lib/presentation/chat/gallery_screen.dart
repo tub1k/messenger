@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:messenger/data/models/message_model.dart';
+import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class GalleryScreen extends StatefulWidget {
   final List<String> imageUrls;
-  final String displayName;
+  final MessageModel msg;
   final int initialIndex;
   const GalleryScreen({
     super.key,
     required this.imageUrls,
     required this.initialIndex,
-    required this.displayName,
+    required this.msg,
   });
 
   @override
@@ -44,11 +48,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.displayName),
-            Text(
-              'today at 23:18',
-              style: TextStyle(fontSize: 12),
-            ), // TODO: MAKE THIS SHOW REAL TIME
+            Text(widget.msg.sender.displayName),
+            RelativeTimeText(dateTime: widget.msg.timestamp),
           ],
         ),
         actions: [
