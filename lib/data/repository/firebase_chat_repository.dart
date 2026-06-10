@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
@@ -23,15 +27,14 @@ class FirebaseChatRepository implements IChatRepository {
       final userModels = await getBaseUsersFromListOfUIDs(participants);
       data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(chatId);
 
-
       return ChatModel.fromFirebase(
         data: data,
         docId: chatId,
         myId: myId,
         userModels: userModels,
         lastMessageSender: (data['lastMessage']?['senderId'] != null)
-              ? await getBaseUserByUID(data['lastMessage']['senderId'])
-              : null,
+            ? await getBaseUserByUID(data['lastMessage']['senderId'])
+            : null,
       );
     } else {
       return null;
@@ -61,15 +64,15 @@ class FirebaseChatRepository implements IChatRepository {
             );
 
             final lastMessageSender = (data['lastMessage']?['senderId'] != null)
-              ? await getBaseUserByUID(data['lastMessage']['senderId'])
-              : null;
+                ? await getBaseUserByUID(data['lastMessage']['senderId'])
+                : null;
 
             return ChatModel.fromFirebase(
               data: data,
               docId: doc.id,
               myId: myId,
               userModels: userModels,
-              lastMessageSender: lastMessageSender
+              lastMessageSender: lastMessageSender,
             );
           }).toList();
 
@@ -85,13 +88,19 @@ class FirebaseChatRepository implements IChatRepository {
         .collection('messages')
         .orderBy('createdAt', descending: true)
         .limit(20)
-        .snapshots().asyncMap((QuerySnapshot snapshot) async {
+        .snapshots()
+        .asyncMap((QuerySnapshot snapshot) async {
           final messageFutures = snapshot.docs.map((doc) async {
             final data = doc.data() as Map<String, dynamic>;
             final isPending = doc.metadata.hasPendingWrites;
 
             final sender = await getBaseUserByUID(data['senderId']);
-            return MessageModel.fromMap(data, doc.id, isPending: isPending, sender: sender);
+            return MessageModel.fromMap(
+              data,
+              doc.id,
+              isPending: isPending,
+              sender: sender,
+            );
           });
 
           return Future.wait(messageFutures);
@@ -124,11 +133,11 @@ class FirebaseChatRepository implements IChatRepository {
     final messageFutures = query.docs.map((doc) async {
       final data = doc.data();
       final senderId = data['senderId'] ?? '';
-      
+
       final sender = await getBaseUserByUID(senderId);
-      
+
       return MessageModel.fromMap(data, doc.id, sender: sender);
-    }).toList(); 
+    }).toList();
 
     final List<MessageModel> messages = await Future.wait(messageFutures);
 
@@ -141,6 +150,7 @@ class FirebaseChatRepository implements IChatRepository {
     required String text,
     required String senderId,
     required MessageType type,
+    required ChatModel chat,
     int? imageAmount,
   }) async {
     final msg = {
@@ -166,6 +176,18 @@ class FirebaseChatRepository implements IChatRepository {
     batch.update(chatRef, {'lastMessage': msg});
 
     await batch.commit();
+    await Future.wait(chat.userModels.map((model) {
+      if (model.uid != senderId) {
+        return sendSafePush(
+          targetFcmToken: model.fcmToken,
+          title: chat.chatName,
+          body: (type == MessageType.text)
+              ? text
+              : 'Attachment, click to view.',
+        );
+      }
+      return Future.value(); // just so linter accepts our "nulls"
+    }).toList());
     return messageRef.id;
   }
 
@@ -272,5 +294,37 @@ class FirebaseChatRepository implements IChatRepository {
         return getBaseUserByUID(uid);
       }).toList(),
     );
+  }
+
+  static const _serverUrl = 'https://messenger-microserver.onrender.com/send-push';
+
+  @override
+  Future<void> sendSafePush({
+    required String? targetFcmToken,
+    required String title,
+    required String body,
+  }) async {
+    if (targetFcmToken == null) {
+      return;
+    }
+    try {
+      final response = await http.post(
+        Uri.parse(_serverUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'token': targetFcmToken,
+          'title': title,
+          'body': body,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        log('push sent successfully');
+      } else {
+        log('push sending error: ${response.body}');
+      }
+    } catch (e) {
+      log('network error: $e');
+    }
   }
 }

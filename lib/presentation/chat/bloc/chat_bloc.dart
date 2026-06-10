@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/data/repository/i_image_repository.dart';
@@ -16,6 +17,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final IImageRepository _imageRepository;
   final String myId;
   final String chatId;
+  final ChatModel chat;
 
   List<Uint8List> _localPickedImages = [];
 
@@ -23,6 +25,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required IChatRepository repository,
     required this.myId,
     required this.chatId,
+    required this.chat,
     required IStorageRepository storageRepository, required IImageRepository imageRepository,
   }) : _imageRepository = imageRepository, _storageRepository = storageRepository,
        _repository = repository,
@@ -86,6 +89,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           senderId: myId,
           type: type,
           imageAmount: imagesToUpload.length,
+          chat: chat,
         );
 
         await Future.wait(

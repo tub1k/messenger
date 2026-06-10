@@ -49,7 +49,6 @@ class ChatModel extends Equatable {
       otherUser = (userModels[0].uid == myId) ? userModels[1] : userModels[0];
     }
 
-    print('$userModels $otherUser');
     if (data['chatName'] != null) {
       chatName = data['chatName'];
     } else if (userModels.length == 2) {

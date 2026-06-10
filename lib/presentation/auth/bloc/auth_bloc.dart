@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/core/services/notification_service.dart';
 import 'package:messenger/data/repository/i_auth_repository.dart';
 
 part 'auth_event.dart';
@@ -28,12 +29,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //   );
     // });
 
-    on<_AuthStatusChanged>((event, emit) {
+    on<_AuthStatusChanged>((event, emit) async {
       if (state is AuthLoading) return;
 
       if (event.uid != null) {
         emit(AuthSuccess(event.uid!));
+        await NotificationService().initialize(event.uid!);
       } else {
+        await NotificationService().removeToken(event.uid);
         emit(AuthInitial());
       }
     });

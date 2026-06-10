@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:messenger/data/models/message_model.dart';
-import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 import 'package:photo_view/photo_view.dart';

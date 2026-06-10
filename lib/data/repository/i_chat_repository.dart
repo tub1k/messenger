@@ -4,12 +4,13 @@ import 'package:messenger/data/models/user_model.dart';
 
 abstract class IChatRepository {
   Stream<List<MessageModel>> getMessages(String chatId);
-  
+
   Future<String> sendMessage({
     required String chatId,
     required String text,
     required String senderId,
     required MessageType type,
+    required ChatModel chat,
     int? imageAmount,
   });
 
@@ -25,10 +26,7 @@ abstract class IChatRepository {
 
   Future<List<ChatModel>> getSavedChats();
 
-  Future<String> createChat({
-    String? chatName,
-    required List<String> userUids,
-  });
+  Future<String> createChat({String? chatName, required List<String> userUids});
 
   /// returns a base user model from username. contains only base info.
   Future<BaseUserModel> getBaseUserByUsername(String username);
@@ -40,7 +38,13 @@ abstract class IChatRepository {
   /// returns a base user model from uid. contains only base info.
   Future<BaseUserModel> getBaseUserByUID(String uid);
 
-  /// get baseusermodels from all users from a list of UIDs. 
+  /// get baseusermodels from all users from a list of UIDs.
   /// mainly used for creating a chat model after downloading user UIDs from firebase.
-  Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(List<String> uidList); 
+  Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(List<String> uidList);
+
+  Future<void> sendSafePush({
+    required String targetFcmToken,
+    required String title,
+    required String body,
+  });
 }

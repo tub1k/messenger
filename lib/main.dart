@@ -15,7 +15,7 @@ import 'package:messenger/l10n/app_localizations.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
-import 'package:messenger/presentation/core/environment/environment.dart';
+import 'package:messenger/core/environment/environment.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/main_scaffold/main_scaffold.dart';
 import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';

@@ -94,7 +94,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                 .read<IStorageRepository>(),
                             imageRepository: context.read<IImageRepository>(),
                             myId: currentUserId,
-                            chatId: chat.chatId,
+                            chatId: chat.chatId, // TODO: remove this and rewrite bloc
+                            chat: chat,
                           )..add(ChatStarted(chat.chatId)),
                           child: ChatScreen(chat: chat),
                         ),
