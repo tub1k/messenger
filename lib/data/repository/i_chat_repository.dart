@@ -24,7 +24,7 @@ abstract class IChatRepository {
 
   Stream<List<ChatModel>> getChats(String myId);
 
-  Future<List<ChatModel>> getSavedChats();
+  Future<List<ChatModel>> getCachedChats(String myId);
 
   Future<String> createChat({String? chatName, required List<String> userUids});
 
@@ -36,7 +36,7 @@ abstract class IChatRepository {
   Future<ChatModel?> getDms(String uid1, String uid2, String myId);
 
   /// returns a base user model from uid. contains only base info.
-  Future<BaseUserModel> getBaseUserByUID(String uid);
+  Future<BaseUserModel> getBaseUserByUID(String uid, {bool? getFromCache});
 
   /// get baseusermodels from all users from a list of UIDs.
   /// mainly used for creating a chat model after downloading user UIDs from firebase.

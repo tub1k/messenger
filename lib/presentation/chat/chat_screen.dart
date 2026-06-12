@@ -45,6 +45,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: ListView.builder(
+                    cacheExtent: 500,
                     itemCount: state.messages.length,
                     reverse: true,
                     itemBuilder: (context, index) {

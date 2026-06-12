@@ -1,3 +1,4 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
@@ -75,7 +76,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
           final cont = PhotoViewComputedScale.contained;
 
           return PhotoViewGalleryPageOptions(
-            imageProvider: NetworkImage(imageUrl),
+            imageProvider: FastCachedImageProvider(imageUrl),
             initialScale: cont,
             heroAttributes: PhotoViewHeroAttributes(tag: imageUrl),
             maxScale: cont * 2.5,

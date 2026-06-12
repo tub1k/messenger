@@ -81,6 +81,57 @@ class FirebaseChatRepository implements IChatRepository {
   }
 
   @override
+  Future<List<ChatModel>> getCachedChats(String myId) async {
+    try {
+      final QuerySnapshot snapshot = await _firestore
+          .collection('chats')
+          .where('participants', arrayContains: myId)
+          .get(const GetOptions(source: Source.cache));
+
+      if (snapshot.docs.isEmpty) return [];
+
+      final chatFutures = snapshot.docs.map((DocumentSnapshot doc) async {
+        final data = doc.data() as Map<String, dynamic>;
+        final participants = List<String>.from(data['participants'] ?? []);
+
+        final List<BaseUserModel> userModels;
+        try {
+          userModels = await getBaseUsersFromListOfUIDs(
+            participants,
+            getFromCache: true,
+          );
+        } catch (_) {
+          return ChatModel.empty();
+        }
+
+        try {
+          data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(doc.id);
+        } catch (_) {
+          data['photoUrl'] = null;
+        }
+
+        final lastMessageSender = (data['lastMessage']?['senderId'] != null)
+            ? await getBaseUserByUID(data['lastMessage']['senderId'], getFromCache: true)
+            : null;
+
+        return ChatModel.fromFirebase(
+          data: data,
+          docId: doc.id,
+          myId: myId,
+          userModels: userModels,
+          lastMessageSender: lastMessageSender,
+        );
+      }).toList();
+
+      final results = await Future.wait(chatFutures);
+      return results;
+    } catch (e) {
+      log('retrieving cached chats error');
+      return [];
+    }
+  }
+
+  @override
   Stream<List<MessageModel>> getMessages(String chatId) {
     return _firestore
         .collection('chats')
@@ -105,12 +156,6 @@ class FirebaseChatRepository implements IChatRepository {
 
           return Future.wait(messageFutures);
         });
-  }
-
-  @override
-  Future<List<ChatModel>> getSavedChats() {
-    // TODO: implement getSavedChats
-    throw UnimplementedError();
   }
 
   @override
@@ -176,18 +221,20 @@ class FirebaseChatRepository implements IChatRepository {
     batch.update(chatRef, {'lastMessage': msg});
 
     await batch.commit();
-    await Future.wait(chat.userModels.map((model) {
-      if (model.uid != senderId) {
-        return sendSafePush(
-          targetFcmToken: model.fcmToken,
-          title: chat.chatName,
-          body: (type == MessageType.text)
-              ? text
-              : 'Attachment, click to view.',
-        );
-      }
-      return Future.value(); // just so linter accepts our "nulls"
-    }).toList());
+    await Future.wait(
+      chat.userModels.map((model) {
+        if (model.uid != senderId) {
+          return sendSafePush(
+            targetFcmToken: model.fcmToken,
+            title: chat.chatName,
+            body: (type == MessageType.text)
+                ? text
+                : 'Attachment, click to view.',
+          );
+        }
+        return Future.value(); // just so linter accepts our "nulls"
+      }).toList(),
+    );
     return messageRef.id;
   }
 
@@ -264,13 +311,23 @@ class FirebaseChatRepository implements IChatRepository {
   }
 
   @override
-  Future<BaseUserModel> getBaseUserByUID(String uid) async {
+  Future<BaseUserModel> getBaseUserByUID(
+    String uid, {
+    bool? getFromCache,
+  }) async {
     if (_memoryUserCache.containsKey(uid)) {
       return _memoryUserCache[uid]!;
     }
 
+    final source = (getFromCache ?? false)
+        ? Source.cache
+        : Source.serverAndCache;
+
     try {
-      final snapshot = await _firestore.collection('users').doc(uid).get();
+      final snapshot = await _firestore
+          .collection('users')
+          .doc(uid)
+          .get(GetOptions(source: source));
       final data = snapshot.data();
 
       if (data == null) {
@@ -281,22 +338,24 @@ class FirebaseChatRepository implements IChatRepository {
 
       return user;
     } catch (e) {
-      throw 'failed to get user: $e';
+      return BaseUserModel.empty();
     }
   }
 
   @override
   Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(
-    List<String> uidList,
-  ) async {
+    List<String> uidList, {
+    bool? getFromCache,
+  }) async {
     return Future.wait(
       uidList.map((uid) {
-        return getBaseUserByUID(uid);
+        return getBaseUserByUID(uid, getFromCache: getFromCache);
       }).toList(),
     );
   }
 
-  static const _serverUrl = 'https://messenger-microserver.onrender.com/send-push';
+  static const _serverUrl =
+      'https://messenger-microserver.onrender.com/send-push';
 
   @override
   Future<void> sendSafePush({

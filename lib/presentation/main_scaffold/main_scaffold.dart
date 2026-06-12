@@ -40,8 +40,8 @@ class _MainScaffoldState extends State<MainScaffold> {
   }
 
   final List<Widget> _screens = [
-    KeepAlive(keepAlive: true, child: const ChatListScreen()),
-    KeepAlive(keepAlive: true, child: const SettingsScreen()),
+    const ChatListScreen(),
+    const SettingsScreen(),
   ];
 
   @override

@@ -1,3 +1,4 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,11 +26,23 @@ import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  // safe firebase initializing
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } else {
+      Firebase.app();
+    }
+  } catch (e) {
+    if (e.toString().contains('duplicate-app')) {
+      Firebase.app(); 
+    } else {
+      rethrow; 
+    }
   }
+  
   await Supabase.initialize(
     url: Environment.supabaseUrl,
     anonKey: Environment.supabaseApiKey,
@@ -37,9 +50,11 @@ void main() async {
   // initializing settings
   final prefs = await SharedPreferences.getInstance();
   final settingsRepository = SettingsRepository(prefs);
-  runApp(MyApp(settingsRepository: settingsRepository,));
-  // init timeago
+  // init other stuff
   _initializeTimeAgo();
+  await FastCachedImageConfig.init();
+  // run the app 
+  runApp(MyApp(settingsRepository: settingsRepository,));
 }
 
 class MyApp extends StatelessWidget {

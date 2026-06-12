@@ -53,6 +53,7 @@ class SettingsScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(title: Text(context.l10n.settings)),
           body: ListView(
+            key: const PageStorageKey<String>('settings_scroll_position'),
             children: [
               ListTile(
                 title: Text(context.l10n.language),

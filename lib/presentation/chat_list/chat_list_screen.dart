@@ -1,3 +1,4 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
@@ -18,9 +19,16 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen> {
+// because we use it in mainscaffold in pageview 
+class _ChatListScreenState extends State<ChatListScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.auraMessenger)),
       floatingActionButton: IconButton.filled(
@@ -73,7 +81,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundImage: chat.photoUrl.length > 2
-                        ? NetworkImage(chat.photoUrl)
+                        ? FastCachedImageProvider(chat.photoUrl)
                         : null,
                     child: chat.photoUrl.length <= 2
                         ? Text(chat.chatName[0].toUpperCase())
@@ -94,7 +102,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                 .read<IStorageRepository>(),
                             imageRepository: context.read<IImageRepository>(),
                             myId: currentUserId,
-                            chatId: chat.chatId, // TODO: remove this and rewrite bloc
+                            chatId: chat
+                                .chatId, // TODO: remove this and rewrite bloc
                             chat: chat,
                           )..add(ChatStarted(chat.chatId)),
                           child: ChatScreen(chat: chat),

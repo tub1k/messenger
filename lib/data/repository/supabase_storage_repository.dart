@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,10 +27,15 @@ class SupabaseStorageRepository implements IStorageRepository {
 
   @override
   Future<String> getGroupPhotoUrl(String uid) async {
-    final url = _supabase.storage
-        .from('groupAvatars')
-        .getPublicUrl('public/$uid/avatar.png');
-    return await checkIfUrlExists(url);
+    try {
+  final url = _supabase.storage
+      .from('groupAvatars')
+      .getPublicUrl('public/$uid/avatar.png');
+  if (FastCachedImageConfig.isCached(imageUrl: url)) return url;
+  return await checkIfUrlExists(url);
+  } catch (e) {
+  return '';
+  }
   }
 
   Future<String> checkIfUrlExists(String url) async {

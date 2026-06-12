@@ -1,3 +1,4 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
@@ -152,13 +153,13 @@ Widget _buildCellWidget(
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
                           color: Colors.black,
-                          child: Image.network(
-                            url.value,
+                          child: FastCachedImage(
+                            fadeInDuration: Duration.zero,
+                            url: url.value,
                             height: 150,
                             width: 150,
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
+                            loadingBuilder: (context, loadingProgress) {
                               return Container(
                                 height: 150,
                                 width: 150,
