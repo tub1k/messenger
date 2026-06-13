@@ -35,3 +35,5 @@ class ChatDownloadImage extends ChatEvent {
 
   ChatDownloadImage({required this.imageUrl});
 }
+
+class ChatLoadMoreMessages extends ChatEvent {}

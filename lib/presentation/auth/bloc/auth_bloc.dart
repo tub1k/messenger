@@ -3,16 +3,18 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/core/services/notification_service.dart';
 import 'package:messenger/data/repository/i_auth_repository.dart';
+import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final IAuthRepository _repository;
+  final SettingsBloc _settingsBloc;
   StreamSubscription<String?>? _authSubscription;
 
-  AuthBloc({required IAuthRepository repository})
-    : _repository = repository,
+  AuthBloc({required IAuthRepository repository, required SettingsBloc settingsBloc})
+    : _settingsBloc = settingsBloc, _repository = repository,
       super(AuthInitial()) {
 
     // on<AuthStarted>((event, emit) async {
@@ -34,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (event.uid != null) {
         emit(AuthSuccess(event.uid!));
-        await NotificationService().initialize(event.uid!);
+        await NotificationService().initialize(event.uid!, _settingsBloc);
       } else {
         await NotificationService().removeToken(event.uid);
         emit(AuthInitial());

@@ -21,17 +21,28 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController _controller;
   final _imagePicker = ImagePicker();
+  final ScrollController _scrollController = ScrollController();
   List<Uint8List> selectedImages = [];
   @override
   void initState() {
     _controller = TextEditingController();
+    _scrollController.addListener(_onScroll);
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    final minScroll = _scrollController.position.minScrollExtent; // top of the list
+    final currentScroll = _scrollController.position.pixels;
+    if (currentScroll <= minScroll + 300) {
+      context.read<ChatBloc>().add(ChatLoadMoreMessages());
+    }
   }
 
   @override
@@ -46,9 +57,25 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: ListView.builder(
                     cacheExtent: 500,
-                    itemCount: state.messages.length,
+                    // +1 item if messages are loading to show loader
+                    itemCount: state.messages.length + (state.isLoadingMore ? 1 : 0),
+                    controller: _scrollController,
                     reverse: true,
                     itemBuilder: (context, index) {
+                      // loader if we scrolled to top and more messages are loading
+                      if (index == state.messages.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.0),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        );
+                      }
+                      // else message bubbles
                       final bool isMe =
                           state.messages[index].senderId ==
                           context.read<ChatBloc>().myId;

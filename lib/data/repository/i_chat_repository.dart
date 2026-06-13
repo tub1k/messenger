@@ -11,6 +11,7 @@ abstract class IChatRepository {
     required String senderId,
     required MessageType type,
     required ChatModel chat,
+    required String messageId,
     int? imageAmount,
   });
 
@@ -46,5 +47,7 @@ abstract class IChatRepository {
     required String targetFcmToken,
     required String title,
     required String body,
+    required String type, // type of the action we do on click
+    required String id, // id of the chat or any other additional info
   });
 }

@@ -138,7 +138,7 @@ class FirebaseChatRepository implements IChatRepository {
         .doc(chatId)
         .collection('messages')
         .orderBy('createdAt', descending: true)
-        .limit(20)
+        .limit(30)
         .snapshots()
         .asyncMap((QuerySnapshot snapshot) async {
           final messageFutures = snapshot.docs.map((doc) async {
@@ -196,6 +196,7 @@ class FirebaseChatRepository implements IChatRepository {
     required String senderId,
     required MessageType type,
     required ChatModel chat,
+    required String messageId,
     int? imageAmount,
   }) async {
     final msg = {
@@ -214,7 +215,7 @@ class FirebaseChatRepository implements IChatRepository {
         .collection('chats')
         .doc(chatId)
         .collection('messages')
-        .doc();
+        .doc(messageId);
     final chatRef = _firestore.collection('chats').doc(chatId);
 
     batch.set(messageRef, msg);
@@ -230,6 +231,8 @@ class FirebaseChatRepository implements IChatRepository {
             body: (type == MessageType.text)
                 ? text
                 : 'Attachment, click to view.',
+            type: 'chat',
+            id: chatId
           );
         }
         return Future.value(); // just so linter accepts our "nulls"
@@ -362,6 +365,8 @@ class FirebaseChatRepository implements IChatRepository {
     required String? targetFcmToken,
     required String title,
     required String body,
+    required String type, // type of the action we do on click
+    required String id, // id of the chat or any other additional info
   }) async {
     if (targetFcmToken == null) {
       return;
@@ -374,6 +379,11 @@ class FirebaseChatRepository implements IChatRepository {
           'token': targetFcmToken,
           'title': title,
           'body': body,
+          'data': {
+            'type': type,
+            'id': id,
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+          },
         }),
       );
 

@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    
         {
             "name": "messenger",
             "request": "launch",
@@ -32,6 +31,35 @@
             "args": [
                 "--dart-define-from-file",
                 "secrets.json"
+            ]
+        },
+        {
+            "name": "Flutter (Chrome)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
+            "args": [
+                "--dart-define-from-file",
+                "secrets.json"
+            ]
+        },
+        {
+            "name": "Flutter (Physical Phone)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "L759NFJZCICMFQPZ",
+            "args": [
+                "--dart-define-from-file",
+                "secrets.json"
+            ]
+        },
+    ],
+    "compounds": [
+        {
+            "name": "All Devices (Chrome & Phone)",
+            "configurations": [
+                "Flutter (Chrome)",
+                "Flutter (Physical Phone)"
             ]
         }
     ]

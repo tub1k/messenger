@@ -15,6 +15,8 @@ import 'package:messenger/firebase_options.dart';
 import 'package:messenger/l10n/app_localizations.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
+import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:messenger/core/environment/environment.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
@@ -37,12 +39,12 @@ void main() async {
     }
   } catch (e) {
     if (e.toString().contains('duplicate-app')) {
-      Firebase.app(); 
+      Firebase.app();
     } else {
-      rethrow; 
+      rethrow;
     }
   }
-  
+
   await Supabase.initialize(
     url: Environment.supabaseUrl,
     anonKey: Environment.supabaseApiKey,
@@ -53,8 +55,8 @@ void main() async {
   // init other stuff
   _initializeTimeAgo();
   await FastCachedImageConfig.init();
-  // run the app 
-  runApp(MyApp(settingsRepository: settingsRepository,));
+  // run the app
+  runApp(MyApp(settingsRepository: settingsRepository));
 }
 
 class MyApp extends StatelessWidget {
@@ -80,17 +82,19 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<IImageRepository>(
           create: (context) => ImageRepositoryImpl(),
         ),
-
       ],
 
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthBloc>(
-            create: (context) =>
-                AuthBloc(repository: context.read<IAuthRepository>()),
-          ),
           BlocProvider<SettingsBloc>(
-            create: (context) => SettingsBloc(context.read<SettingsRepository>()),
+            create: (context) =>
+                SettingsBloc(context.read<SettingsRepository>()),
+          ),
+          BlocProvider<AuthBloc>(
+            create: (context) => AuthBloc(
+              repository: context.read<IAuthRepository>(),
+              settingsBloc: context.read<SettingsBloc>(),
+            ),
           ),
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
@@ -100,13 +104,25 @@ class MyApp extends StatelessWidget {
               locale: settingsState.locale,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
-              home: BlocBuilder<AuthBloc, AuthState>(
-                builder: (context, authState) {
-                  if (authState is AuthSuccess) {
-                    return const ChatListProvider();
+              home: BlocListener<SettingsBloc, SettingsState>(
+                listener: (context, settingsState) {
+                  final data = settingsState.navigateToData;
+                  if (data != null) {
+                    if (data['type'] == 'chat' && data['id'] != null) {
+                      _pushChat(context, data['id']);
+                    }
+
+                    context.read<SettingsBloc>().add(SettingsResetNavigation());
                   }
-                  return const AuthScreen();
                 },
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, authState) {
+                    if (authState is AuthSuccess) {
+                      return const ChatListProvider();
+                    }
+                    return const AuthScreen();
+                  },
+                ),
               ),
             );
           },
@@ -126,7 +142,7 @@ class ChatListProvider extends StatelessWidget {
       create: (context) =>
           ChatListBloc(context.read<IChatRepository>(), myId: myId)
             ..add(InitChatList()),
-      child: const MainScaffold(currentIndex: 0), 
+      child: const MainScaffold(currentIndex: 0),
     );
   }
 }
@@ -135,4 +151,30 @@ void _initializeTimeAgo() {
   timeago.setLocaleMessages('ru', timeago.RuMessages());
   timeago.setLocaleMessages('en_short', timeago.EnShortMessages());
   timeago.setLocaleMessages('ru_short', timeago.RuShortMessages());
+}
+
+Future<void> _pushChat(BuildContext context, String chatId) async {
+  final repo = context.read<IChatRepository>();
+  final storageRepo = context.read<IStorageRepository>();
+  final imageRepo = context.read<IImageRepository>();
+  final currentUserId = context.myId!;
+  final chat = await repo.getChatObject(chatId, context.myId!);
+  if (chat != null && context.mounted) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (navContext) => BlocProvider(
+          create: (blocContext) => ChatBloc(
+            repository: repo,
+            storageRepository: storageRepo,
+            imageRepository: imageRepo,
+            myId: currentUserId,
+            chatId: chat.chatId, // TODO: remove this and rewrite bloc
+            chat: chat,
+          )..add(ChatStarted(chat.chatId)),
+          child: ChatScreen(chat: chat),
+        ),
+      ),
+    );
+  }
 }

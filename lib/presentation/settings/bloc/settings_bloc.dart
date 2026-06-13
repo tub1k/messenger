@@ -14,7 +14,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       ) {
     on<SettingsSetLocale>((event, emit) async {
       await settingsRepository.saveLanguage(event.localeCode);
-      emit(SettingsState(locale: _resolveLocale(event.localeCode))); // TODO: maybe make it say system in setting menu when language is not set
+      emit(SettingsState(locale: _resolveLocale(event.localeCode), navigateToData: state.navigateToData)); 
+    }); 
+    
+    on<SettingsPushScreen>((event, emit) {
+      emit(SettingsState(locale: state.locale, navigateToData: event.data)); 
+    });
+
+    on<SettingsResetNavigation>((event, emit) {
+      emit(SettingsState(locale: state.locale, navigateToData: null));
     }); 
   }
 
