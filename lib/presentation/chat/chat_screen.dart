@@ -7,9 +7,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
 import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
+import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -50,25 +52,64 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final chat = widget.chat;
+    final Widget appBarSubtitle;
+    if (chat.participants.length > 2) {
+      appBarSubtitle = Text(
+        context.l10n.members(chat.participants.length),
+        style: TextStyle(fontSize: 16),
+      );
+    } else if (chat.participants.length == 2) {
+      appBarSubtitle = Row(
+        children: [
+          Text('${context.l10n.lastSeen} '),
+          RelativeTimeText(dateTime: DateTime(1983)),
+        ],
+      );
+    } else {
+      appBarSubtitle = SizedBox();
+    }
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundImage: chat.photoUrl.length > 2
-                  ? FastCachedImageProvider(chat.photoUrl)
-                  : null,
-              child: chat.photoUrl.length <= 2
-                  ? Text(chat.chatName[0].toUpperCase())
-                  : null,
+            GestureDetector(
+              onTap: () {
+                final chatBloc = context.read<ChatBloc>();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider.value(
+                      value: chatBloc,
+                      child: GalleryScreen(
+                        imageUrls: [chat.photoUrl],
+                        initialIndex: 0,
+                        chat: chat,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: Hero(
+                tag: chat.photoUrl,
+                child: CircleAvatar(
+                  backgroundImage: chat.photoUrl.length > 2
+                      ? FastCachedImageProvider(chat.photoUrl)
+                      : null,
+                  child: chat.photoUrl.length <= 2
+                      ? Text(chat.chatName[0].toUpperCase())
+                      : null,
+                ),
+              ),
             ),
-            SizedBox(width: 8),
+            SizedBox(width: 10),
             Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.chat.chatName, overflow: TextOverflow.ellipsis),
+                  appBarSubtitle,
+                  SizedBox(height: 4),
                 ],
               ),
             ),

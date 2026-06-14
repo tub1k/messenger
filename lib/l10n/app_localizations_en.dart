@@ -94,4 +94,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadingStarted => 'Started image download...';
+
+  @override
+  String members(num count) {
+    return 'members';
+  }
+
+  @override
+  String get lastSeen => 'last seen';
 }

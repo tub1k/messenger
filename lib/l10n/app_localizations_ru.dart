@@ -96,4 +96,19 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get loadingStarted => 'Начали загрузку изображения...';
+
+  @override
+  String members(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count участников',
+      few: '$count участника',
+      one: '$count участник',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get lastSeen => 'был в сети';
 }

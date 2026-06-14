@@ -1,21 +1,25 @@
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
+/// need to pass msg OR chat so the appbar titles work!
 class GalleryScreen extends StatefulWidget {
   final List<String> imageUrls;
-  final MessageModel msg;
+  final MessageModel? msg;
+  final ChatModel? chat;
   final int initialIndex;
   const GalleryScreen({
     super.key,
     required this.imageUrls,
     required this.initialIndex,
-    required this.msg,
+    this.msg,
+    this.chat,
   });
 
   @override
@@ -40,16 +44,24 @@ class _GalleryScreenState extends State<GalleryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final msg = widget.msg;
+    final chat = widget.chat;
+    final List<Widget> appBarColumnChildren;
+    if (msg != null) {
+      appBarColumnChildren = [
+            Text(msg.sender.displayName),
+            RelativeTimeText(dateTime: msg.timestamp),
+          ];
+    } else if (chat != null) {
+      appBarColumnChildren = [Text(chat.chatName)];
+    } else {appBarColumnChildren = [];}
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         leading: BackButton(),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(widget.msg.sender.displayName),
-            RelativeTimeText(dateTime: widget.msg.timestamp),
-          ],
+          children: appBarColumnChildren,
         ),
         actions: [
           IconButton(

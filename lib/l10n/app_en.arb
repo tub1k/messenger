@@ -27,5 +27,7 @@
   "cantAddYourself": "you cant add yourself!",
   "galleryPermissionDenied": "Gallery permission denied.",
   "loadingSuccess": "Image downloaded successfully!",
-  "loadingStarted": "Started image download..."
+  "loadingStarted": "Started image download...",
+  "members": "members",
+  "lastSeen": "last seen"
 }
