@@ -29,5 +29,6 @@
   "loadingSuccess": "Фото успешно сохранено!",
   "loadingStarted": "Начали загрузку изображения...",
   "members": "{count, plural, one{{count} участник} few{{count} участника} other{{count} участников}}",
-  "lastSeen": "был в сети"
+  "lastSeen": "был в сети",
+  "online": "онлайн"
 }

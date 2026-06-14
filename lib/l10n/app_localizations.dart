@@ -277,6 +277,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'last seen'**
   String get lastSeen;
+
+  /// No description provided for @online.
+  ///
+  /// In en, this message translates to:
+  /// **'online'**
+  String get online;
 }
 
 class _AppLocalizationsDelegate

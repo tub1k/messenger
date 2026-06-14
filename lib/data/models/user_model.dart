@@ -38,7 +38,7 @@ class BaseUserModel extends Equatable {
       displayName: data['displayName'],
       photoUrl: data['photoUrl'],
       fcmToken: data['fcmToken'],
-      lastSeen: data['lastSeen'] ?? DateTime(1970),
+      lastSeen: data['lastSeen'].toDate() ?? DateTime(1970),
       isOnline: data['isOnline'] ?? false,
     );
 

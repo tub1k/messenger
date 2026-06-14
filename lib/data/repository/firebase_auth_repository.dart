@@ -120,7 +120,7 @@ class FirebaseAuthRepository implements IAuthRepository {
       await _firestore.collection('users').doc(userId).update({
         'isOnline': isOnline,
         'lastSeen': FieldValue.serverTimestamp(), 
-      });
+      },);
     } catch (e) {
       log('Error updating online status: $e');
       rethrow; 

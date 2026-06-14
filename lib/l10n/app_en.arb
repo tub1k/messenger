@@ -29,5 +29,6 @@
   "loadingSuccess": "Image downloaded successfully!",
   "loadingStarted": "Started image download...",
   "members": "members",
-  "lastSeen": "last seen"
+  "lastSeen": "last seen",
+  "online": "online"
 }

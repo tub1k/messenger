@@ -97,12 +97,6 @@ class MyApp extends StatelessWidget {
               settingsBloc: context.read<SettingsBloc>(),
             ),
           ),
-          BlocProvider(
-            create: (context) => OnlineStatusBloc(
-              repository: context.read<FirebaseAuthRepository>(),
-              userId: context.myId!,
-            ),
-          ),
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, settingsState) {
@@ -145,10 +139,21 @@ class ChatListProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final myId = context.myId!;
-    return BlocProvider(
-      create: (context) =>
-          ChatListBloc(context.read<IChatRepository>(), myId: myId)
-            ..add(InitChatList()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              ChatListBloc(context.read<IChatRepository>(), myId: myId)
+                ..add(InitChatList()),
+        ),
+        BlocProvider<OnlineStatusBloc>(
+          lazy: false, 
+          create: (context) => OnlineStatusBloc(
+            repository: context.read<IAuthRepository>(), 
+            userId: context.myId!,
+          ),
+        ),
+      ],
       child: const MainScaffold(currentIndex: 0),
     );
   }

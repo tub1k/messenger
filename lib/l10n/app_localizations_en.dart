@@ -102,4 +102,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lastSeen => 'last seen';
+
+  @override
+  String get online => 'online';
 }

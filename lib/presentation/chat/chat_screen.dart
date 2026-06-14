@@ -11,6 +11,7 @@ import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
 import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
+import 'package:messenger/presentation/core/server_time_offset.dart';
 import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -25,7 +26,6 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController _controller;
   final _imagePicker = ImagePicker();
   final ScrollController _scrollController = ScrollController();
-  List<Uint8List> selectedImages = [];
   @override
   void initState() {
     _controller = TextEditingController();
@@ -60,12 +60,31 @@ class _ChatScreenState extends State<ChatScreen> {
         style: subtitleStyle,
       );
     } else if (chat.participants.length == 2) {
-      appBarSubtitle = Row(
-        children: [
-          Text('${context.l10n.lastSeen} ', style: subtitleStyle,),
-          RelativeTimeText(dateTime: DateTime(1983), style: subtitleStyle,),
-        ],
-      );
+      final other = chat.getFirstUserThatIsntUID(context.myId!);
+      if (other == null) {
+        appBarSubtitle = SizedBox();
+      } else if (other.isOnline == true &&
+          trueCurrentTime.difference(other.lastSeen) < Duration(minutes: 3)) {
+        appBarSubtitle = Row(
+          children: [
+            Text(
+              context.l10n.online,
+              style: TextStyle(fontSize: 16, color: Colors.green),
+            ),
+          ],
+        );
+      } else {
+        appBarSubtitle = Row(
+          children: [
+            Text('${context.l10n.lastSeen} ', style: subtitleStyle),
+            RelativeTimeText(
+              dateTime:
+                  other.lastSeen,
+              style: subtitleStyle,
+            ),
+          ],
+        );
+      }
     } else {
       appBarSubtitle = SizedBox();
     }

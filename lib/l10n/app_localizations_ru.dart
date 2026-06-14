@@ -111,4 +111,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get lastSeen => 'был в сети';
+
+  @override
+  String get online => 'онлайн';
 }
