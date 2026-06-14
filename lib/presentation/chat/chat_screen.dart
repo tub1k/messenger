@@ -53,16 +53,17 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final chat = widget.chat;
     final Widget appBarSubtitle;
+    final TextStyle subtitleStyle = TextStyle(fontSize: 16);
     if (chat.participants.length > 2) {
       appBarSubtitle = Text(
         context.l10n.members(chat.participants.length),
-        style: TextStyle(fontSize: 16),
+        style: subtitleStyle,
       );
     } else if (chat.participants.length == 2) {
       appBarSubtitle = Row(
         children: [
-          Text('${context.l10n.lastSeen} '),
-          RelativeTimeText(dateTime: DateTime(1983)),
+          Text('${context.l10n.lastSeen} ', style: subtitleStyle,),
+          RelativeTimeText(dateTime: DateTime(1983), style: subtitleStyle,),
         ],
       );
     } else {

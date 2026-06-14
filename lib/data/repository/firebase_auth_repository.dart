@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:messenger/data/repository/i_auth_repository.dart';
@@ -101,6 +103,7 @@ class FirebaseAuthRepository implements IAuthRepository {
     }
   }
 
+  @override
   Future<bool> isUsernameAvailable(String username) async {
     final cleanName = username.toLowerCase().trim();
     final doc = await _firestore.collection('usernames').doc(cleanName).get();
@@ -108,5 +111,19 @@ class FirebaseAuthRepository implements IAuthRepository {
     return !doc.exists;
   }
 
-
+  @override
+  Future<void> updateUserOnlineStatus({
+    required String userId,
+    required bool isOnline,
+  }) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'isOnline': isOnline,
+        'lastSeen': FieldValue.serverTimestamp(), 
+      });
+    } catch (e) {
+      log('Error updating online status: $e');
+      rethrow; 
+    }
+  }
 }

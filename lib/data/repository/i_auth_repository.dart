@@ -7,5 +7,9 @@ abstract class IAuthRepository {
 
   Future<void> signOut();
 
-  
+  Future<void> updateUserOnlineStatus({
+    required String userId,
+    required bool isOnline,
+  });
+  Future<bool> isUsernameAvailable(String username);
 }

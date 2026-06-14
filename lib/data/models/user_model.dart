@@ -6,22 +6,29 @@ class BaseUserModel extends Equatable {
   final String displayName;
   final String username;
   final String? fcmToken;
+  final DateTime lastSeen;
+  final bool isOnline;
 
   const BaseUserModel({
     required this.uid,
     required this.photoUrl,
     required this.displayName,
     required this.username,
-    this.fcmToken
+    this.fcmToken,
+    required this.lastSeen,
+    required this.isOnline,
   });
 
   /// placeholder with '' values
-  const BaseUserModel.empty()
+  BaseUserModel.empty()
     : uid = '',
       photoUrl = '',
       displayName = '',
       username = '',
-      fcmToken = '';
+      fcmToken = '',
+      lastSeen = DateTime(1970),
+      isOnline = false;
+
 
   /// constructs a baseusermodel from data of a user document
   factory BaseUserModel.fromFirebase({required Map<String, dynamic> data}) {
@@ -31,6 +38,8 @@ class BaseUserModel extends Equatable {
       displayName: data['displayName'],
       photoUrl: data['photoUrl'],
       fcmToken: data['fcmToken'],
+      lastSeen: data['lastSeen'] ?? DateTime(1970),
+      isOnline: data['isOnline'] ?? false,
     );
 
     return model;

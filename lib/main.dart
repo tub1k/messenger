@@ -13,6 +13,7 @@ import 'package:messenger/data/repository/settings_repository.dart';
 import 'package:messenger/data/repository/supabase_storage_repository.dart';
 import 'package:messenger/firebase_options.dart';
 import 'package:messenger/l10n/app_localizations.dart';
+import 'package:messenger/online_status_bloc.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/auth/auth_screen.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
@@ -94,6 +95,12 @@ class MyApp extends StatelessWidget {
             create: (context) => AuthBloc(
               repository: context.read<IAuthRepository>(),
               settingsBloc: context.read<SettingsBloc>(),
+            ),
+          ),
+          BlocProvider(
+            create: (context) => OnlineStatusBloc(
+              repository: context.read<FirebaseAuthRepository>(),
+              userId: context.myId!,
             ),
           ),
         ],
