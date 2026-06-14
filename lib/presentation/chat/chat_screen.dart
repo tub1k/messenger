@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,7 +39,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _onScroll() {
-    final minScroll = _scrollController.position.minScrollExtent; // top of the list
+    final minScroll =
+        _scrollController.position.minScrollExtent; // top of the list
     final currentScroll = _scrollController.position.pixels;
     if (currentScroll <= minScroll + 300) {
       context.read<ChatBloc>().add(ChatLoadMoreMessages());
@@ -47,8 +49,33 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final chat = widget.chat;
     return Scaffold(
-      appBar: AppBar(title: Column(children: [Text(widget.chat.chatName)])),
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundImage: chat.photoUrl.length > 2
+                  ? FastCachedImageProvider(chat.photoUrl)
+                  : null,
+              child: chat.photoUrl.length <= 2
+                  ? Text(chat.chatName[0].toUpperCase())
+                  : null,
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                children: [
+                  Text(widget.chat.chatName, overflow: TextOverflow.ellipsis),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
+      ),
       body: BlocConsumer<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatLoaded) {
@@ -58,7 +85,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: ListView.builder(
                     cacheExtent: 500,
                     // +1 item if messages are loading to show loader
-                    itemCount: state.messages.length + (state.isLoadingMore ? 1 : 0),
+                    itemCount:
+                        state.messages.length + (state.isLoadingMore ? 1 : 0),
                     controller: _scrollController,
                     reverse: true,
                     itemBuilder: (context, index) {
@@ -125,7 +153,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                               child: IconButton(
                                 onPressed: () {
-                                  if (_controller.text.trim().isNotEmpty) {
+                                  if (_controller.text.trim().isNotEmpty ||
+                                      state.images.isNotEmpty) {
                                     context.read<ChatBloc>().add(
                                       ChatMessageSent(
                                         _controller.text,
