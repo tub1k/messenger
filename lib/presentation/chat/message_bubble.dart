@@ -41,48 +41,83 @@ class MessageBubble extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 4.0, left: 8.0, right: 8.0),
       child: Align(
         alignment: alignment,
-        child: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                  bottomLeft: Radius.circular(blradius),
-                  bottomRight: Radius.circular(brradius),
-                ),
-                color: bubbleColor,
+            if (!isMe)
+              messageContainer(
+                blradius: blradius,
+                brradius: brradius,
+                bubbleColor: bubbleColor,
+                message: message,
+                chatId: chatId,
+                isMe: isMe,
               ),
-              padding: EdgeInsets.all(12),
-              constraints: BoxConstraints(
-                minWidth: 40,
-                maxWidth: MediaQuery.of(context).size.width * 0.7,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  RelativeTimeText(
-                    dateTime: message.timestamp,
-                    isShort: true,
-                    style: TextStyle(color: Colors.black38),
-                  ),
-                  SizedBox(width: 8),
-                  Flexible(
-                    child: _buildCellWidget(message, context, chatId, isMe),
-                  ),
-                ],
-              ),
-            ),
+            SizedBox(width: 8),
             if (message.isPending ?? false)
               const Padding(
                 padding: EdgeInsets.only(top: 4, right: 4),
                 child: Icon(Icons.access_time, size: 12, color: Colors.grey),
               ),
+            RelativeTimeText(
+              dateTime: message.timestamp,
+              isShort: true,
+              style: TextStyle(color: Colors.black38),
+            ),
+            SizedBox(width: 8),
+            if (isMe)
+              messageContainer(
+                blradius: blradius,
+                brradius: brradius,
+                bubbleColor: bubbleColor,
+                message: message,
+                chatId: chatId,
+                isMe: isMe,
+              ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class messageContainer extends StatelessWidget {
+  const messageContainer({
+    super.key,
+    required this.blradius,
+    required this.brradius,
+    required this.bubbleColor,
+    required this.message,
+    required this.chatId,
+    required this.isMe,
+  });
+
+  final double blradius;
+  final double brradius;
+  final Color bubbleColor;
+  final MessageModel message;
+  final String chatId;
+  final bool isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(blradius),
+          bottomRight: Radius.circular(brradius),
+        ),
+        color: bubbleColor,
+      ),
+      padding: EdgeInsets.all(12),
+      constraints: BoxConstraints(
+        minWidth: 40,
+        maxWidth: MediaQuery.of(context).size.width * 0.7,
+      ),
+      child: _buildCellWidget(message, context, chatId, isMe),
     );
   }
 }
@@ -115,7 +150,7 @@ Widget _buildCellWidget(
                       height: 150,
                       width: 150,
                       errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image, color: Colors.white,),
+                          const Icon(Icons.broken_image, color: Colors.white),
                     ),
                   );
                 }),
@@ -180,7 +215,10 @@ Widget _buildCellWidget(
                                   width: 150,
                                   height: 150,
                                   color: Colors.black12,
-                                  child: const Icon(Icons.broken_image, color: Colors.white,),
+                                  child: const Icon(
+                                    Icons.broken_image,
+                                    color: Colors.white,
+                                  ),
                                 ),
                           ),
                         ),

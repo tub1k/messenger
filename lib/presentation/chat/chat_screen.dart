@@ -77,11 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
         appBarSubtitle = Row(
           children: [
             Text('${context.l10n.lastSeen} ', style: subtitleStyle),
-            RelativeTimeText(
-              dateTime:
-                  other.lastSeen,
-              style: subtitleStyle,
-            ),
+            RelativeTimeText(dateTime: other.lastSeen, style: subtitleStyle),
           ],
         );
       }
@@ -216,10 +212,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 onPressed: () {
                                   if (_controller.text.trim().isNotEmpty ||
                                       state.images.isNotEmpty) {
+                                    final type = state.images.isNotEmpty ? MessageType.image : MessageType.text;
                                     context.read<ChatBloc>().add(
                                       ChatMessageSent(
                                         _controller.text,
-                                        messageType: MessageType.text,
+                                        messageType: type,
                                       ),
                                     );
                                     _controller.clear();
