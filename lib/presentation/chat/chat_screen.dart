@@ -8,6 +8,7 @@ import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
+import 'package:messenger/presentation/chat/members_list_screen.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
 import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
@@ -120,13 +121,28 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             SizedBox(width: 10),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.chat.chatName, overflow: TextOverflow.ellipsis),
-                  appBarSubtitle,
-                  SizedBox(height: 4),
-                ],
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  final chatBloc = context.read<ChatBloc>();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MembersListScreen(
+                        chat: chat,
+                        chatBloc: chatBloc,
+                      ),
+                    ),
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(widget.chat.chatName, overflow: TextOverflow.ellipsis),
+                    appBarSubtitle,
+                    SizedBox(height: 4),
+                  ],
+                ),
               ),
             ),
           ],
@@ -212,7 +228,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                 onPressed: () {
                                   if (_controller.text.trim().isNotEmpty ||
                                       state.images.isNotEmpty) {
-                                    final type = state.images.isNotEmpty ? MessageType.image : MessageType.text;
+                                    final type = state.images.isNotEmpty
+                                        ? MessageType.image
+                                        : MessageType.text;
                                     context.read<ChatBloc>().add(
                                       ChatMessageSent(
                                         _controller.text,
