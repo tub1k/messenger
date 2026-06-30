@@ -113,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   backgroundImage: chat.photoUrl.length > 2
                       ? FastCachedImageProvider(chat.photoUrl)
                       : null,
-                  child: chat.photoUrl.length <= 2
+                  child: (chat.photoUrl.length <= 2) & (chat.chatName.isNotEmpty)
                       ? Text(chat.chatName[0].toUpperCase())
                       : null,
                 ),
