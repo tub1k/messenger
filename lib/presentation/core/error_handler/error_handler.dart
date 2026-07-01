@@ -11,6 +11,7 @@ enum AppErrorType {
   triedToAddUserOnWrongScreen,
   cantAddYourself,
   galleryPermissionDenied,
+  userInList,
 }
 
 class ErrorHandler {
@@ -41,6 +42,9 @@ class ErrorHandler {
     if (errorStr.contains('galleryPermissionDenied')) {
       return AppErrorType.galleryPermissionDenied;
     }
+    if (errorStr.contains('user_in_list')) {
+      return AppErrorType.userInList;
+    }
     
     return AppErrorType.unknown;
   }
@@ -68,7 +72,9 @@ extension AppErrorLocalization on AppErrorType {
       case AppErrorType.galleryPermissionDenied:
         return l10n!.galleryPermissionDenied;
       case AppErrorType.unknown:
-        return '${l10n!.errorUnknown}';
+        return l10n!.errorUnknown;
+      case AppErrorType.userInList:
+        return l10n!.userInList;
     }
   }
 }

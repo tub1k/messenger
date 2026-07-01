@@ -114,4 +114,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get online => 'онлайн';
+
+  @override
+  String get userInList => 'Пользователь уже в списке';
 }

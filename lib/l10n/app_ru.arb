@@ -30,5 +30,6 @@
   "loadingStarted": "Начали загрузку изображения...",
   "members": "{count, plural, one{{count} участник} few{{count} участника} other{{count} участников}}",
   "lastSeen": "был в сети",
-  "online": "онлайн"
+  "online": "онлайн",
+  "userInList": "Пользователь уже в списке"
 }

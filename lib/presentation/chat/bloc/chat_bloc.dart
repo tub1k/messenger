@@ -19,7 +19,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final IStorageRepository _storageRepository;
   final IImageRepository _imageRepository;
   final String myId;
-  final String chatId;
   final ChatModel chat;
 
   List<Uint8List> _localPickedImages = [];
@@ -27,7 +26,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc({
     required IChatRepository repository,
     required this.myId,
-    required this.chatId,
     required this.chat,
     required IStorageRepository storageRepository,
     required IImageRepository imageRepository,
@@ -35,6 +33,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
        _storageRepository = storageRepository,
        _repository = repository,
        super(ChatInitial()) {
+    final String chatId = chat.chatId;
     on<ChatEvent>((event, emit) {});
 
     List<MessageModel> _mergeMessages({

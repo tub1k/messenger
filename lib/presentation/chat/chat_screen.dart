@@ -94,6 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
             GestureDetector(
               onTap: () {
                 final chatBloc = context.read<ChatBloc>();
+                if (chat.photoUrl.length <= 2) return;
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => BlocProvider.value(

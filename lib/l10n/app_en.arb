@@ -30,5 +30,6 @@
   "loadingStarted": "Started image download...",
   "members": "members",
   "lastSeen": "last seen",
-  "online": "online"
+  "online": "online",
+  "userInList": "User is already in the list"
 }

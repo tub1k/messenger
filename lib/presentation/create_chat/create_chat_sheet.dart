@@ -83,7 +83,6 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                           storageRepository: context.read<IStorageRepository>(),
                           imageRepository: context.read<IImageRepository>(),
                           myId: currentUserId,
-                          chatId: chat.chatId, // TODO: remove
                           chat: chat
                         )..add(ChatStarted(chat.chatId)),
                         child: ChatScreen(chat: chat),

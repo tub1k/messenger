@@ -105,4 +105,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online => 'online';
+
+  @override
+  String get userInList => 'User is already in the list';
 }

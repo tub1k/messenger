@@ -181,7 +181,6 @@ Future<void> _pushChat(BuildContext context, String chatId) async {
             storageRepository: storageRepo,
             imageRepository: imageRepo,
             myId: currentUserId,
-            chatId: chat.chatId, // TODO: remove this and rewrite bloc
             chat: chat,
           )..add(ChatStarted(chat.chatId)),
           child: ChatScreen(chat: chat),

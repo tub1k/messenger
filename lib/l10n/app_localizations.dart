@@ -283,6 +283,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'online'**
   String get online;
+
+  /// No description provided for @userInList.
+  ///
+  /// In en, this message translates to:
+  /// **'User is already in the list'**
+  String get userInList;
 }
 
 class _AppLocalizationsDelegate
