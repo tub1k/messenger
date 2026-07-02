@@ -50,4 +50,7 @@ abstract class IChatRepository {
     required String type, // type of the action we do on click
     required String id, // id of the chat or any other additional info
   });
+
+  /// stream used to check online status
+  Stream<BaseUserModel> streamUserPresence(String uid);
 }

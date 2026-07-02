@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/user_model.dart';
+import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/core/widgets/detailed_last_seen_widget.dart';
@@ -57,21 +58,21 @@ class MembersListScreen extends StatelessWidget {
           Text(chat.chatName, style: TextStyle(fontSize: 20)),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView.builder(
-              itemCount: chat.userModels.length,
-              itemBuilder: (context, index) {
-                final user = chat.userModels[index];
-                return UserProfileTile(user: user);
-              },
+              child: ListView.builder(
+                itemCount: chat.userModels.length,
+                itemBuilder: (context, index) {
+                  final user = chat.userModels[index];
+                  return UserProfileTile(user: user);
+                },
+              ),
             ),
-          ),
         ],
       ),
     );
   }
 }
 
-class UserProfileTile extends StatelessWidget {
+class UserProfileTile extends StatefulWidget {
   const UserProfileTile({
     super.key,
     required this.user,
@@ -80,19 +81,44 @@ class UserProfileTile extends StatelessWidget {
   final BaseUserModel user;
 
   @override
+  State<UserProfileTile> createState() => _UserProfileTileState();
+}
+
+class _UserProfileTileState extends State<UserProfileTile> {
+  late final Stream<BaseUserModel> _presenceStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _presenceStream = context.read<IChatRepository>().streamUserPresence(widget.user.uid);
+  }
+  @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: user.photoUrl.length > 2
-            ? FastCachedImageProvider(user.photoUrl)
-            : null,
-        child:
-            (user.photoUrl.length <= 2) && (user.displayName.isNotEmpty)
-            ? Text(user.displayName[0].toUpperCase())
-            : null,
-      ),
-      title: Text(user.displayName),
-      subtitle: DetailedLastSeenWidget(userModel: user, context: context)
+    return StreamBuilder(
+      initialData: widget.user,
+      stream: _presenceStream,
+      builder: (context, asyncSnapshot) {
+        final BaseUserModel streamedUser;
+        final data = asyncSnapshot.data;
+        if (data != null) {
+          streamedUser = data;
+        } else {
+          streamedUser = widget.user;
+        }
+        return ListTile(
+          leading: CircleAvatar(
+            backgroundImage: streamedUser.photoUrl.length > 2
+                ? FastCachedImageProvider(streamedUser.photoUrl)
+                : null,
+            child:
+                (streamedUser.photoUrl.length <= 2) && (streamedUser.displayName.isNotEmpty)
+                ? Text(streamedUser.displayName[0].toUpperCase())
+                : null,
+          ),
+          title: Text(streamedUser.displayName),
+          subtitle: DetailedLastSeenWidget(userModel: streamedUser, context: context)
+        );
+      }
     );
   }
 }

@@ -111,7 +111,10 @@ class FirebaseChatRepository implements IChatRepository {
         }
 
         final lastMessageSender = (data['lastMessage']?['senderId'] != null)
-            ? await getBaseUserByUID(data['lastMessage']['senderId'], getFromCache: true)
+            ? await getBaseUserByUID(
+                data['lastMessage']['senderId'],
+                getFromCache: true,
+              )
             : null;
 
         return ChatModel.fromFirebase(
@@ -232,7 +235,7 @@ class FirebaseChatRepository implements IChatRepository {
                 ? text
                 : 'Attachment, click to view.',
             type: 'chat',
-            id: chatId
+            id: chatId,
           );
         }
         return Future.value(); // just so linter accepts our "nulls"
@@ -395,5 +398,18 @@ class FirebaseChatRepository implements IChatRepository {
     } catch (e) {
       log('network error: $e');
     }
+  }
+
+  @override
+  Stream<BaseUserModel> streamUserPresence(String uid) {
+    return _firestore.collection('users').doc(uid).snapshots().map((snapshot) {
+      final data = snapshot.data();
+      if (data != null) {
+        final user = BaseUserModel.fromFirebase(data: data);
+        _memoryUserCache[uid] = user;
+        return user;
+      }
+      return BaseUserModel.empty();
+    });
   }
 }
