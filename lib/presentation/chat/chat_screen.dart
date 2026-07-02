@@ -7,13 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/core/widgets/detailed_last_seen_widget.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/chat/members_list_screen.dart';
 import 'package:messenger/presentation/chat/message_bubble.dart';
 import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
-import 'package:messenger/presentation/core/server_time_offset.dart';
-import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatModel chat;
@@ -62,26 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     } else if (chat.participants.length == 2) {
       final other = chat.getFirstUserThatIsntUID(context.myId!);
-      if (other == null) {
-        appBarSubtitle = SizedBox();
-      } else if (other.isOnline == true &&
-          trueCurrentTime.difference(other.lastSeen) < Duration(minutes: 3)) {
-        appBarSubtitle = Row(
-          children: [
-            Text(
-              context.l10n.online,
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-          ],
-        );
-      } else {
-        appBarSubtitle = Row(
-          children: [
-            Text('${context.l10n.lastSeen} ', style: subtitleStyle),
-            RelativeTimeText(dateTime: other.lastSeen, style: subtitleStyle),
-          ],
-        );
-      }
+      appBarSubtitle = DetailedLastSeenWidget(userModel: other, context: context, subtitleStyle: subtitleStyle);
     } else {
       appBarSubtitle = SizedBox();
     }
