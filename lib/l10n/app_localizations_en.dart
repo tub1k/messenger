@@ -108,4 +108,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userInList => 'User is already in the list';
+
+  @override
+  String get mute => 'Mute';
+
+  @override
+  String get unmute => 'Unmute';
+
+  @override
+  String get leave => 'Leave';
+
+  @override
+  String get invite => 'Invite';
 }

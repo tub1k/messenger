@@ -31,5 +31,9 @@
   "members": "{count, plural, one{{count} участник} few{{count} участника} other{{count} участников}}",
   "lastSeen": "был в сети",
   "online": "онлайн",
-  "userInList": "Пользователь уже в списке"
+  "userInList": "Пользователь уже в списке",
+  "mute": "Заглушить",
+  "unmute": "Оповещать",
+  "leave": "Выйти",
+  "invite": "Пригласить"
 }

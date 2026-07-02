@@ -117,4 +117,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get userInList => 'Пользователь уже в списке';
+
+  @override
+  String get mute => 'Заглушить';
+
+  @override
+  String get unmute => 'Оповещать';
+
+  @override
+  String get leave => 'Выйти';
+
+  @override
+  String get invite => 'Пригласить';
 }

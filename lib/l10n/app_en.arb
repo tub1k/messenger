@@ -31,5 +31,9 @@
   "members": "members",
   "lastSeen": "last seen",
   "online": "online",
-  "userInList": "User is already in the list"
+  "userInList": "User is already in the list",
+  "mute": "Mute",
+  "unmute": "Unmute",
+  "leave": "Leave",
+  "invite": "Invite"
 }

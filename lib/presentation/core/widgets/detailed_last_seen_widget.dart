@@ -27,7 +27,7 @@ class DetailedLastSeenWidget extends StatelessWidget {
         children: [
           Text(
             context.l10n.online,
-            style: TextStyle(fontSize: 16, color: Colors.green),
+            style: TextStyle(fontSize: subtitleStyle?.fontSize ?? 14, color: Colors.green),
           ),
         ],
       );
