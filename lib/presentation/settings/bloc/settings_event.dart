@@ -8,6 +8,12 @@ class SettingsSetLocale extends SettingsEvent {
   SettingsSetLocale({required this.localeCode});
 }
 
+class SettingsSetTheme extends SettingsEvent {
+  final AppThemeSetting themeSetting;
+
+  SettingsSetTheme({required this.themeSetting});
+}
+
 class SettingsPushScreen extends SettingsEvent {
   final Map<String, dynamic> data;
 

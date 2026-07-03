@@ -105,6 +105,8 @@ class MyApp extends StatelessWidget {
               locale: settingsState.locale,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
+              theme: settingsState.themeData,
+              themeMode: ThemeMode.light,
               home: BlocListener<SettingsBloc, SettingsState>(
                 listener: (context, settingsState) {
                   final data = settingsState.navigateToData;
