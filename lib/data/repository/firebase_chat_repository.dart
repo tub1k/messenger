@@ -344,6 +344,7 @@ class FirebaseChatRepository implements IChatRepository {
 
       return user;
     } catch (e) {
+      log(e.toString());
       return BaseUserModel.empty();
     }
   }

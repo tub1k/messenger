@@ -129,4 +129,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get invite => 'Пригласить';
+
+  @override
+  String get systemTheme => 'Тема системы';
+
+  @override
+  String get lightTheme => 'Светлая тема';
+
+  @override
+  String get amoledTheme => 'AMOLED-тема';
+
+  @override
+  String get theme => 'Тема';
 }

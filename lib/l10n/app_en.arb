@@ -35,5 +35,9 @@
   "mute": "Mute",
   "unmute": "Unmute",
   "leave": "Leave",
-  "invite": "Invite"
+  "invite": "Invite",
+  "systemTheme": "System theme",
+  "lightTheme": "Light theme",
+  "amoledTheme": "AMOLED theme",
+  "theme": "Theme"
 }

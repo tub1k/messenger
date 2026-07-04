@@ -5,10 +5,10 @@ class AppTheme {
   static ThemeData get light {
     return ThemeData(
       brightness: Brightness.light,
-      scaffoldBackgroundColor: Colors.deepPurple[50],
+      scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
       extensions: const [
-        AppColorsExtension(background: Colors.white)
-      ]
+        AppColorsExtension(leaveDeleteColor: Colors.red)
+      ],
     );
   }
 
@@ -16,8 +16,8 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.dark,
       scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
-      extensions: const [
-        AppColorsExtension(background: Color.fromARGB(255, 0, 0, 0))
+      extensions: [
+        AppColorsExtension(leaveDeleteColor: Colors.red.shade400)
       ]
     );
   }

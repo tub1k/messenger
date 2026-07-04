@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
-  final Color background;
+  final Color leaveDeleteColor;
 
-  const AppColorsExtension({required this.background});
+  const AppColorsExtension({required this.leaveDeleteColor});
   
   @override
   ThemeExtension<AppColorsExtension> copyWith({
-    Color? background
+    Color? leaveDeleteColor
   }) {
-    return AppColorsExtension(background: background ?? this.background);
+    return AppColorsExtension(leaveDeleteColor: leaveDeleteColor ?? this.leaveDeleteColor);
   }
   
   @override
   ThemeExtension<AppColorsExtension> lerp(covariant ThemeExtension<AppColorsExtension>? other, double t) {
     if (other is! AppColorsExtension) return this;
-    return AppColorsExtension(background: Color.lerp(background, other.background, t)!);
+    return AppColorsExtension(leaveDeleteColor: Color.lerp(leaveDeleteColor, other.leaveDeleteColor, t)!);
   }
 }

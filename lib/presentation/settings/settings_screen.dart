@@ -43,11 +43,46 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  void showThemeSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return ListView(
+          children: [
+            ListTile(
+              title: Text(context.l10n.systemTheme),
+              onTap: () {
+                context.read<SettingsBloc>().add(
+                  SettingsSetTheme(themeSetting: AppThemeSetting.system),
+                );
+              },
+            ),
+            ListTile(
+              title: Text(context.l10n.lightTheme),
+              onTap: () {
+                context.read<SettingsBloc>().add(
+                  SettingsSetTheme(themeSetting: AppThemeSetting.light),
+                );
+              },
+            ),
+            ListTile(
+              title: Text(context.l10n.amoledTheme),
+              onTap: () {
+                context.read<SettingsBloc>().add(
+                  SettingsSetTheme(themeSetting: AppThemeSetting.amoled),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SettingsBloc, SettingsState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(title: Text(context.l10n.settings)),
@@ -59,6 +94,18 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: Text(state.locale.languageCode),
                 onTap: () {
                   showLanguageSheet(context);
+                },
+              ),
+              ListTile(
+                title: Text(context.l10n.theme),
+                subtitle: Text(switch (state.otherSettings['theme']
+                    as AppThemeSetting) {
+                  AppThemeSetting.system => context.l10n.systemTheme,
+                  AppThemeSetting.light => context.l10n.lightTheme,
+                  AppThemeSetting.amoled => context.l10n.amoledTheme,
+                }),
+                onTap: () {
+                  showThemeSheet(context);
                 },
               ),
             ],

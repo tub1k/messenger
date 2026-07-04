@@ -120,4 +120,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get invite => 'Invite';
+
+  @override
+  String get systemTheme => 'System theme';
+
+  @override
+  String get lightTheme => 'Light theme';
+
+  @override
+  String get amoledTheme => 'AMOLED theme';
+
+  @override
+  String get theme => 'Theme';
 }

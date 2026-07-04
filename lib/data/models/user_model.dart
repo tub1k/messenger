@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class BaseUserModel extends Equatable {
@@ -38,7 +39,7 @@ class BaseUserModel extends Equatable {
       displayName: data['displayName'],
       photoUrl: data['photoUrl'],
       fcmToken: data['fcmToken'],
-      lastSeen: data['lastSeen'].toDate() ?? DateTime(1970),
+      lastSeen: (data['lastSeen'] as Timestamp?)?.toDate() ?? DateTime(1970),
       isOnline: data['isOnline'] ?? false,
     );
 

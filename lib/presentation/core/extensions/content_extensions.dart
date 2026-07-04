@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/l10n/app_localizations.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
+import 'package:messenger/presentation/core/themes/app_theme_extension.dart';
 
 extension AuthExtensionX on BuildContext {
 
@@ -16,4 +18,8 @@ extension AuthExtensionX on BuildContext {
 extension AppLocalizationsX on BuildContext {
   /// get localizations
   AppLocalizations get l10n => AppLocalizations.of(this)!;
+}
+
+extension AppThemeContext on BuildContext {
+  AppColorsExtension get colors => Theme.of(this).extension<AppColorsExtension>()!;
 }

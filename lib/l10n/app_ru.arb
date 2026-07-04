@@ -35,5 +35,9 @@
   "mute": "Заглушить",
   "unmute": "Оповещать",
   "leave": "Выйти",
-  "invite": "Пригласить"
+  "invite": "Пригласить",
+  "systemTheme": "Тема системы",
+  "lightTheme": "Светлая тема",
+  "amoledTheme": "AMOLED-тема",
+  "theme": "Тема"
 }

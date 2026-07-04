@@ -66,7 +66,7 @@ class MembersListScreen extends StatelessWidget {
             children: [
               MembersListButton(text: context.l10n.mute, onTap: (){}, color: Colors.deepPurple, icon: Icons.notifications_off_rounded),
               MembersListButton(text: context.l10n.invite, onTap: (){}, color: Colors.deepPurple, icon: Icons.person_add_alt_1),
-              MembersListButton(text: context.l10n.leave, onTap: (){}, color: Colors.red, icon: Icons.exit_to_app),
+              MembersListButton(text: context.l10n.leave, onTap: (){}, color: context.colors.leaveDeleteColor, icon: Icons.exit_to_app),
             ],
           ),
           const SizedBox(height: 20),
@@ -84,6 +84,7 @@ class MembersListScreen extends StatelessWidget {
               itemCount: chat.userModels.length,
               itemBuilder: (context, index) {
                 final user = chat.userModels[index];
+                print('$index $user');
                 return UserProfileTile(user: user);
               },
             ),
@@ -154,6 +155,7 @@ class _UserProfileTileState extends State<UserProfileTile> {
       initialData: widget.user,
       stream: _presenceStream,
       builder: (context, asyncSnapshot) {
+        print(asyncSnapshot.data);
         final BaseUserModel streamedUser;
         final data = asyncSnapshot.data;
         if (data != null) {

@@ -313,6 +313,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invite'**
   String get invite;
+
+  /// No description provided for @systemTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'System theme'**
+  String get systemTheme;
+
+  /// No description provided for @lightTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Light theme'**
+  String get lightTheme;
+
+  /// No description provided for @amoledTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'AMOLED theme'**
+  String get amoledTheme;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
 }
 
 class _AppLocalizationsDelegate
