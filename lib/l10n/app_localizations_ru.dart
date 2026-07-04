@@ -141,4 +141,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get theme => 'Тема';
+
+  @override
+  String get addFriend => 'Добавить в друзья';
+
+  @override
+  String get writeDM => 'Написать сообщение';
+
+  @override
+  String get aboutMe => 'Обо мне';
 }

@@ -132,4 +132,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get theme => 'Theme';
+
+  @override
+  String get addFriend => 'Add Friend';
+
+  @override
+  String get writeDM => 'Send a message';
+
+  @override
+  String get aboutMe => 'About me';
 }

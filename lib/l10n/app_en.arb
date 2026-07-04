@@ -39,5 +39,8 @@
   "systemTheme": "System theme",
   "lightTheme": "Light theme",
   "amoledTheme": "AMOLED theme",
-  "theme": "Theme"
+  "theme": "Theme",
+  "addFriend": "Add Friend",
+  "writeDM": "Send a message",
+  "aboutMe": "About me"
 }

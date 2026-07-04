@@ -337,6 +337,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
+
+  /// No description provided for @addFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Friend'**
+  String get addFriend;
+
+  /// No description provided for @writeDM.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a message'**
+  String get writeDM;
+
+  /// No description provided for @aboutMe.
+  ///
+  /// In en, this message translates to:
+  /// **'About me'**
+  String get aboutMe;
 }
 
 class _AppLocalizationsDelegate

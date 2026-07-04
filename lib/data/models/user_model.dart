@@ -9,6 +9,7 @@ class BaseUserModel extends Equatable {
   final String? fcmToken;
   final DateTime lastSeen;
   final bool isOnline;
+  final String? aboutMe;
 
   const BaseUserModel({
     required this.uid,
@@ -18,6 +19,7 @@ class BaseUserModel extends Equatable {
     this.fcmToken,
     required this.lastSeen,
     required this.isOnline,
+    this.aboutMe
   });
 
   /// placeholder with '' values
@@ -28,7 +30,8 @@ class BaseUserModel extends Equatable {
       username = '',
       fcmToken = '',
       lastSeen = DateTime(1970),
-      isOnline = false;
+      isOnline = false,
+      aboutMe = null;
 
 
   /// constructs a baseusermodel from data of a user document
@@ -41,6 +44,7 @@ class BaseUserModel extends Equatable {
       fcmToken: data['fcmToken'],
       lastSeen: (data['lastSeen'] as Timestamp?)?.toDate() ?? DateTime(1970),
       isOnline: data['isOnline'] ?? false,
+      aboutMe: data['aboutMe'],
     );
 
     return model;

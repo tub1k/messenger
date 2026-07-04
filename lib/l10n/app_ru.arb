@@ -39,5 +39,8 @@
   "systemTheme": "Тема системы",
   "lightTheme": "Светлая тема",
   "amoledTheme": "AMOLED-тема",
-  "theme": "Тема"
+  "theme": "Тема",
+  "addFriend": "Добавить в друзья",
+  "writeDM": "Написать сообщение",
+  "aboutMe": "Обо мне"
 }

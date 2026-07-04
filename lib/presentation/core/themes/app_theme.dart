@@ -7,7 +7,7 @@ class AppTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
       extensions: const [
-        AppColorsExtension(leaveDeleteColor: Colors.red)
+        AppColorsExtension(leaveDeleteColor: Colors.red, halfOpaqueText: Colors.black38, defaultButtonColor: Colors.deepPurple)
       ],
     );
   }
@@ -17,7 +17,7 @@ class AppTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
       extensions: [
-        AppColorsExtension(leaveDeleteColor: Colors.red.shade400)
+        AppColorsExtension(leaveDeleteColor: Colors.red.shade400, halfOpaqueText: Colors.white38, defaultButtonColor: Colors.deepPurpleAccent)
       ]
     );
   }
