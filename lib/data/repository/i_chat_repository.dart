@@ -51,6 +51,6 @@ abstract class IChatRepository {
     required String id, // id of the chat or any other additional info
   });
 
-  /// stream used to check online status
+  /// stream used to check online status/subscribe to baseusermodel
   Stream<BaseUserModel> streamUserPresence(String uid);
 }

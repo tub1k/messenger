@@ -7,7 +7,8 @@ import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/custom_icon_button.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
-import 'package:messenger/presentation/chat/profile_content.dart';
+import 'package:messenger/presentation/profile/bloc/profile_bloc.dart';
+import 'package:messenger/presentation/profile/profile_content.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/core/widgets/detailed_last_seen_widget.dart';
 
@@ -152,7 +153,14 @@ class _UserProfileTileState extends State<UserProfileTile> {
             showModalBottomSheet(
               context: context,
               builder: (context) {
-                return ProfileContent(user: streamedUser);
+                return BlocProvider(
+                  create: (context) => ProfileBloc(
+                    initialUser: streamedUser,
+                    chatRepository: context.read<IChatRepository>(),
+                    myId: context.myId!,
+                  )..add(ProfileSubscribe()),
+                  child: ProfileContent(),
+                );
               },
             );
           },
