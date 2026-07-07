@@ -413,4 +413,44 @@ class FirebaseChatRepository implements IChatRepository {
       return BaseUserModel.empty();
     });
   }
+  
+  @override
+  Future<void> acceptFriendRequest(String uid, String myId) {
+    // TODO: implement acceptFriendRequest
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> sendFriendRequest(String uid, String myId) async {
+    final batch = _firestore.batch();
+
+    final receivedRef = _firestore.collection('users').doc(uid).collection('invites').doc(myId);
+    final receivedMap = {
+      'type' : 'received',
+      'createdAt' : FieldValue.serverTimestamp(),
+      'uid' : myId
+    };
+
+    final sentRef = _firestore.collection('users').doc(myId).collection('invites').doc(uid);
+    final sentMap = {
+      'type' : 'sent',
+      'createdAt' : FieldValue.serverTimestamp(),
+      'uid' : uid
+    };
+
+    batch.set(receivedRef, receivedMap);
+    batch.set(sentRef, sentMap);
+
+    await batch.commit();
+    
+    final users = await Future.wait([
+      getBaseUserByUID(uid),
+      getBaseUserByUID(myId),
+    ]);
+
+    final otherUser = users[0];
+    final myUser = users[1];
+
+    sendSafePush(targetFcmToken: otherUser.fcmToken, title: 'You got a friend request!', body: 'From ${myUser.displayName}', type: 'friendReq', id: '');
+  }
 }

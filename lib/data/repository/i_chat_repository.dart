@@ -53,4 +53,8 @@ abstract class IChatRepository {
 
   /// stream used to check online status/subscribe to baseusermodel
   Stream<BaseUserModel> streamUserPresence(String uid);
+
+  Future<void> sendFriendRequest(String uid, String myId);
+
+  Future<void> acceptFriendRequest(String uid, String myId);
 }
