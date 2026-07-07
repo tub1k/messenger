@@ -442,7 +442,7 @@ class FirebaseChatRepository implements IChatRepository {
     batch.set(sentRef, sentMap);
 
     await batch.commit();
-    
+
     final users = await Future.wait([
       getBaseUserByUID(uid),
       getBaseUserByUID(myId),
@@ -451,6 +451,6 @@ class FirebaseChatRepository implements IChatRepository {
     final otherUser = users[0];
     final myUser = users[1];
 
-    sendSafePush(targetFcmToken: otherUser.fcmToken, title: 'You got a friend request!', body: 'From ${myUser.displayName}', type: 'friendReq', id: '');
+    await sendSafePush(targetFcmToken: otherUser.fcmToken, title: 'You got a friend request!', body: 'From ${myUser.displayName}', type: 'friendReq', id: '');
   }
 }

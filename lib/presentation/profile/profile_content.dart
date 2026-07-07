@@ -103,7 +103,7 @@ class ProfileContent extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomIconButton(
-                    onTap: () {},
+                    onTap: () {context.read<ProfileBloc>().add(ProfileFriendButton());},
                     text: context.l10n.addFriend,
                     color: context.colors.defaultButtonColor,
                     icon: Icons.person_add_alt_1,
