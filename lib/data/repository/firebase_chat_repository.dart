@@ -322,7 +322,10 @@ class FirebaseChatRepository implements IChatRepository {
     bool? getFromCache,
   }) async {
     if (_memoryUserCache.containsKey(uid)) {
-      return _memoryUserCache[uid]!;
+      final cachedUser = _memoryUserCache[uid]!;
+      if (cachedUser.uid.isNotEmpty && cachedUser.username.isNotEmpty) {
+        return cachedUser;
+      }
     }
 
     final source = (getFromCache ?? false)

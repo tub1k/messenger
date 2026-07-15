@@ -74,7 +74,9 @@ class _ChatListScreenState extends State<ChatListScreen>
             return Center(child: CircularProgressIndicator());
           }
           if (state is ChatListLoaded) {
+            final key = state.key;
             return ListView.builder(
+              key: (key != null) ? Key(key) : null,
               itemCount: state.chatList.length,
               itemBuilder: (context, index) {
                 final ChatModel chat = state.chatList[index];

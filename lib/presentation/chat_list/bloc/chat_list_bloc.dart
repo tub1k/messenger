@@ -19,7 +19,7 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
       await emit.forEach<List<ChatModel>>(
         chatListStream,
         onData: (data) {
-          return ChatListLoaded(chatList: data, localSave: false);
+          return ChatListLoaded(chatList: data, localSave: false, key: 'serverData');
         },
         onError: (error, stackTrace) {
           return ChatListFailed(error, chatList: [], errorText: error.toString());
