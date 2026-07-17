@@ -8,6 +8,8 @@ import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/user_relations_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FirebaseChatRepository implements IChatRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -456,4 +458,28 @@ class FirebaseChatRepository implements IChatRepository {
 
     await sendSafePush(targetFcmToken: otherUser.fcmToken, title: 'You got a friend request!', body: 'From ${myUser.displayName}', type: 'friendReq', id: '');
   }
+
+  Stream<UserRelationsState> relationsStream(String myId) {
+  final friendsStream = _firestore.collection('users').doc(myId).collection('friends').snapshots();
+  final invitesStream = _firestore.collection('users').doc(myId).collection('invites').snapshots();
+
+  return Rx.combineLatest2(friendsStream, invitesStream, (friendsSnap, invitesSnap) {
+    final friendIds = friendsSnap.docs.map((doc) => doc.id).toSet();
+    
+    final received = <String>{};
+    final sent = <String>{};
+    
+    for (var doc in invitesSnap.docs) {
+      if (doc.data()['type'] == 'received') received.add(doc.id);
+      if (doc.data()['type'] == 'sent') sent.add(doc.id);
+    }
+
+    return UserRelationsState(
+      friendIds: friendIds,
+      incomingInviteIds: received,
+      outgoingInviteIds: sent,
+      blockedIds: {}, // TODO: add blocked list to repo when its implemented
+    );
+  });
+}
 }

@@ -38,6 +38,7 @@ dependencies:
   stream_transform: ^2.1.1
   uuid: ^4.5.3
   ntp: ^2.0.0
+  rxdart: ^0.28.0
 
 dev_dependencies:
   flutter_test:

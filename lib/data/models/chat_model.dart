@@ -30,7 +30,7 @@ class ChatModel extends Equatable {
       lastMessage = MessageModel.empty(),
       loadedMessages = [],
       userModels = [];
-
+  
   factory ChatModel.fromFirebase({
     required Map<String, dynamic> data,
     required String docId,
