@@ -459,6 +459,7 @@ class FirebaseChatRepository implements IChatRepository {
     await sendSafePush(targetFcmToken: otherUser.fcmToken, title: 'You got a friend request!', body: 'From ${myUser.displayName}', type: 'friendReq', id: '');
   }
 
+  @override
   Stream<UserRelationsState> relationsStream(String myId) {
   final friendsStream = _firestore.collection('users').doc(myId).collection('friends').snapshots();
   final invitesStream = _firestore.collection('users').doc(myId).collection('invites').snapshots();

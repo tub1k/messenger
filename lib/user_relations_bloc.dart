@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/data/repository/i_chat_repository.dart';
 
 class UserRelationsState {
   final Set<String> friendIds;
@@ -20,9 +21,12 @@ class UserRelationsEvent {}
 class UserRelationsInit extends UserRelationsEvent {}
 
 class UserRelationsBloc extends Bloc<UserRelationsEvent, UserRelationsState> {
-  UserRelationsBloc() : super(UserRelationsState.empty()) {
-    on<UserRelationsInit>((event, emit) {
-      
+  final IChatRepository _chatRepository;
+  final String myId;
+
+  UserRelationsBloc({required IChatRepository chatRepository, required this.myId}) : _chatRepository = chatRepository, super(UserRelationsState.empty()) {
+    on<UserRelationsInit>((event, emit) async {
+      await emit.forEach(_chatRepository.relationsStream(myId), onData: (state) => state);
     });
   }
 }

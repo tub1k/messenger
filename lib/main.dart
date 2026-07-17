@@ -23,6 +23,7 @@ import 'package:messenger/core/environment/environment.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/main_scaffold/main_scaffold.dart';
 import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';
+import 'package:messenger/user_relations_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 import 'package:timeago/timeago.dart' as timeago;
@@ -97,6 +98,7 @@ class MyApp extends StatelessWidget {
               settingsBloc: context.read<SettingsBloc>(),
             ),
           ),
+          BlocProvider<UserRelationsBloc>(create: (context) => UserRelationsBloc(chatRepository: context.read<IChatRepository>(), myId: context.myId!))
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, settingsState) {

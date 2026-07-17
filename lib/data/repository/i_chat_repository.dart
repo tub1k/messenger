@@ -1,6 +1,7 @@
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
+import 'package:messenger/user_relations_bloc.dart';
 
 abstract class IChatRepository {
   Stream<List<MessageModel>> getMessages(String chatId);
@@ -57,4 +58,7 @@ abstract class IChatRepository {
   Future<void> sendFriendRequest(String uid, String myId);
 
   Future<void> acceptFriendRequest(String uid, String myId);
+
+  /// used for getting friend/invite/block lists live 
+  Stream<UserRelationsState> relationsStream(String myId);
 }
