@@ -70,6 +70,6 @@ extension AppErrorLocalization on AppErrorType {
       AppErrorType.unknown => l10n.errorUnknown,
       AppErrorType.userInList => l10n.userInList,
       AppErrorType.invalidRequest => l10n.invalidRequest,
-    }
+    };
   }
 }
