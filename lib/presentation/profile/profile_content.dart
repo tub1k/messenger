@@ -14,13 +14,8 @@ import 'package:messenger/presentation/core/widgets/detailed_last_seen_widget.da
 import 'package:messenger/presentation/profile/bloc/profile_bloc.dart';
 import 'package:messenger/user_relations_bloc.dart';
 
-enum UserRelation {
-  unknown,
-  sentRequest,
-  receivedRequest,
-  friends,
-  blocked
-}
+enum UserRelation { unknown, sentRequest, receivedRequest, friends, blocked }
+
 /// to use in bottom modal sheet!
 class ProfileContent extends StatelessWidget {
   const ProfileContent({super.key});
@@ -113,15 +108,57 @@ class ProfileContent extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  switch (userRelation) {
+                    UserRelation.unknown => CustomIconButton(
+                      onTap: () {
+                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                      },
+                      text: context.l10n.addFriend,
+                      color: context.colors.defaultButtonColor,
+                      icon: Icons.person_add_alt_1,
+                      width: 160,
+                    ),
+                    UserRelation.friends => CustomIconButton(
+                      onTap: () {
+                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                      },
+                      text: context.l10n.removeFriend,
+                      color: context.colors.defaultButtonColor,
+                      icon: Icons.person_remove_alt_1,
+                      width: 160,
+                    ),
+                    UserRelation.sentRequest => CustomIconButton(
+                      onTap: () {
+                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                      },
+                      text: context.l10n.cancelInvite,
+                      color: context.colors.defaultButtonColor,
+                      icon: Icons.person_remove_alt_1,
+                      width: 160,
+                    ),
+                    UserRelation.receivedRequest => CustomIconButton(
+                      onTap: () {
+                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                      },
+                      text: context.l10n.acceptInvite,
+                      color: context.colors.defaultButtonColor,
+                      icon: Icons.person_add_alt_1,
+                      width: 160,
+                    ),
+                    UserRelation.blocked => CustomIconButton(
+                      onTap: () {
+                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                      },
+                      text: context.l10n.addFriend,
+                      color: context.colors.defaultButtonColor,
+                      icon: Icons.person_add_alt_1,
+                      width: 160,
+                    ),
+                  },
                   CustomIconButton(
-                    onTap: () {context.read<ProfileBloc>().add(ProfileFriendButton());},
-                    text: context.l10n.addFriend,
-                    color: context.colors.defaultButtonColor,
-                    icon: Icons.person_add_alt_1,
-                    width: 160,
-                  ),
-                  CustomIconButton(
-                    onTap: () {context.read<ProfileBloc>().add(ProfileSendDM());},
+                    onTap: () {
+                      context.read<ProfileBloc>().add(ProfileSendDM());
+                    },
                     text: context.l10n.writeDM,
                     color: context.colors.defaultButtonColor,
                     icon: Icons.chat,
@@ -138,7 +175,10 @@ class ProfileContent extends StatelessWidget {
     );
   }
 
-  UserRelation getUserRelation(UserRelationsState relationsState, BaseUserModel user) {
+  UserRelation getUserRelation(
+    UserRelationsState relationsState,
+    BaseUserModel user,
+  ) {
     if (relationsState.incomingInviteIds.contains(user.uid)) {
       return UserRelation.receivedRequest;
     } else if (relationsState.outgoingInviteIds.contains(user.uid)) {
