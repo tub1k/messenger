@@ -150,4 +150,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get aboutMe => 'Обо мне';
+
+  @override
+  String get removeFriend => 'Удалить друга';
+
+  @override
+  String get cancelInvite => 'Отменить заявку';
+
+  @override
+  String get acceptInvite => 'Принять в друзья';
 }

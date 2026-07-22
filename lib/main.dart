@@ -98,7 +98,12 @@ class MyApp extends StatelessWidget {
               settingsBloc: context.read<SettingsBloc>(),
             ),
           ),
-          BlocProvider<UserRelationsBloc>(create: (context) => UserRelationsBloc(chatRepository: context.read<IChatRepository>(), myId: context.myId!))
+          BlocProvider<UserRelationsBloc>(
+            create: (context) => UserRelationsBloc(
+              chatRepository: context.read<IChatRepository>(),
+              myId: context.myId!,
+            ),
+          ),
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, settingsState) {
@@ -151,9 +156,9 @@ class ChatListProvider extends StatelessWidget {
                 ..add(InitChatList()),
         ),
         BlocProvider<OnlineStatusBloc>(
-          lazy: false, 
+          lazy: false,
           create: (context) => OnlineStatusBloc(
-            repository: context.read<IAuthRepository>(), 
+            repository: context.read<IAuthRepository>(),
             userId: context.myId!,
           ),
         ),

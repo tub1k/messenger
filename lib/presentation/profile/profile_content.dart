@@ -1,6 +1,7 @@
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/data/repository/i_image_repository.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
@@ -11,13 +12,22 @@ import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/core/widgets/detailed_last_seen_widget.dart';
 import 'package:messenger/presentation/profile/bloc/profile_bloc.dart';
+import 'package:messenger/user_relations_bloc.dart';
 
+enum UserRelation {
+  unknown,
+  sentRequest,
+  receivedRequest,
+  friends,
+  blocked
+}
 /// to use in bottom modal sheet!
 class ProfileContent extends StatelessWidget {
   const ProfileContent({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final relationsState = context.watch<UserRelationsBloc>().state;
     return BlocConsumer<ProfileBloc, ProfileBlocState>(
       listener: (context, state) {
         if (state.errorText != null) {
@@ -55,6 +65,7 @@ class ProfileContent extends StatelessWidget {
       },
       builder: (context, state) {
         final user = state.user;
+        final UserRelation userRelation = getUserRelation(relationsState, user);
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -125,5 +136,19 @@ class ProfileContent extends StatelessWidget {
         );
       },
     );
+  }
+
+  UserRelation getUserRelation(UserRelationsState relationsState, BaseUserModel user) {
+    if (relationsState.incomingInviteIds.contains(user.uid)) {
+      return UserRelation.receivedRequest;
+    } else if (relationsState.outgoingInviteIds.contains(user.uid)) {
+      return UserRelation.sentRequest;
+    } else if (relationsState.friendIds.contains(user.uid)) {
+      return UserRelation.friends;
+    } else if (relationsState.blockedIds.contains(user.uid)) {
+      return UserRelation.blocked;
+    } else {
+      return UserRelation.unknown;
+    }
   }
 }

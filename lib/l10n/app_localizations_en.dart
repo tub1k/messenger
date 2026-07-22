@@ -141,4 +141,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutMe => 'About me';
+
+  @override
+  String get removeFriend => 'Remove Friend';
+
+  @override
+  String get cancelInvite => 'Cancel invite';
+
+  @override
+  String get acceptInvite => 'Accept invite';
 }

@@ -42,5 +42,8 @@
   "theme": "Theme",
   "addFriend": "Add Friend",
   "writeDM": "Send a message",
-  "aboutMe": "About me"
+  "aboutMe": "About me",
+  "removeFriend": "Remove Friend",
+  "cancelInvite": "Cancel invite",
+  "acceptInvite": "Accept invite"
 }

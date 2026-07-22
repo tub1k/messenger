@@ -42,5 +42,8 @@
   "theme": "Тема",
   "addFriend": "Добавить в друзья",
   "writeDM": "Написать сообщение",
-  "aboutMe": "Обо мне"
+  "aboutMe": "Обо мне",
+  "removeFriend": "Удалить друга",
+  "cancelInvite": "Отменить заявку",
+  "acceptInvite": "Принять в друзья"
 }
