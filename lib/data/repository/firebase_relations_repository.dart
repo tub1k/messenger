@@ -34,10 +34,41 @@ class FirebaseRelationsRepository implements IRelationsRepository {
     );
   });
 }
- @override
-  Future<void> acceptFriendRequest(String uid, String myId) {
-    // TODO: implement acceptFriendRequest
-    throw UnimplementedError();
+  @override
+  Future<void> acceptFriendRequest(String uid, String myId) async {
+    final batch = _firestore.batch();
+    // received - in YOUR invites, as you received it
+    final receivedRef = _firestore.collection('users').doc(myId).collection('invites').doc(uid);
+    // sent - in other person invites
+    final sentRef = _firestore.collection('users').doc(uid).collection('invites').doc(myId);
+    
+    final requestSnapshot = await receivedRef.get();
+    final requestData = requestSnapshot.data();
+
+    if (requestData != null) {
+      if (requestData['type'] == 'received' && requestData['uid'] == uid) {
+        batch.delete(receivedRef);
+        batch.delete(sentRef);
+
+        final myFriendsRef = _firestore.collection('users').doc(myId).collection('friends').doc(uid);
+        final myFriendsData = {
+          'createdAt' : FieldValue.serverTimestamp(),
+          'uid' : uid,
+        };
+
+        final otherFriendsRef = _firestore.collection('users').doc(uid).collection('friends').doc(myId);
+        final otherFriendsData = {
+          'createdAt' : FieldValue.serverTimestamp(),
+          'uid' : myId,
+        };
+
+        batch.set(myFriendsRef, myFriendsData);
+        batch.set(otherFriendsRef, otherFriendsData);
+        await batch.commit();
+      }
+    } else {
+      throw 'invalid_request';
+    }
   }
   
   @override
@@ -72,5 +103,17 @@ class FirebaseRelationsRepository implements IRelationsRepository {
     final myUser = users[1];
 
     await _chatRepository.sendSafePush(targetFcmToken: otherUser.fcmToken, title: 'You got a friend request!', body: 'From ${myUser.displayName}', type: 'friendReq', id: '');
+  }
+  
+  @override
+  Future<void> recallFriendRequest(String uid, String myId) {
+    // TODO: implement recallFriendRequest
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<void> removeFriend(String uid, String myId) {
+    // TODO: implement removeFriend
+    throw UnimplementedError();
   }
 } 

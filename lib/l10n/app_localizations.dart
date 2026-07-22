@@ -373,6 +373,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Accept invite'**
   String get acceptInvite;
+
+  /// No description provided for @invalidRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'This friend request is invalid'**
+  String get invalidRequest;
 }
 
 class _AppLocalizationsDelegate

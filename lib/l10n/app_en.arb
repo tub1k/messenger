@@ -45,5 +45,6 @@
   "aboutMe": "About me",
   "removeFriend": "Remove Friend",
   "cancelInvite": "Cancel invite",
-  "acceptInvite": "Accept invite"
+  "acceptInvite": "Accept invite",
+  "invalidRequest": "This friend request is invalid"
 }

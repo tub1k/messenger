@@ -12,6 +12,7 @@ enum AppErrorType {
   cantAddYourself,
   galleryPermissionDenied,
   userInList,
+  invalidRequest,
 }
 
 class ErrorHandler {
@@ -45,6 +46,9 @@ class ErrorHandler {
     if (errorStr.contains('user_in_list')) {
       return AppErrorType.userInList;
     }
+    if (errorStr.contains('invalid_request')) {
+      return AppErrorType.invalidRequest;
+    }
     
     return AppErrorType.unknown;
   }
@@ -52,29 +56,20 @@ class ErrorHandler {
 
 extension AppErrorLocalization on AppErrorType {
   String localizedMessage(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     
-    switch (this) {
-      case AppErrorType.network:
-        return l10n!.errorNetwork; 
-      case AppErrorType.notFound:
-        return l10n!.errorNotFound;
-      case AppErrorType.unauthorized:
-        return l10n!.errorUnauthorized;
-      case AppErrorType.failedToCreateChat:
-        return l10n!.failedToCreateChat;
-      case AppErrorType.addSomeoneFirst:
-        return l10n!.addSomeoneFirst;
-      case AppErrorType.triedToAddUserOnWrongScreen:
-        return l10n!.triedToAddUserOnWrongScreen;
-      case AppErrorType.cantAddYourself:
-        return l10n!.cantAddYourself;
-      case AppErrorType.galleryPermissionDenied:
-        return l10n!.galleryPermissionDenied;
-      case AppErrorType.unknown:
-        return l10n!.errorUnknown;
-      case AppErrorType.userInList:
-        return l10n!.userInList;
+    return switch (this) {
+      AppErrorType.network => l10n.errorNetwork,
+      AppErrorType.notFound => l10n.errorNotFound,
+      AppErrorType.unauthorized => l10n.errorUnauthorized,
+      AppErrorType.failedToCreateChat => l10n.failedToCreateChat,
+      AppErrorType.addSomeoneFirst => l10n.addSomeoneFirst,
+      AppErrorType.triedToAddUserOnWrongScreen => l10n.triedToAddUserOnWrongScreen,
+      AppErrorType.cantAddYourself => l10n.cantAddYourself,
+      AppErrorType.galleryPermissionDenied => l10n.galleryPermissionDenied,
+      AppErrorType.unknown => l10n.errorUnknown,
+      AppErrorType.userInList => l10n.userInList,
+      AppErrorType.invalidRequest => l10n.invalidRequest,
     }
   }
 }

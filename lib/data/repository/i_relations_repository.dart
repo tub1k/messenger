@@ -7,4 +7,8 @@ abstract class IRelationsRepository {
   Future<void> sendFriendRequest(String uid, String myId);
 
   Future<void> acceptFriendRequest(String uid, String myId);
+
+  Future<void> recallFriendRequest(String uid, String myId);
+
+  Future<void> removeFriend(String uid, String myId);
 }

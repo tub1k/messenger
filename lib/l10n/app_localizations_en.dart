@@ -150,4 +150,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get acceptInvite => 'Accept invite';
+
+  @override
+  String get invalidRequest => 'This friend request is invalid';
 }
