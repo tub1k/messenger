@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/user_model.dart';
@@ -72,15 +70,6 @@ class ProfileBloc extends Bloc<ProfileBlocEvent, ProfileBlocState> {
             }
       } catch (e) {
         emit(ProfileBlocInitial(errorText: e.toString(), user: state.user));
-      }
-    });
-
-    on<ProfileFriendButton>((event, emit) async {
-      try {
-        await _chatRepository.sendFriendRequest(state.user.uid, myId);
-      } catch (e) {
-        log(e.toString());
-        emit(ProfileBlocInitial(user: state.user, errorText: e.toString()));
       }
     });
   }

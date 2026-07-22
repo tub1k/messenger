@@ -1,7 +1,6 @@
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
-import 'package:messenger/user_relations_bloc.dart';
 
 abstract class IChatRepository {
   Stream<List<MessageModel>> getMessages(String chatId);
@@ -45,7 +44,7 @@ abstract class IChatRepository {
   Future<List<BaseUserModel>> getBaseUsersFromListOfUIDs(List<String> uidList);
 
   Future<void> sendSafePush({
-    required String targetFcmToken,
+    required String? targetFcmToken,
     required String title,
     required String body,
     required String type, // type of the action we do on click
@@ -54,11 +53,4 @@ abstract class IChatRepository {
 
   /// stream used to check online status/subscribe to baseusermodel
   Stream<BaseUserModel> streamUserPresence(String uid);
-
-  Future<void> sendFriendRequest(String uid, String myId);
-
-  Future<void> acceptFriendRequest(String uid, String myId);
-
-  /// used for getting friend/invite/block lists live 
-  Stream<UserRelationsState> relationsStream(String myId);
 }
