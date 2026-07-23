@@ -11,4 +11,6 @@ abstract class IRelationsRepository {
   Future<void> recallFriendRequest(String uid, String myId);
 
   Future<void> removeFriend(String uid, String myId);
+
+  Future<void> declineFriendRequest(String uid, String myId);
 }
