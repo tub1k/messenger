@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/data/repository/i_relations_repository.dart';
@@ -15,12 +17,14 @@ class FirebaseRelationsRepository implements IRelationsRepository {
         .collection('users')
         .doc(myId)
         .collection('friends')
-        .snapshots();
+        .snapshots()
+        .doOnError((e, stack) => log('❌ ОШИБКА В FRIENDS STREAM: $e'));
     final invitesStream = _firestore
         .collection('users')
         .doc(myId)
         .collection('invites')
-        .snapshots();
+        .snapshots()
+        .doOnError((e, stack) => log('❌ ОШИБКА В INVITES STREAM: $e'));
 
     return Rx.combineLatest2(friendsStream, invitesStream, (
       friendsSnap,
@@ -42,7 +46,7 @@ class FirebaseRelationsRepository implements IRelationsRepository {
         outgoingInviteIds: sent,
         blockedIds: {}, // TODO: add blocked list to repo when its implemented
       );
-    });
+    }).doOnError((e, stack) => log('❌ ОШИБКА В INVITES STREAM: $e'));;
   }
 
   @override

@@ -111,7 +111,7 @@ class ProfileContent extends StatelessWidget {
                   switch (userRelation) {
                     UserRelation.unknown => CustomIconButton(
                       onTap: () {
-                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                        context.read<UserRelationsBloc>().add(RelationsSendInvite(uid: user.uid));
                       },
                       text: context.l10n.addFriend,
                       color: context.colors.defaultButtonColor,
@@ -120,7 +120,7 @@ class ProfileContent extends StatelessWidget {
                     ),
                     UserRelation.friends => CustomIconButton(
                       onTap: () {
-                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                        context.read<UserRelationsBloc>().add(RelationsRemoveFriend(uid: user.uid));
                       },
                       text: context.l10n.removeFriend,
                       color: context.colors.defaultButtonColor,
@@ -129,7 +129,7 @@ class ProfileContent extends StatelessWidget {
                     ),
                     UserRelation.sentRequest => CustomIconButton(
                       onTap: () {
-                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                        context.read<UserRelationsBloc>().add(RelationsRecallInvite(uid: user.uid));
                       },
                       text: context.l10n.cancelInvite,
                       color: context.colors.defaultButtonColor,
@@ -138,7 +138,7 @@ class ProfileContent extends StatelessWidget {
                     ),
                     UserRelation.receivedRequest => CustomIconButton(
                       onTap: () {
-                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                        context.read<UserRelationsBloc>().add(RelationsAcceptInvite(uid: user.uid));
                       },
                       text: context.l10n.acceptInvite,
                       color: context.colors.defaultButtonColor,
@@ -147,7 +147,7 @@ class ProfileContent extends StatelessWidget {
                     ),
                     UserRelation.blocked => CustomIconButton(
                       onTap: () {
-                        context.read<ProfileBloc>().add(ProfileFriendButton());
+                        // TODO: blocked button functionality
                       },
                       text: context.l10n.addFriend,
                       color: context.colors.defaultButtonColor,

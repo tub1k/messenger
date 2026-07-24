@@ -109,7 +109,7 @@ class MyApp extends StatelessWidget {
             create: (context) => UserRelationsBloc(
               relationsRepository: context.read<IRelationsRepository>(),
               myId: context.myId!,
-            ),
+            )..add(UserRelationsInit()),
           ),
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
