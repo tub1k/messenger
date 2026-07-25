@@ -162,4 +162,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get invalidRequest => 'Эта заявка в друзья не валидна';
+
+  @override
+  String get friends => 'Друзья';
 }

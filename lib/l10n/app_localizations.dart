@@ -379,6 +379,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This friend request is invalid'**
   String get invalidRequest;
+
+  /// No description provided for @friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get friends;
 }
 
 class _AppLocalizationsDelegate

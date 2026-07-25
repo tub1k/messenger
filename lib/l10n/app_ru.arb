@@ -46,5 +46,6 @@
   "removeFriend": "Удалить друга",
   "cancelInvite": "Отменить заявку",
   "acceptInvite": "Принять в друзья",
-  "invalidRequest": "Эта заявка в друзья не валидна"
+  "invalidRequest": "Эта заявка в друзья не валидна",
+  "friends": "Друзья"
 }

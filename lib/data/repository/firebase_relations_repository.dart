@@ -18,13 +18,13 @@ class FirebaseRelationsRepository implements IRelationsRepository {
         .doc(myId)
         .collection('friends')
         .snapshots()
-        .doOnError((e, stack) => log('❌ ОШИБКА В FRIENDS STREAM: $e'));
+        .doOnError((e, stack) => log('FRIENDS STREAM: $e'));
     final invitesStream = _firestore
         .collection('users')
         .doc(myId)
         .collection('invites')
         .snapshots()
-        .doOnError((e, stack) => log('❌ ОШИБКА В INVITES STREAM: $e'));
+        .doOnError((e, stack) => log('INVITES STREAM: $e'));
 
     return Rx.combineLatest2(friendsStream, invitesStream, (
       friendsSnap,
@@ -46,7 +46,7 @@ class FirebaseRelationsRepository implements IRelationsRepository {
         outgoingInviteIds: sent,
         blockedIds: {}, // TODO: add blocked list to repo when its implemented
       );
-    }).doOnError((e, stack) => log('❌ ОШИБКА В INVITES STREAM: $e'));;
+    }).doOnError((e, stack) => log('INVITES+FRIENDS STREAM: $e'));
   }
 
   @override
