@@ -156,4 +156,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get friends => 'Friends';
+
+  @override
+  String get incomingInvites => 'Incoming Invites';
+
+  @override
+  String get outgoingInvites => 'Outgoing Invites';
+
+  @override
+  String get noFriendsYet =>
+      'You have no friends yet, add them using search bar above!';
 }

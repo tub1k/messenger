@@ -165,4 +165,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get friends => 'Друзья';
+
+  @override
+  String get incomingInvites => 'Входящие заявки';
+
+  @override
+  String get outgoingInvites => 'Исходящие заявки';
+
+  @override
+  String get noFriendsYet =>
+      'Здесь пока что пусто, добавь друзей с помощью поиска сверху!';
 }

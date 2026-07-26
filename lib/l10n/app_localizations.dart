@@ -385,6 +385,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Friends'**
   String get friends;
+
+  /// No description provided for @incomingInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming Invites'**
+  String get incomingInvites;
+
+  /// No description provided for @outgoingInvites.
+  ///
+  /// In en, this message translates to:
+  /// **'Outgoing Invites'**
+  String get outgoingInvites;
+
+  /// No description provided for @noFriendsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no friends yet, add them using search bar above!'**
+  String get noFriendsYet;
 }
 
 class _AppLocalizationsDelegate

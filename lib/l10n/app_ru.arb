@@ -47,5 +47,8 @@
   "cancelInvite": "Отменить заявку",
   "acceptInvite": "Принять в друзья",
   "invalidRequest": "Эта заявка в друзья не валидна",
-  "friends": "Друзья"
+  "friends": "Друзья",
+  "incomingInvites": "Входящие заявки",
+  "outgoingInvites": "Исходящие заявки",
+  "noFriendsYet": "Здесь пока что пусто, добавь друзей с помощью поиска сверху!"
 }
