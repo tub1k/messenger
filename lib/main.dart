@@ -8,7 +8,7 @@ import 'package:messenger/domain/repositories/i_auth_repository.dart';
 import 'package:messenger/data/repository/firebase_auth_repository.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
 import 'package:messenger/domain/repositories/i_image_repository.dart';
-import 'package:messenger/data/repository/i_relations_repository.dart';
+import 'package:messenger/domain/repositories/i_relations_repository.dart';
 import 'package:messenger/domain/repositories/i_storage_repository.dart';
 import 'package:messenger/data/repository/image_repository_impl.dart';
 import 'package:messenger/data/repository/settings_repository.dart';

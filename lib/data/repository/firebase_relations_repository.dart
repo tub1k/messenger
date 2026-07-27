@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
-import 'package:messenger/data/repository/i_relations_repository.dart';
+import 'package:messenger/domain/repositories/i_relations_repository.dart';
 import 'package:messenger/user_relations_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
