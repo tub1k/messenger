@@ -170,7 +170,7 @@ class FriendListTile extends StatelessWidget {
         ),
         FriendListTileType.outgoing => CustomIconButton(
           onTap: () {
-            relationsBloc.add(RelationsDeclineInvite(uid: user.uid));
+            relationsBloc.add(RelationsRecallInvite(uid: user.uid));
           },
           text: '',
           color: context.colors.leaveDeleteColor,

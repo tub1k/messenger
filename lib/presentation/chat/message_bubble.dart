@@ -63,7 +63,7 @@ class MessageBubble extends StatelessWidget {
             RelativeTimeText(
               dateTime: message.timestamp,
               isShort: true,
-              style: TextStyle(color: Colors.black38),
+              style: TextStyle(color: context.colors.halfOpaqueText),
             ),
             SizedBox(width: 8),
             if (isMe)
