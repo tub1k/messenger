@@ -61,7 +61,11 @@ class _ChatScreenState extends State<ChatScreen> {
       );
     } else if (chat.participants.length == 2) {
       final other = chat.getFirstUserThatIsntUID(context.myId!);
-      appBarSubtitle = DetailedLastSeenWidget(userModel: other, context: context, subtitleStyle: subtitleStyle);
+      appBarSubtitle = DetailedLastSeenWidget(
+        userModel: other,
+        context: context,
+        subtitleStyle: subtitleStyle,
+      );
     } else {
       appBarSubtitle = SizedBox();
     }
@@ -94,7 +98,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   backgroundImage: chat.photoUrl.length > 2
                       ? FastCachedImageProvider(chat.photoUrl)
                       : null,
-                  child: (chat.photoUrl.length <= 2) & (chat.chatName.isNotEmpty)
+                  child:
+                      (chat.photoUrl.length <= 2) & (chat.chatName.isNotEmpty)
                       ? Text(chat.chatName[0].toUpperCase())
                       : null,
                 ),
@@ -109,10 +114,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MembersListScreen(
-                        chat: chat,
-                        chatBloc: chatBloc,
-                      ),
+                      builder: (context) =>
+                          MembersListScreen(chat: chat, chatBloc: chatBloc),
                     ),
                   );
                 },
@@ -158,14 +161,37 @@ class _ChatScreenState extends State<ChatScreen> {
                         );
                       }
                       // else message bubbles
+                      final message = state.messages[index];
                       final bool isMe =
                           state.messages[index].senderId ==
                           context.read<ChatBloc>().myId;
-                      return MessageBubble(
+
+                      final bool isLastMessage =
+                          index == state.messages.length - 1;
+                      final bool isNewDay =
+                          isLastMessage ||
+                          !_isSameDay(
+                            message.timestamp,
+                            state.messages[index + 1].timestamp,
+                          );
+
+                      final messageBubble = MessageBubble(
                         message: state.messages[index],
                         isMe: isMe,
                         chatId: widget.chat.chatId,
                       );
+
+                      if (isNewDay) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _DateDivider(date: message.timestamp),
+                          messageBubble,
+                        ],
+                      );
+                    }
+
+                    return messageBubble;
                     },
                   ),
                 ),
@@ -287,5 +313,30 @@ class _ChatScreenState extends State<ChatScreen> {
     if (mounted) {
       context.read<ChatBloc>().add(ChatAddImage(images: imageBytes));
     }
+  }
+}
+
+bool _isSameDay(DateTime date1, DateTime date2) {
+  return date1.year == date2.year &&
+      date1.month == date2.month &&
+      date1.day == date2.day;
+}
+
+class _DateDivider extends StatelessWidget {
+  final DateTime date;
+  const _DateDivider({required this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        decoration: BoxDecoration(color: context.colors.dateDividerBg, borderRadius: BorderRadius.circular(24)),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+          child: Text(date.toDateDivider(context), style: TextStyle(fontSize: 20),),
+        ),
+      ),
+    ));
   }
 }

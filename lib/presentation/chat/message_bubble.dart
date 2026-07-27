@@ -6,7 +6,6 @@ import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
-import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
 
 class MessageBubble extends StatelessWidget {
   final MessageModel message;
@@ -60,9 +59,8 @@ class MessageBubble extends StatelessWidget {
                 padding: EdgeInsets.only(top: 4, right: 4),
                 child: Icon(Icons.access_time, size: 12, color: Colors.grey),
               ),
-            RelativeTimeText(
-              dateTime: message.timestamp,
-              isShort: true,
+            Text(
+              message.timestamp.toMessageTime(),
               style: TextStyle(color: context.colors.halfOpaqueText),
             ),
             SizedBox(width: 8),

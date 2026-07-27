@@ -175,4 +175,10 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get noFriendsYet =>
       'Здесь пока что пусто, добавь друзей с помощью поиска сверху!';
+
+  @override
+  String get yesterday => 'Вчера';
+
+  @override
+  String get today => 'Сегодня';
 }

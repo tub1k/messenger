@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
-import 'package:messenger/presentation/core/widgets/relative_time_text.dart';
+import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -50,7 +50,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
     if (msg != null) {
       appBarColumnChildren = [
             Text(msg.sender.displayName),
-            RelativeTimeText(dateTime: msg.timestamp),
+            Text(msg.timestamp.toFullDateTime(context), style: TextStyle(fontSize: 16),),
           ];
     } else if (chat != null) {
       appBarColumnChildren = [Text(chat.chatName)];

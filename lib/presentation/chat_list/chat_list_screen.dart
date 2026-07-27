@@ -91,6 +91,7 @@ class _ChatListScreenState extends State<ChatListScreen>
                   ),
                   title: Text(chat.chatName),
                   subtitle: Text(chat.lastMessagePreview),
+                  trailing: Text(chat.lastMessage.timestamp.toChatListTime(context)),
                   onTap: () {
                     final repo = context.read<IChatRepository>();
                     final currentUserId = context.myId!;

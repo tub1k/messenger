@@ -50,5 +50,7 @@
   "friends": "Friends",
   "incomingInvites": "Incoming Invites",
   "outgoingInvites": "Outgoing Invites",
-  "noFriendsYet": "You have no friends yet, add them using search bar above!"
+  "noFriendsYet": "You have no friends yet, add them using search bar above!",
+  "yesterday": "Yesterday",
+  "today": "Today"
 }

@@ -173,4 +173,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noFriendsYet =>
       'You have no friends yet, add them using search bar above!';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get today => 'Today';
 }
