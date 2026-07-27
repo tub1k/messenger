@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/core/services/notification_service.dart';
-import 'package:messenger/data/repository/i_auth_repository.dart';
+import 'package:messenger/domain/repositories/i_auth_repository.dart';
 import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';
 
 part 'auth_event.dart';

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:messenger/data/models/message_model.dart';
-import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/domain/repositories/i_storage_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 

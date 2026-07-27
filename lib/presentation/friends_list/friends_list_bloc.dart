@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/user_model.dart';
-import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/domain/repositories/i_chat_repository.dart';
 import 'package:messenger/user_relations_bloc.dart';
 
 class FriendsListEvent {}

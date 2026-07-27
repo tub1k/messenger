@@ -2,7 +2,7 @@ import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/message_model.dart';
-import 'package:messenger/data/repository/i_storage_repository.dart';
+import 'package:messenger/domain/repositories/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:gal/gal.dart';
 import 'package:intl/intl.dart';
-import 'package:messenger/data/repository/i_image_repository.dart';
+import 'package:messenger/domain/repositories/i_image_repository.dart';
 import 'package:native_exif/native_exif.dart';
 import 'package:path_provider/path_provider.dart';
 

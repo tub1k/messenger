@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:messenger/data/repository/i_auth_repository.dart';
+import 'package:messenger/domain/repositories/i_auth_repository.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 

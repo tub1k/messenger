@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger/data/repository/i_relations_repository.dart';
+import 'package:messenger/domain/repositories/i_relations_repository.dart';
 
 class UserRelationsState {
   final Set<String> friendIds;

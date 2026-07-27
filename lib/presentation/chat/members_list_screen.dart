@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/user_model.dart';
-import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/domain/repositories/i_chat_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/custom_icon_button.dart';
 import 'package:messenger/presentation/chat/gallery_screen.dart';

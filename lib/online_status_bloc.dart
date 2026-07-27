@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger/data/repository/i_auth_repository.dart';
+import 'package:messenger/domain/repositories/i_auth_repository.dart';
 
 abstract class OnlineStatusEvent {}
 

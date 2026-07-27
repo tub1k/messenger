@@ -4,7 +4,7 @@ import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/repository/i_storage_repository.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:messenger/data/repository/i_chat_repository.dart';
+import 'package:messenger/domain/repositories/i_chat_repository.dart';
 
 class MockChatRepository extends Mock implements IChatRepository {}
 class MockStorageRepository extends Mock implements IStorageRepository {}

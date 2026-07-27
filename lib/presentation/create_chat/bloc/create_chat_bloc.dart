@@ -3,8 +3,8 @@
   import 'package:flutter_bloc/flutter_bloc.dart';
   import 'package:messenger/data/models/chat_model.dart';
   import 'package:messenger/data/models/user_model.dart';
-  import 'package:messenger/data/repository/i_chat_repository.dart';
-  import 'package:messenger/data/repository/i_storage_repository.dart';
+  import 'package:messenger/domain/repositories/i_chat_repository.dart';
+  import 'package:messenger/domain/repositories/i_storage_repository.dart';
 
   part 'create_chat_event.dart';
   part 'create_chat_state.dart';

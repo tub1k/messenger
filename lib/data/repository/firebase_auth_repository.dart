@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:messenger/data/repository/i_auth_repository.dart';
+import 'package:messenger/domain/repositories/i_auth_repository.dart';
 
 class FirebaseAuthRepository implements IAuthRepository {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
