@@ -269,7 +269,7 @@ abstract class AppLocalizations {
   /// No description provided for @members.
   ///
   /// In en, this message translates to:
-  /// **'members'**
+  /// **'{count, plural, one{{count} member} few{{count} members} other{{count} members}}'**
   String members(num count);
 
   /// No description provided for @lastSeen.

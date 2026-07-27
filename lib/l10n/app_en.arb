@@ -28,7 +28,7 @@
   "galleryPermissionDenied": "Gallery permission denied.",
   "loadingSuccess": "Image downloaded successfully!",
   "loadingStarted": "Started image download...",
-  "members": "members",
+  "members": "{count, plural, one{{count} member} few{{count} members} other{{count} members}}",
   "lastSeen": "last seen",
   "online": "online",
   "userInList": "User is already in the list",
