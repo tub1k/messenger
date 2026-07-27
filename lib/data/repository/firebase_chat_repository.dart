@@ -416,4 +416,9 @@ class FirebaseChatRepository implements IChatRepository {
       return BaseUserModel.empty();
     });
   }
+  
+  @override
+  Future<void> updateMyReadTime(String chatId, String myId) async {
+    await _firestore.collection('chats').doc(chatId).update({'lastReads.$myId': Timestamp.now(),});
+  }
 }

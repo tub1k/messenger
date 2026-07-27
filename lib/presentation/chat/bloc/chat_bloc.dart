@@ -236,6 +236,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         emit(curState.copyWith(isLoadingMore: false, errorText: e.toString()));
       }
     }, transformer: throttleDroppable(const Duration(seconds: 2)));
+    on<ChatUpdateMyReadTime>((event, emit) {
+      _repository.updateMyReadTime(chatId, myId);
+    });
   }
 }
 

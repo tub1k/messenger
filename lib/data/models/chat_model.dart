@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:messenger/data/models/message_model.dart';
@@ -11,6 +12,7 @@ class ChatModel extends Equatable {
   final String photoUrl;
   final List<String> participants;
   final List<BaseUserModel> userModels;
+  final Map<String, DateTime> lastReads;
 
   const ChatModel({
     required this.chatName,
@@ -20,6 +22,7 @@ class ChatModel extends Equatable {
     required this.photoUrl,
     required this.participants,
     required this.userModels,
+    required this.lastReads,
   });
 
   ChatModel.empty()
@@ -29,7 +32,8 @@ class ChatModel extends Equatable {
       participants = [''],
       lastMessage = MessageModel.empty(),
       loadedMessages = [],
-      userModels = [];
+      userModels = [],
+      lastReads = {};
   
   factory ChatModel.fromFirebase({
     required Map<String, dynamic> data,
@@ -42,6 +46,7 @@ class ChatModel extends Equatable {
 
     String? chatName = 'Групповой чат';
     String? photoUrl = '';
+
     final participantsList = List<String>.from(data['participants'] ?? []);
 
     BaseUserModel? otherUser = BaseUserModel.empty();
@@ -61,6 +66,14 @@ class ChatModel extends Equatable {
       photoUrl = otherUser.photoUrl;
     }
 
+    final rawLastReads = data['lastReads'] as Map<String, dynamic>?;
+
+    final Map<String, DateTime> lastReads = {
+      for (final id in participantsList)
+        id: (rawLastReads?[id] as Timestamp?)?.toDate() ?? DateTime(1970),
+    };
+
+
     return ChatModel(
       photoUrl: photoUrl ?? '',
       chatId: docId,
@@ -71,6 +84,7 @@ class ChatModel extends Equatable {
           : MessageModel.empty(),
       participants: participantsList,
       userModels: userModels,
+      lastReads: lastReads,
     );
   }
 

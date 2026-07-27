@@ -53,4 +53,6 @@ abstract class IChatRepository {
 
   /// stream used to check online status/subscribe to baseusermodel
   Stream<BaseUserModel> streamUserPresence(String uid);
+
+  Future<void> updateMyReadTime(String chatId, String myId);
 }

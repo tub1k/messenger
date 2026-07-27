@@ -26,6 +26,10 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController _controller;
   final _imagePicker = ImagePicker();
   final ScrollController _scrollController = ScrollController();
+
+  bool isWorthToUpdateTheRead = true;
+  String? _lastMessageId;
+
   @override
   void initState() {
     _controller = TextEditingController();
@@ -41,11 +45,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _onScroll() {
-    final minScroll =
-        _scrollController.position.minScrollExtent; // top of the list
+    final minScroll = _scrollController.position.minScrollExtent;
+    final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    if (currentScroll <= minScroll + 300) {
+    if (currentScroll >= maxScroll - 300) {
       context.read<ChatBloc>().add(ChatLoadMoreMessages());
+    }
+
+    if (currentScroll <= minScroll + 100 && isWorthToUpdateTheRead) {
+      context.read<ChatBloc>().add(ChatUpdateMyReadTime());
+      isWorthToUpdateTheRead = false;
     }
   }
 
@@ -136,6 +145,17 @@ class _ChatScreenState extends State<ChatScreen> {
       body: BlocConsumer<ChatBloc, ChatState>(
         builder: (context, state) {
           if (state is ChatLoaded) {
+            if (state.messages.isNotEmpty) {
+              if (state.messages.first.id != _lastMessageId) {
+                isWorthToUpdateTheRead = true;
+                _lastMessageId = state.messages.first.id;
+
+                if (_scrollController.hasClients && _scrollController.offset <= 100) {
+                  context.read<ChatBloc>().add(ChatUpdateMyReadTime());
+                  isWorthToUpdateTheRead = false;
+                }
+              }
+            }
             return Column(
               children: [
                 Expanded(
@@ -182,16 +202,16 @@ class _ChatScreenState extends State<ChatScreen> {
                       );
 
                       if (isNewDay) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _DateDivider(date: message.timestamp),
-                          messageBubble,
-                        ],
-                      );
-                    }
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _DateDivider(date: message.timestamp),
+                            messageBubble,
+                          ],
+                        );
+                      }
 
-                    return messageBubble;
+                      return messageBubble;
                     },
                   ),
                 ),
@@ -328,15 +348,23 @@ class _DateDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Container(
-        decoration: BoxDecoration(color: context.colors.dateDividerBg, borderRadius: BorderRadius.circular(24)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
-          child: Text(date.toDateDivider(context), style: TextStyle(fontSize: 20),),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: context.colors.dateDividerBg,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+            child: Text(
+              date.toDateDivider(context),
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
         ),
       ),
-    ));
+    );
   }
 }

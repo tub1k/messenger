@@ -33,5 +33,5 @@ class ChatLoaded extends ChatState {
   }
   
   @override
-  List<Object?> get props => [messages, errorText, images.length, images.hashCode];
+  List<Object?> get props => [messages, errorText, images.length, images.hashCode, isLoadingMore, hasReachedMax];
 }
