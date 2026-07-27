@@ -1,6 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/user_relations_bloc.dart';
@@ -21,6 +24,13 @@ class FriendsListDataReceived extends FriendsListEvent {
   });
 }
 
+class FriendsListDMButton extends FriendsListEvent {
+  final String uid;
+  final String myId;
+
+  FriendsListDMButton({required this.uid, required this.myId});
+} 
+
 class FriendsListState {}
 
 class FriendsListLoading extends FriendsListState {}
@@ -30,13 +40,35 @@ class FriendsListLoaded extends FriendsListState {
   final List<BaseUserModel> incomingInvites;
   final List<BaseUserModel> outgoingInvites;
   final String searchQuery;
+  final ChatModel? chatToPush;
+  final String? errorText;
 
   FriendsListLoaded({
-    this.searchQuery = '',
     required this.friends,
     required this.incomingInvites,
     required this.outgoingInvites,
+    this.searchQuery = '',
+    this.chatToPush,
+    this.errorText,
   });
+
+  FriendsListLoaded copyWith({
+    List<BaseUserModel>? friends,
+    List<BaseUserModel>? incomingInvites,
+    List<BaseUserModel>? outgoingInvites,
+    String? searchQuery,
+    ChatModel? chatToPush,
+    String? errorText,
+  }) {
+    return FriendsListLoaded(
+      friends: friends ?? this.friends,
+      incomingInvites: incomingInvites ?? this.incomingInvites,
+      outgoingInvites: outgoingInvites ?? this.outgoingInvites,
+      searchQuery: searchQuery ?? this.searchQuery,
+      chatToPush: chatToPush ?? this.chatToPush,
+      errorText: errorText ?? this.errorText,
+    );
+  }
 }
 
 class FriendsListBloc extends Bloc<FriendsListEvent, FriendsListState> {
@@ -87,6 +119,32 @@ class FriendsListBloc extends Bloc<FriendsListEvent, FriendsListState> {
           outgoingInvites: event.outgoingInvites,
         ),
       );
+    });
+    on<FriendsListDMButton>((event, emit) async {
+      final curState = state;
+      final myId = event.myId;
+      if (curState is! FriendsListLoaded) return;
+      try {
+        final chat = await _chatRepository.getDms(myId, event.uid, myId);
+        if (chat != null) {
+          emit(curState.copyWith(chatToPush: chat));
+        } else {
+          final createdChatId = await _chatRepository.createChat(
+            userUids: [myId, event.uid],
+          );
+          final createdChat = await _chatRepository.getChatObject(
+            createdChatId,
+            myId,
+          );
+          if (createdChat != null) {
+            curState.copyWith(chatToPush: createdChat);
+          } else {
+            throw 'failed_to_create_chat';
+          }
+        }
+      } catch (e) {
+        emit(curState.copyWith(errorText: e.toString()));
+      }
     });
   }
 }

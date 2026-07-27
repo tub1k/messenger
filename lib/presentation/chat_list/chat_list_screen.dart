@@ -47,7 +47,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         icon: Icon(Icons.chat),
         style: IconButton.styleFrom(
           shape: const CircleBorder(),
-          backgroundColor: Colors.blue,
+          backgroundColor: context.colors.defaultButtonColor,
           padding: EdgeInsets.all(16),
         ),
       ),

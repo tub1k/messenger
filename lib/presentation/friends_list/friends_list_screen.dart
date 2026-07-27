@@ -6,6 +6,8 @@ import 'package:messenger/data/repository/i_chat_repository.dart';
 import 'package:messenger/presentation/chat/custom_icon_button.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/friends_list/friends_list_bloc.dart';
+import 'package:messenger/presentation/profile/bloc/profile_bloc.dart';
+import 'package:messenger/presentation/profile/profile_content.dart';
 import 'package:messenger/user_relations_bloc.dart';
 
 class FriendsListScreen extends StatefulWidget {
@@ -45,7 +47,10 @@ class _FriendsListScreenState extends State<FriendsListScreen>
                 slivers: [
                   if (state.incomingInvites.isNotEmpty) ...[
                     SliverToBoxAdapter(
-                      child: Text(context.l10n.incomingInvites),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Text(context.l10n.incomingInvites),
+                      ),
                     ),
                     SliverList.builder(
                       itemCount: state.incomingInvites.length,
@@ -55,13 +60,20 @@ class _FriendsListScreenState extends State<FriendsListScreen>
                           user: user,
                           type: FriendListTileType.incoming,
                           relationsBloc: relationsBloc,
+                          bloc: context.read<FriendsListBloc>(),
                         );
                       },
                     ),
                   ],
                   if (state.outgoingInvites.isNotEmpty) ...[
                     SliverToBoxAdapter(
-                      child: Text(context.l10n.outgoingInvites),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Text(
+                          context.l10n.outgoingInvites,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
                     ),
                     SliverList.builder(
                       itemCount: state.outgoingInvites.length,
@@ -71,6 +83,7 @@ class _FriendsListScreenState extends State<FriendsListScreen>
                           user: user,
                           type: FriendListTileType.outgoing,
                           relationsBloc: relationsBloc,
+                          bloc: context.read<FriendsListBloc>(),
                         );
                       },
                     ),
@@ -93,11 +106,13 @@ class FriendListTile extends StatelessWidget {
   final BaseUserModel user;
   final FriendListTileType type;
   final UserRelationsBloc relationsBloc;
+  final FriendsListBloc bloc;
   const FriendListTile({
     super.key,
     required this.user,
     required this.type,
     required this.relationsBloc,
+    required this.bloc,
   });
 
   @override
@@ -113,6 +128,21 @@ class FriendListTile extends StatelessWidget {
       ),
       title: Text(user.displayName),
       subtitle: Text('@${user.username}'),
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return BlocProvider(
+              create: (context) => ProfileBloc(
+                initialUser: user,
+                chatRepository: context.read<IChatRepository>(),
+                myId: context.myId!,
+              )..add(ProfileSubscribe()),
+              child: ProfileContent(),
+            );
+          },
+        );
+      },
       trailing: switch (type) {
         FriendListTileType.incoming => Row(
           children: [
@@ -123,6 +153,8 @@ class FriendListTile extends StatelessWidget {
               text: '',
               color: context.colors.defaultButtonColor,
               icon: Icons.person_add_alt_1,
+              width: 80,
+              height: 40,
             ),
             CustomIconButton(
               onTap: () {
@@ -131,24 +163,30 @@ class FriendListTile extends StatelessWidget {
               text: '',
               color: context.colors.leaveDeleteColor,
               icon: Icons.person_remove_alt_1,
+              width: 80,
+              height: 40,
             ),
           ],
         ),
         FriendListTileType.outgoing => CustomIconButton(
           onTap: () {
-            relationsBloc.add(RelationsAcceptInvite(uid: user.uid));
+            relationsBloc.add(RelationsDeclineInvite(uid: user.uid));
           },
           text: '',
           color: context.colors.leaveDeleteColor,
           icon: Icons.cancel,
+          width: 80,
+          height: 40,
         ),
         FriendListTileType.friend => CustomIconButton(
           onTap: () {
-            // TODO: dm button function
+            bloc.add(FriendsListDMButton(myId: context.myId!, uid: user.uid));
           },
           text: '',
           color: context.colors.defaultButtonColor,
           icon: Icons.message,
+          width: 80,
+          height: 40,
         ),
       },
     );

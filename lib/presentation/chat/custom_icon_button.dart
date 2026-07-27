@@ -20,6 +20,7 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textExists = (text.isNotEmpty);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -36,7 +37,7 @@ class CustomIconButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: Colors.white),
-            SizedBox(width: 5),
+            textExists ? SizedBox(width: 5) : SizedBox(),
             Text(text, style: TextStyle(color: Colors.white, fontSize: 12)),
           ],
         ),
