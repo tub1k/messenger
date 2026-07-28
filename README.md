@@ -59,7 +59,7 @@ lib/
 * **Core:** Flutter, Dart
 * **State Management:** `flutter_bloc`, `equatable`
 * **Backend:** Firebase (Auth, Firestore, FCM), Supabase Storage
-* **Microservices:** Node.js / Go backend hosted on **Render** (for FCM)
+* **Microservices:** Node.js backend hosted on **Render** (for FCM)
 * **Networking & Media:** `dio`, `gal`, `photo_view`
 * **Local Storage:** `shared_preferences`
 * **Localization:** `flutter_localizations` (`l10n`)
