@@ -48,10 +48,12 @@ A full-featured real-time cross-platform messenger built with **Clean Architectu
 
 The project strictly follows **Clean Architecture** principles and is divided into isolated layers:
 
+```
 lib/
 ├── domain/       # Entities, UseCases, Repository Interfaces
 ├── data/         # Models, DataSources (Firebase/Supabase), Repositories Implementation
 └── presentation/ # BLoC / Cubit, Screens, Widgets
+```
 
 ---
 
