@@ -108,5 +108,5 @@ class ChatModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [chatName, chatId, lastMessage, loadedMessages];
+  List<Object?> get props => [chatName, chatId, lastMessage, loadedMessages, lastReads, userModels, photoUrl, participants, lastReads.entries.firstOrNull?.value];
 }

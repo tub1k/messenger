@@ -18,8 +18,7 @@ class ChatListLoaded extends ChatListState {
   ChatListLoaded({required this.chatList, required this.localSave, this.errorText, this.key});
 
   @override
-  List<Object?> get props => [chatList, localSave, errorText];
-
+  List<Object?> get props => [chatList, localSave, errorText, chatList.hashCode];
 }
 
 class ChatListFailed extends ChatListState {

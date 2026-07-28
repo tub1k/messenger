@@ -69,5 +69,5 @@ class MessageModel extends Equatable {
     );
   }
   @override
-  List<Object?> get props => [id, text, type, senderId, timestamp];
+  List<Object?> get props => [id, text, type, senderId, timestamp, sender];
 }

@@ -19,7 +19,7 @@ class ChatListScreen extends StatefulWidget {
   State<ChatListScreen> createState() => _ChatListScreenState();
 }
 
-// because we use it in mainscaffold in pageview 
+// because we use it in mainscaffold in pageview
 class _ChatListScreenState extends State<ChatListScreen>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -80,18 +80,38 @@ class _ChatListScreenState extends State<ChatListScreen>
               itemCount: state.chatList.length,
               itemBuilder: (context, index) {
                 final ChatModel chat = state.chatList[index];
+                final DateTime myReadTime =
+                    chat.lastReads[context.myId!] ?? DateTime(1970);
+                final bool drawDot = myReadTime.isBefore(
+                  chat.lastMessage.timestamp,
+                );
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundImage: chat.photoUrl.length > 2
                         ? FastCachedImageProvider(chat.photoUrl)
                         : null,
-                    child: (chat.photoUrl.length <= 2) & (chat.chatName.isNotEmpty)
+                    child:
+                        (chat.photoUrl.length <= 2) & (chat.chatName.isNotEmpty)
                         ? Text(chat.chatName[0].toUpperCase())
                         : null,
                   ),
                   title: Text(chat.chatName),
                   subtitle: Text(chat.lastMessagePreview),
-                  trailing: Text(chat.lastMessage.timestamp.toChatListTime(context)),
+                  trailing: Column(
+                    children: [
+                      Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: drawDot
+                              ? context.colors.newMessageDotColor
+                              : Colors.transparent,
+                        ),
+                      ),
+                      Text(chat.lastMessage.timestamp.toChatListTime(context)),
+                    ],
+                  ),
                   onTap: () {
                     final repo = context.read<IChatRepository>();
                     final currentUserId = context.myId!;

@@ -50,3 +50,5 @@ lib/firebase_options.dart
 
 secrets.json
 secrets.dart
+
+ios/firebase_app_id_file.json

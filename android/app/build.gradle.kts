@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.messenger"
+    namespace = "com.tubikapps.messenger"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
