@@ -150,10 +150,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 isWorthToUpdateTheRead = true;
                 _lastMessageId = state.messages.first.id;
 
-                if (_scrollController.hasClients && _scrollController.offset <= 100) {
-                  context.read<ChatBloc>().add(ChatUpdateMyReadTime());
-                  isWorthToUpdateTheRead = false;
-                }
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!mounted) return; 
+
+                  if (_scrollController.hasClients && _scrollController.offset <= 100) {
+                    context.read<ChatBloc>().add(ChatUpdateMyReadTime());
+                    isWorthToUpdateTheRead = false;
+                  }
+                });
               }
             }
             return Column(
