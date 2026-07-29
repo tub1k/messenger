@@ -15,10 +15,29 @@ class ChatListLoaded extends ChatListState {
   final String? errorText; 
   final String? key;
 
-  ChatListLoaded({required this.chatList, required this.localSave, this.errorText, this.key});
+  ChatListLoaded({
+    required this.chatList,
+    required this.localSave,
+    this.errorText,
+    this.key,
+  });
 
   @override
   List<Object?> get props => [chatList, localSave, errorText, chatList.hashCode];
+
+  ChatListLoaded copyWith({
+    List<ChatModel>? chatList,
+    bool? localSave,
+    String? errorText,
+    String? key,
+  }) {
+    return ChatListLoaded(
+      chatList: chatList ?? this.chatList,
+      localSave: localSave ?? this.localSave,
+      errorText: errorText ?? this.errorText,
+      key: key ?? this.key,
+    );
+  }
 }
 
 class ChatListFailed extends ChatListState {

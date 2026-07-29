@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:collection/collection.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/chat_model.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
@@ -46,6 +46,21 @@ class ChatListBloc extends Bloc<ChatListEvent, ChatListState> {
         },
       );
     }, transformer: restartable());
+
+    on<ChatListUpdateReadTime>((event, emit) {
+      final curState = state;
+      if (curState is ChatListLoaded) {
+        final updatedChats = curState.chatList.map((chat) {
+          if (chat.chatId == event.chatId) {
+            return chat.copyWith(
+              lastReads: {...chat.lastReads, myId: DateTime.now()},
+            );
+          }
+          return chat;
+        }).toList();
+        emit(curState.copyWith(chatList: updatedChats));
+      }
+    });
   }
 }
 

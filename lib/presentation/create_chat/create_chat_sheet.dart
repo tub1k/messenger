@@ -9,6 +9,7 @@ import 'package:messenger/domain/repositories/i_storage_repository.dart';
 import 'package:messenger/presentation/auth/bloc/auth_bloc.dart';
 import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
 import 'package:messenger/presentation/chat/chat_screen.dart';
+import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/create_chat/bloc/create_chat_bloc.dart';
@@ -83,7 +84,8 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                           storageRepository: context.read<IStorageRepository>(),
                           imageRepository: context.read<IImageRepository>(),
                           myId: currentUserId,
-                          chat: chat
+                          chat: chat,
+                          chatListBloc: context.read<ChatListBloc>(),
                         )..add(ChatStarted(chat.chatId)),
                         child: ChatScreen(chat: chat),
                       ),

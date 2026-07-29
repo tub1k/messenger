@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +19,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final IChatRepository _repository;
   final IStorageRepository _storageRepository;
   final IImageRepository _imageRepository;
+  final ChatListBloc _chatListBloc;
   final String myId;
   final ChatModel chat;
 
@@ -28,8 +30,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     required this.myId,
     required this.chat,
     required IStorageRepository storageRepository,
-    required IImageRepository imageRepository,
-  }) : _imageRepository = imageRepository,
+    required IImageRepository imageRepository, required chatListBloc,
+  }) : _chatListBloc = chatListBloc, _imageRepository = imageRepository,
        _storageRepository = storageRepository,
        _repository = repository,
        super(ChatInitial()) {
@@ -237,6 +239,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
     }, transformer: throttleDroppable(const Duration(seconds: 2)));
     on<ChatUpdateMyReadTime>((event, emit) {
+      _chatListBloc.add(ChatListUpdateReadTime(chatId: chatId));
       _repository.updateMyReadTime(chatId, myId);
     });
   }

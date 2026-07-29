@@ -343,7 +343,7 @@ class FirebaseChatRepository implements IChatRepository {
         throw 'failed to get user, make sure this UID exists. ($uid)';
       }
       final user = BaseUserModel.fromFirebase(data: data);
-      _memoryUserCache[uid] = user;
+      if (user.uid.length > 7) {_memoryUserCache[uid] = user;}
 
       return user;
     } catch (e) {

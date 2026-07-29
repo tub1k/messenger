@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
+
 import 'package:messenger/data/models/message_model.dart';
 import 'package:messenger/data/models/user_model.dart';
 
@@ -108,5 +109,38 @@ class ChatModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [chatName, chatId, lastMessage, loadedMessages, lastReads, userModels, photoUrl, participants, lastReads.entries.firstOrNull?.value];
+  List<Object> get props {
+    return [
+      chatName,
+      chatId,
+      lastMessage,
+      loadedMessages,
+      photoUrl,
+      participants,
+      userModels,
+      lastReads,
+    ];
+  }
+
+  ChatModel copyWith({
+    String? chatName,
+    String? chatId,
+    MessageModel? lastMessage,
+    List<MessageModel>? loadedMessages,
+    String? photoUrl,
+    List<String>? participants,
+    List<BaseUserModel>? userModels,
+    Map<String, DateTime>? lastReads,
+  }) {
+    return ChatModel(
+      chatName: chatName ?? this.chatName,
+      chatId: chatId ?? this.chatId,
+      lastMessage: lastMessage ?? this.lastMessage,
+      loadedMessages: loadedMessages ?? this.loadedMessages,
+      photoUrl: photoUrl ?? this.photoUrl,
+      participants: participants ?? this.participants,
+      userModels: userModels ?? this.userModels,
+      lastReads: lastReads ?? this.lastReads,
+    );
+  }
 }

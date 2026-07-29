@@ -55,5 +55,5 @@ class BaseUserModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [uid, photoUrl, displayName, username];
+  List<Object?> get props => [uid, photoUrl, displayName, username, lastSeen, isOnline, fcmToken, aboutMe];
 }
