@@ -98,10 +98,13 @@ class _ChatListScreenState extends State<ChatListScreen>
                   title: Text(chat.chatName),
                   subtitle: Text(chat.lastMessagePreview),
                   trailing: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      SizedBox(),
                       Container(
-                        width: 10,
-                        height: 10,
+                        width: 15,
+                        height: 15,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: drawDot
