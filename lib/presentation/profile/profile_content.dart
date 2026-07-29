@@ -52,7 +52,7 @@ class ProfileContent extends StatelessWidget {
                   imageRepository: context.read<IImageRepository>(),
                   myId: currentUserId,
                   chat: chat,
-                  chatListBloc: context.read<ChatListBloc>(),
+                  chatListBloc: context.read<ChatListBloc?>(),
                 )..add(ChatStarted(chat.chatId)),
                 child: ChatScreen(chat: chat),
               ),

@@ -49,7 +49,10 @@ class _FriendsListScreenState extends State<FriendsListScreen>
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: Text(context.l10n.incomingInvites),
+                        child: Text(
+                          context.l10n.incomingInvites,
+                          style: TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
                     SliverList.builder(
@@ -82,6 +85,29 @@ class _FriendsListScreenState extends State<FriendsListScreen>
                         return FriendListTile(
                           user: user,
                           type: FriendListTileType.outgoing,
+                          relationsBloc: relationsBloc,
+                          bloc: context.read<FriendsListBloc>(),
+                        );
+                      },
+                    ),
+                  ],
+                  if (state.friends.isNotEmpty) ...[
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: Text(
+                          context.l10n.friends,
+                          style: TextStyle(fontSize: 24),
+                        ),
+                      ),
+                    ),
+                    SliverList.builder(
+                      itemCount: state.friends.length,
+                      itemBuilder: (context, index) {
+                        final user = state.friends[index];
+                        return FriendListTile(
+                          user: user,
+                          type: FriendListTileType.friend,
                           relationsBloc: relationsBloc,
                           bloc: context.read<FriendsListBloc>(),
                         );
@@ -145,6 +171,7 @@ class FriendListTile extends StatelessWidget {
       },
       trailing: switch (type) {
         FriendListTileType.incoming => Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             CustomIconButton(
               onTap: () {
@@ -156,6 +183,7 @@ class FriendListTile extends StatelessWidget {
               width: 80,
               height: 40,
             ),
+            SizedBox(width: 10),
             CustomIconButton(
               onTap: () {
                 relationsBloc.add(RelationsDeclineInvite(uid: user.uid));

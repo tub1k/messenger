@@ -85,7 +85,7 @@ class _CreateChatSheetState extends State<CreateChatSheet> {
                           imageRepository: context.read<IImageRepository>(),
                           myId: currentUserId,
                           chat: chat,
-                          chatListBloc: context.read<ChatListBloc>(),
+                          chatListBloc: context.read<ChatListBloc?>(),
                         )..add(ChatStarted(chat.chatId)),
                         child: ChatScreen(chat: chat),
                       ),

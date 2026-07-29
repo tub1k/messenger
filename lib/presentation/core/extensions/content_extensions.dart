@@ -21,6 +21,7 @@ extension AppLocalizationsX on BuildContext {
 }
 
 extension AppThemeContext on BuildContext {
+  ColorScheme get colorScheme => Theme.of(this).colorScheme;
   AppColorsExtension get colors => Theme.of(this).extension<AppColorsExtension>()!;
 }
 

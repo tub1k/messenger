@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:messenger/presentation/settings/bloc/settings_bloc.dart';
 
@@ -21,6 +22,7 @@ class NotificationService {
   NotificationService._internal();
 
   Future<void> initialize(String currentUserId, SettingsBloc settingsBloc) async {
+    WidgetsFlutterBinding.ensureInitialized();
     _settingsBloc = settingsBloc;
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,

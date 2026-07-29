@@ -198,7 +198,7 @@ Future<void> _pushChat(BuildContext context, String chatId) async {
             imageRepository: imageRepo,
             myId: currentUserId,
             chat: chat,
-            chatListBloc: context.read<ChatListBloc>(),
+            chatListBloc: context.read<ChatListBloc?>(),
           )..add(ChatStarted(chat.chatId)),
           child: ChatScreen(chat: chat),
         ),

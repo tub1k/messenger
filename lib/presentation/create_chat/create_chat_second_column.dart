@@ -36,7 +36,7 @@ class CreateChatSecondColumn extends StatelessWidget {
           Text(context.l10n.addChatPicture, style: TextStyle(fontSize: 24)),
           Ink(
             decoration: BoxDecoration(
-              color: Colors.blue[100],
+              color: context.colorScheme.primary,
               shape: BoxShape.circle,
               image: selectedImage != null
                   ? DecorationImage(
