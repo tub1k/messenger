@@ -94,6 +94,7 @@ class FriendsListBloc extends Bloc<FriendsListEvent, FriendsListState> {
             state.outgoingInviteIds.toList(),
           ),
         ]);
+        if (isClosed) return;
         add(
           FriendsListDataReceived(
             friends: people[0],
@@ -137,7 +138,7 @@ class FriendsListBloc extends Bloc<FriendsListEvent, FriendsListState> {
             myId,
           );
           if (createdChat != null) {
-            curState.copyWith(chatToPush: createdChat);
+            emit(curState.copyWith(chatToPush: createdChat));
           } else {
             throw 'failed_to_create_chat';
           }

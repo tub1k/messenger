@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
+import 'package:messenger/domain/repositories/i_image_repository.dart';
+import 'package:messenger/domain/repositories/i_storage_repository.dart';
+import 'package:messenger/presentation/chat/bloc/chat_bloc.dart';
+import 'package:messenger/presentation/chat/chat_screen.dart';
 import 'package:messenger/presentation/chat/custom_icon_button.dart';
+import 'package:messenger/presentation/chat_list/bloc/chat_list_bloc.dart';
+import 'package:messenger/presentation/core/error_handler/error_handler.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/friends_list/friends_list_bloc.dart';
 import 'package:messenger/presentation/profile/bloc/profile_bloc.dart';
@@ -37,7 +43,42 @@ class _FriendsListScreenState extends State<FriendsListScreen>
       child: Scaffold(
         appBar: AppBar(title: Text(context.l10n.friends)),
         body: BlocConsumer<FriendsListBloc, FriendsListState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is FriendsListLoaded) {
+              if (state.errorText != null) {
+                final errorHandler = ErrorHandler.from(state.errorText!);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      (errorHandler == AppErrorType.unknown)
+                          ? state.errorText!
+                          : errorHandler.localizedMessage(context),
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+              if (state.chatToPush != null) {
+                final chat = state.chatToPush!;
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (navContext) => BlocProvider(
+                        create: (blocContext) => ChatBloc(
+                          repository: context.read<IChatRepository>(),
+                          storageRepository: context.read<IStorageRepository>(),
+                          imageRepository: context.read<IImageRepository>(),
+                          myId: context.myId!,
+                          chat: chat,
+                          chatListBloc: context.read<ChatListBloc?>(),
+                        )..add(ChatStarted(chat.chatId)),
+                        child: ChatScreen(chat: chat),
+                      ),
+                    ),
+                  );
+              }
+            }
+          },
           builder: (context, state) {
             if (state is FriendsListLoading) {
               return CircularProgressIndicator();

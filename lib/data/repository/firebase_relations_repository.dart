@@ -95,7 +95,7 @@ class FirebaseRelationsRepository implements IRelationsRepository {
 
         batch.set(myFriendsRef, myFriendsData);
         batch.set(otherFriendsRef, otherFriendsData);
-        await batch.commit();
+        batch.commit();
 
         // notif
         final users = await Future.wait([

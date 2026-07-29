@@ -112,7 +112,7 @@ class UserRelationsBloc extends Bloc<UserRelationsEvent, UserRelationsState> {
     });
     on<RelationsRemoveFriend>((event, emit) async {
       try {
-        await _relationsRepository.sendFriendRequest(event.uid, myId);
+        await _relationsRepository.removeFriend(event.uid, myId);
       } catch (e) {
         emit(state.copyWith(errorText: e.toString()));
       }
