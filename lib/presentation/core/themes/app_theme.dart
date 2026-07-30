@@ -7,7 +7,16 @@ class AppTheme {
       brightness: Brightness.light,
       scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
       extensions: const [
-        AppColorsExtension(leaveDeleteColor: Colors.red, halfOpaqueText: Colors.black38, defaultButtonColor: Colors.deepPurple, dateDividerBg: Colors.black12, newMessageDotColor: Color.fromARGB(255, 164, 27, 255))
+        AppColorsExtension(
+          leaveDeleteColor: Colors.red,
+          halfOpaqueText: Colors.black38,
+          defaultButtonColor: Colors.deepPurple,
+          dateDividerBg: Colors.black12,
+          newMessageDotColor: Color.fromARGB(255, 164, 27, 255),
+          messageText: Colors.black,
+          incomingMessageBG: Color.fromARGB(255, 212, 213, 214),
+          outgoingMessageBG: Color.fromARGB(255, 137, 94, 255),
+        ),
       ],
     );
   }
@@ -17,8 +26,17 @@ class AppTheme {
       brightness: Brightness.dark,
       scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
       extensions: [
-        AppColorsExtension(leaveDeleteColor: Colors.red.shade400, halfOpaqueText: Colors.white38, defaultButtonColor: Colors.deepPurpleAccent, dateDividerBg: Colors.white12, newMessageDotColor: Color.fromARGB(255, 164, 27, 255))
-      ]
+        AppColorsExtension(
+          leaveDeleteColor: Colors.red.shade400,
+          halfOpaqueText: Colors.white38,
+          defaultButtonColor: Colors.deepPurpleAccent,
+          dateDividerBg: Colors.white12,
+          newMessageDotColor: Color.fromARGB(255, 164, 27, 255),
+          messageText: Colors.white,
+          incomingMessageBG: Color.fromARGB(255, 29, 29, 29),
+          outgoingMessageBG: const Color.fromARGB(255, 87, 47, 156),
+        ),
+      ],
     );
   }
 }

@@ -6,12 +6,19 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
   final Color defaultButtonColor;
   final Color dateDividerBg;
   final Color newMessageDotColor;
+  final Color messageText;
+  final Color incomingMessageBG;
+  final Color outgoingMessageBG;
 
   const AppColorsExtension({
     required this.leaveDeleteColor,
     required this.halfOpaqueText, 
-    required this.defaultButtonColor, required this.dateDividerBg,
-    required this.newMessageDotColor,
+    required this.defaultButtonColor, 
+    required this.dateDividerBg,
+    required this.newMessageDotColor, 
+    required this.messageText,
+    required this.incomingMessageBG,
+    required this.outgoingMessageBG,
   });
 
   @override
@@ -21,6 +28,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
     Color? defaultButtonColor,
     Color? dateDividerBg,
     Color? newMessageDotColor,
+    Color? messageText,
+    Color? incomingMessageBG,
+    Color? outgoingMessageBG,
   }) {
     return AppColorsExtension(
       leaveDeleteColor: leaveDeleteColor ?? this.leaveDeleteColor,
@@ -28,6 +38,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       defaultButtonColor: defaultButtonColor ?? this.defaultButtonColor,
       dateDividerBg: dateDividerBg ?? this.dateDividerBg,
       newMessageDotColor: newMessageDotColor ?? this.newMessageDotColor,
+      messageText: messageText ?? this.messageText,
+      incomingMessageBG: incomingMessageBG ?? this.incomingMessageBG,
+      outgoingMessageBG: outgoingMessageBG ?? this.outgoingMessageBG,
     );
   }
 
@@ -47,6 +60,9 @@ class AppColorsExtension extends ThemeExtension<AppColorsExtension> {
       defaultButtonColor: Color.lerp(defaultButtonColor, other.defaultButtonColor, t)!,
       dateDividerBg: Color.lerp(dateDividerBg, other.dateDividerBg, t)!,
       newMessageDotColor: Color.lerp(newMessageDotColor, other.newMessageDotColor, t)!,
+      messageText: Color.lerp(messageText, other.messageText, t)!,
+      incomingMessageBG: Color.lerp(incomingMessageBG, other.incomingMessageBG, t)!,
+      outgoingMessageBG: Color.lerp(outgoingMessageBG, other.outgoingMessageBG, t)!,
     );
   }
 }

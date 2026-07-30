@@ -28,12 +28,12 @@ class MessageBubble extends StatelessWidget {
     if (isMe) {
       blradius = 20;
       brradius = 0;
-      bubbleColor = Colors.blue;
+      bubbleColor = context.colors.outgoingMessageBG;
       alignment = AlignmentGeometry.topRight;
     } else {
       blradius = 0;
       brradius = 20;
-      bubbleColor = Colors.grey;
+      bubbleColor = context.colors.incomingMessageBG;
       alignment = AlignmentGeometry.topLeft;
     }
     return Padding(
@@ -130,7 +130,7 @@ Widget _buildCellWidget(
     case MessageType.text:
       return Text(
         msg.text,
-        style: TextStyle(color: isMe ? Colors.white : Colors.black),
+        style: TextStyle(color: context.colors.messageText),
       );
     case MessageType.image:
       return Builder(
