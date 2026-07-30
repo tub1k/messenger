@@ -227,7 +227,7 @@ class FirebaseChatRepository implements IChatRepository {
     await batch.commit();
     await Future.wait(
       chat.userModels.map((model) {
-        if (model.uid != senderId) {
+        if (model.uid != senderId && chat.isMuted?[model.uid] != true) {
           return sendSafePush(
             targetFcmToken: model.fcmToken,
             title: chat.chatName,
@@ -376,6 +376,7 @@ class FirebaseChatRepository implements IChatRepository {
     required String id, // id of the chat or any other additional info
   }) async {
     if (targetFcmToken == null) {
+      log("push not sent, fcm token is null!");
       return;
     }
     try {
@@ -420,5 +421,15 @@ class FirebaseChatRepository implements IChatRepository {
   @override
   Future<void> updateMyReadTime(String chatId, String myId) async {
     await _firestore.collection('chats').doc(chatId).update({'lastReads.$myId': Timestamp.now(),});
+  }
+
+  @override
+  Future<void> muteChat(String chatId, String myId) async {
+    await _firestore.collection('chats').doc(chatId).update({'isMuted.$myId': true,});
+  }
+
+  @override
+  Future<void> unmuteChat(String chatId, String myId) async {
+    await _firestore.collection('chats').doc(chatId).update({'isMuted.$myId': false,});
   }
 }

@@ -55,4 +55,8 @@ abstract class IChatRepository {
   Stream<BaseUserModel> streamUserPresence(String uid);
 
   Future<void> updateMyReadTime(String chatId, String myId);
+
+  Future<void> muteChat(String chatId, String myId);
+  
+  Future<void> unmuteChat(String chatId, String myId);
 }

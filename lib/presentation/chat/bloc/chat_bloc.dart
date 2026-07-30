@@ -38,7 +38,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
        _repository = repository,
        super(ChatInitial()) {
     final String chatId = chat.chatId;
-    on<ChatEvent>((event, emit) {});
 
     List<MessageModel> _mergeMessages({
       required List<MessageModel> liveMessages,
@@ -250,6 +249,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         _chatListBloc.add(ChatListUpdateReadTime(chatId: chatId));
       }
       _repository.updateMyReadTime(chatId, myId);
+    });
+    
+    on<ChatMute>((event, emit) {
+      _repository.muteChat(chatId, myId);
+    });
+
+    on<ChatUnmute>((event, emit) {
+      _repository.muteChat(chatId, myId);
     });
   }
 }

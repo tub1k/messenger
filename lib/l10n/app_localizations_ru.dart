@@ -15,8 +15,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get newChat => 'Новый Чат';
 
   @override
-  String get addUserToChatHint =>
-      'впиши юзернейм человека для добавления в чат...';
+  String get addUserToChatHint => 'впиши юзернейм человека для добавления в чат...';
 
   @override
   String get confirm => 'подтвердить';
@@ -52,12 +51,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get failedToLoadChats => 'Не удалось загрузить чаты';
 
   @override
-  String get unknownLoadingChatsError =>
-      'Неизестная ошибка произошла во время загрузки чатов :(';
+  String get unknownLoadingChatsError => 'Неизестная ошибка произошла во время загрузки чатов :(';
 
   @override
-  String get updateToSeeThisMessageType =>
-      'Обновите приложение, чтобы увидеть этот тип сообщений';
+  String get updateToSeeThisMessageType => 'Обновите приложение, чтобы увидеть этот тип сообщений';
 
   @override
   String get error => 'Ошибка';
@@ -81,15 +78,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get errorUnknown => 'Что-то пошло не так.';
 
   @override
-  String get triedToAddUserOnWrongScreen =>
-      'Попытка добавить пользователя на неправильном экране';
+  String get triedToAddUserOnWrongScreen => 'Попытка добавить пользователя на неправильном экране';
 
   @override
   String get cantAddYourself => 'Нельзя добавить самого себя!';
 
   @override
-  String get galleryPermissionDenied =>
-      'Нет разрешения на сохранение в галерею';
+  String get galleryPermissionDenied => 'Нет разрешения на сохранение в галерею';
 
   @override
   String get loadingSuccess => 'Фото успешно сохранено!';
@@ -173,8 +168,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get outgoingInvites => 'Исходящие заявки';
 
   @override
-  String get noFriendsYet =>
-      'Здесь пока что пусто, добавь друзей с помощью поиска сверху!';
+  String get noFriendsYet => 'Здесь пока что пусто, добавь друзей с помощью поиска сверху!';
 
   @override
   String get yesterday => 'Вчера';

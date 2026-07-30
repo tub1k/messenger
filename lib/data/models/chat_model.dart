@@ -14,6 +14,7 @@ class ChatModel extends Equatable {
   final List<String> participants;
   final List<BaseUserModel> userModels;
   final Map<String, DateTime> lastReads;
+  final Map<String, bool>? isMuted;
 
   const ChatModel({
     required this.chatName,
@@ -23,7 +24,7 @@ class ChatModel extends Equatable {
     required this.photoUrl,
     required this.participants,
     required this.userModels,
-    required this.lastReads,
+    required this.lastReads, required this.isMuted,
   });
 
   ChatModel.empty()
@@ -34,7 +35,9 @@ class ChatModel extends Equatable {
       lastMessage = MessageModel.empty(),
       loadedMessages = [],
       userModels = [],
-      lastReads = {};
+      lastReads = {},
+      isMuted = {};
+
   
   factory ChatModel.fromFirebase({
     required Map<String, dynamic> data,
@@ -73,6 +76,8 @@ class ChatModel extends Equatable {
       for (final id in participantsList)
         id: (rawLastReads?[id] as Timestamp?)?.toDate() ?? DateTime(1970),
     };
+    
+    final isMuted = data['isMuted'];
 
 
     return ChatModel(
@@ -86,6 +91,7 @@ class ChatModel extends Equatable {
       participants: participantsList,
       userModels: userModels,
       lastReads: lastReads,
+      isMuted: isMuted
     );
   }
 
@@ -131,6 +137,7 @@ class ChatModel extends Equatable {
     List<String>? participants,
     List<BaseUserModel>? userModels,
     Map<String, DateTime>? lastReads,
+    Map<String, bool>? isMuted
   }) {
     return ChatModel(
       chatName: chatName ?? this.chatName,
@@ -141,6 +148,7 @@ class ChatModel extends Equatable {
       participants: participants ?? this.participants,
       userModels: userModels ?? this.userModels,
       lastReads: lastReads ?? this.lastReads,
+      isMuted: isMuted ?? this.isMuted,
     );
   }
 }

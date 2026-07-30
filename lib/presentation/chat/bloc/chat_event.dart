@@ -39,3 +39,7 @@ class ChatDownloadImage extends ChatEvent {
 class ChatUpdateMyReadTime extends ChatEvent {}
 
 class ChatLoadMoreMessages extends ChatEvent {}
+
+class ChatMute extends ChatEvent {}
+
+class ChatUnmute extends ChatEvent {}

@@ -23,94 +23,102 @@ class MembersListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(backgroundColor: Colors.transparent), // for back button
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(width: double.infinity, height: 50),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => BlocProvider.value(
-                    value: chatBloc,
-                    child: GalleryScreen(
-                      imageUrls: [chat.photoUrl],
-                      initialIndex: 0,
-                      chat: chat,
+    return BlocBuilder<ChatBloc, ChatState>(
+      bloc: chatBloc,
+      builder: (context, state) {
+        //final currentChat = (state is ChatLoaded) ? state.chat : chat;
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+          ), // for back button
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(width: double.infinity, height: 50),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                        value: chatBloc,
+                        child: GalleryScreen(
+                          imageUrls: [chat.photoUrl],
+                          initialIndex: 0,
+                          chat: chat,
+                        ),
+                      ),
                     ),
+                  );
+                },
+                child: Hero(
+                  tag: chat.photoUrl,
+                  child: CircleAvatar(
+                    radius: 100,
+                    backgroundImage: chat.photoUrl.length > 2
+                        ? FastCachedImageProvider(chat.photoUrl)
+                        : null,
+                    child: chat.photoUrl.length <= 2
+                        ? Text(
+                            chat.chatName[0].toUpperCase(),
+                            style: TextStyle(fontSize: 70),
+                          )
+                        : null,
                   ),
                 ),
-              );
-            },
-            child: Hero(
-              tag: chat.photoUrl,
-              child: CircleAvatar(
-                radius: 100,
-                backgroundImage: chat.photoUrl.length > 2
-                    ? FastCachedImageProvider(chat.photoUrl)
-                    : null,
-                child: chat.photoUrl.length <= 2
-                    ? Text(
-                        chat.chatName[0].toUpperCase(),
-                        style: TextStyle(fontSize: 70),
-                      )
-                    : null,
               ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(chat.chatName, style: TextStyle(fontSize: 20)),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CustomIconButton(
-                text: context.l10n.mute,
-                onTap: () {},
-                color: Colors.deepPurple,
-                icon: Icons.notifications_off_rounded,
+              const SizedBox(height: 10),
+              Text(chat.chatName, style: TextStyle(fontSize: 20)),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomIconButton(
+                    text: context.l10n.mute,
+                    onTap: () {},
+                    color: Colors.deepPurple,
+                    icon: Icons.notifications_off_rounded,
+                  ),
+                  CustomIconButton(
+                    text: context.l10n.invite,
+                    onTap: () {},
+                    color: Colors.deepPurple,
+                    icon: Icons.person_add_alt_1,
+                  ),
+                  CustomIconButton(
+                    text: context.l10n.leave,
+                    onTap: () {},
+                    color: context.colors.leaveDeleteColor,
+                    icon: Icons.exit_to_app,
+                  ),
+                ],
               ),
-              CustomIconButton(
-                text: context.l10n.invite,
-                onTap: () {},
-                color: Colors.deepPurple,
-                icon: Icons.person_add_alt_1,
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(width: 20),
+                  Text(
+                    context.l10n.members(chat.userModels.length),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ],
               ),
-              CustomIconButton(
-                text: context.l10n.leave,
-                onTap: () {},
-                color: context.colors.leaveDeleteColor,
-                icon: Icons.exit_to_app,
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(width: 20),
-              Text(
-                context.l10n.members(chat.userModels.length),
-                style: TextStyle(fontSize: 20),
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemExtent: 50,
+                  itemCount: chat.userModels.length,
+                  itemBuilder: (context, index) {
+                    final user = chat.userModels[index];
+                    return UserProfileTile(user: user);
+                  },
+                ),
               ),
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemExtent: 50,
-              itemCount: chat.userModels.length,
-              itemBuilder: (context, index) {
-                final user = chat.userModels[index];
-                return UserProfileTile(user: user);
-              },
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
