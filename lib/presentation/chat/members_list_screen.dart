@@ -26,7 +26,7 @@ class MembersListScreen extends StatelessWidget {
     return BlocBuilder<ChatBloc, ChatState>(
       bloc: chatBloc,
       builder: (context, state) {
-        //final currentChat = (state is ChatLoaded) ? state.chat : chat;
+        final currentChat = (state is ChatLoaded) ? state.chat : chat;
         return Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -73,9 +73,15 @@ class MembersListScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  (currentChat.isMuted?[context.myId!] ?? false) ? 
                   CustomIconButton(
+                    text: context.l10n.unmute,
+                    onTap: () {chatBloc.add(ChatUnmute());},
+                    color: Colors.deepPurple,
+                    icon: Icons.notifications_active,
+                  ) : CustomIconButton(
                     text: context.l10n.mute,
-                    onTap: () {},
+                    onTap: () {chatBloc.add(ChatMute());},
                     color: Colors.deepPurple,
                     icon: Icons.notifications_off_rounded,
                   ),

@@ -77,7 +77,10 @@ class ChatModel extends Equatable {
         id: (rawLastReads?[id] as Timestamp?)?.toDate() ?? DateTime(1970),
     };
     
-    final isMuted = data['isMuted'];
+    final Map<String, bool>? isMuted;
+    if (data['isMuted'] != null) {
+      isMuted = data['isMuted'].cast<String, bool>();
+    } else {isMuted = null;}
 
 
     return ChatModel(
@@ -125,6 +128,7 @@ class ChatModel extends Equatable {
       participants,
       userModels,
       lastReads,
+      isMuted ?? {},
     ];
   }
 
