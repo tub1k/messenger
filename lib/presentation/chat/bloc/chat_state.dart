@@ -13,8 +13,9 @@ class ChatLoaded extends ChatState {
   final List<Uint8List> images;
   final bool isLoadingMore;
   final bool hasReachedMax;
+  final ChatModel chat;
 
-  ChatLoaded({required this.messages, this.errorText, required this.images, this.isLoadingMore = false, this.hasReachedMax = false});
+  ChatLoaded({required this.messages, this.errorText, required this.images, this.isLoadingMore = false, this.hasReachedMax = false, required this.chat});
 
   ChatLoaded copyWith({
     List<MessageModel>? messages,
@@ -22,6 +23,7 @@ class ChatLoaded extends ChatState {
     List<Uint8List>? images,
     bool? isLoadingMore,
     bool? hasReachedMax,
+    ChatModel? chat,
   }) {
     return ChatLoaded(
       messages: messages ?? this.messages,
@@ -29,6 +31,7 @@ class ChatLoaded extends ChatState {
       images: images ?? this.images,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      chat: chat ?? this.chat,
     );
   }
   

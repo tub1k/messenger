@@ -43,3 +43,6 @@ class ChatLoadMoreMessages extends ChatEvent {}
 class ChatMute extends ChatEvent {}
 
 class ChatUnmute extends ChatEvent {}
+
+class _ChatMessagesSubscribed extends ChatEvent {}
+class _ChatMetadataSubscribed extends ChatEvent {}

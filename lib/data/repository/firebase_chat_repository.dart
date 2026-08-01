@@ -51,33 +51,39 @@ class FirebaseChatRepository implements IChatRepository {
           final chatFutures = snapshot.docs.map((DocumentSnapshot doc) async {
             final data = doc.data() as Map<String, dynamic>;
 
-            final participants = List<String>.from(data['participants'] ?? []);
-            final List<BaseUserModel> userModels;
-            try {
-              userModels = await getBaseUsersFromListOfUIDs(participants);
-            } on Exception catch (_) {
-              return ChatModel.empty();
-            }
-
-            data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(
-              doc.id,
-            );
-
-            final lastMessageSender = (data['lastMessage']?['senderId'] != null)
-                ? await getBaseUserByUID(data['lastMessage']['senderId'])
-                : null;
-
-            return ChatModel.fromFirebase(
-              data: data,
-              docId: doc.id,
-              myId: myId,
-              userModels: userModels,
-              lastMessageSender: lastMessageSender,
-            );
+            return await _getChatModelFromData(data, doc.id, myId);
           }).toList();
 
           return await Future.wait(chatFutures);
         });
+  }
+
+  Future<ChatModel> _getChatModelFromData(
+    Map<String, dynamic> data,
+    String docId,
+    String myId,
+  ) async {
+    final participants = List<String>.from(data['participants'] ?? []);
+    final List<BaseUserModel> userModels;
+    try {
+      userModels = await getBaseUsersFromListOfUIDs(participants);
+    } on Exception catch (_) {
+      return ChatModel.empty();
+    }
+
+    data['photoUrl'] = await _storageRepository.getGroupPhotoUrl(docId);
+
+    final lastMessageSender = (data['lastMessage']?['senderId'] != null)
+        ? await getBaseUserByUID(data['lastMessage']['senderId'])
+        : null;
+
+    return ChatModel.fromFirebase(
+      data: data,
+      docId: docId,
+      myId: myId,
+      userModels: userModels,
+      lastMessageSender: lastMessageSender,
+    );
   }
 
   @override
@@ -343,7 +349,9 @@ class FirebaseChatRepository implements IChatRepository {
         throw 'failed to get user, make sure this UID exists. ($uid)';
       }
       final user = BaseUserModel.fromFirebase(data: data);
-      if (user.uid.length > 7) {_memoryUserCache[uid] = user;}
+      if (user.uid.length > 7) {
+        _memoryUserCache[uid] = user;
+      }
 
       return user;
     } catch (e) {
@@ -417,19 +425,35 @@ class FirebaseChatRepository implements IChatRepository {
       return BaseUserModel.empty();
     });
   }
-  
+
   @override
   Future<void> updateMyReadTime(String chatId, String myId) async {
-    await _firestore.collection('chats').doc(chatId).update({'lastReads.$myId': Timestamp.now(),});
+    await _firestore.collection('chats').doc(chatId).update({
+      'lastReads.$myId': Timestamp.now(),
+    });
   }
 
   @override
   Future<void> muteChat(String chatId, String myId) async {
-    await _firestore.collection('chats').doc(chatId).update({'isMuted.$myId': true,});
+    await _firestore.collection('chats').doc(chatId).update({
+      'isMuted.$myId': true,
+    });
   }
 
   @override
   Future<void> unmuteChat(String chatId, String myId) async {
-    await _firestore.collection('chats').doc(chatId).update({'isMuted.$myId': false,});
+    await _firestore.collection('chats').doc(chatId).update({
+      'isMuted.$myId': false,
+    });
+  }
+
+  @override
+  Stream<ChatModel> streamChatData(String chatId, String myId) {
+    return _firestore.collection('chats').doc(chatId).snapshots().asyncMap((
+      DocumentSnapshot snapshot,
+    ) async {
+      final data = snapshot.data() as Map<String, dynamic>;
+      return await _getChatModelFromData(data, chatId, myId);
+    });
   }
 }

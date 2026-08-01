@@ -51,10 +51,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failedToLoadChats => 'Failed to load chats';
 
   @override
-  String get unknownLoadingChatsError => 'Unknown error has happened while loading chats :(';
+  String get unknownLoadingChatsError =>
+      'Unknown error has happened while loading chats :(';
 
   @override
-  String get updateToSeeThisMessageType => 'Update the app to see this message type';
+  String get updateToSeeThisMessageType =>
+      'Update the app to see this message type';
 
   @override
   String get error => 'Error';
@@ -78,7 +80,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorUnknown => 'Something went wrong.';
 
   @override
-  String get triedToAddUserOnWrongScreen => 'Tried to add user while on wrong screen';
+  String get triedToAddUserOnWrongScreen =>
+      'Tried to add user while on wrong screen';
 
   @override
   String get cantAddYourself => 'you cant add yourself!';
@@ -168,7 +171,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get outgoingInvites => 'Outgoing Invites';
 
   @override
-  String get noFriendsYet => 'You have no friends yet, add them using search bar above!';
+  String get noFriendsYet =>
+      'You have no friends yet, add them using search bar above!';
 
   @override
   String get yesterday => 'Yesterday';

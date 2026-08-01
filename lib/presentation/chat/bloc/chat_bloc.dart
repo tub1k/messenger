@@ -23,8 +23,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final String myId;
   final ChatModel chat;
 
-  List<Uint8List> _localPickedImages = [];
-
   ChatBloc({
     required IChatRepository repository,
     required this.myId,
@@ -58,11 +56,32 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
 
     on<ChatStarted>((event, emit) async {
+      add(_ChatMetadataSubscribed());
+      add(_ChatMessagesSubscribed());
+    });
+
+    on<_ChatMetadataSubscribed>((event, emit) async {
       await emit.forEach(
-        _repository.getMessages(chatId),
+        _repository.streamChatData(chat.chatId, myId),
+        onData: (ChatModel updatedChat) {
+          final curState = state;
+          if (curState is ChatLoaded) {
+            return curState.copyWith(chat: updatedChat);
+          }
+          return ChatLoaded(
+            chat: updatedChat,
+            messages: const [],
+            images: [],
+          );
+        },
+      );
+    });
+
+    on<_ChatMessagesSubscribed>((event, emit) async {
+      await emit.forEach(
+        _repository.getMessages(chat.chatId),
         onData: (newMessages) {
           final curState = state;
-
           if (curState is ChatLoaded) {
             final List<MessageModel> updatedMessages = _mergeMessages(
               liveMessages: newMessages,
@@ -71,31 +90,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
             return curState.copyWith(
               messages: updatedMessages,
-              images: [..._localPickedImages],
             );
           }
+
           return ChatLoaded(
             messages: newMessages,
-            images: [..._localPickedImages],
+            images: [],
+            chat: chat,
           );
         },
-        onError: (error, _) {
+        onError: (error, stackTrace) {
           final curState = state;
-          final currentMessages = curState is ChatLoaded
-              ? curState.messages
-              : const <MessageModel>[];
-          return ChatLoaded(
-            messages: currentMessages,
-            errorText: error.toString(),
-            images: [..._localPickedImages],
-            isLoadingMore: curState is ChatLoaded
-                ? curState.isLoadingMore
-                : false,
-            hasReachedMax: curState is ChatLoaded
-                ? curState.hasReachedMax
-                : false,
-          );
-        },
+          if (curState is ChatLoaded) {
+            return curState.copyWith(errorText: error.toString());
+          }
+          return state;
+        }
       );
     });
 
@@ -103,7 +113,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final currentState = state;
       if (currentState is! ChatLoaded) return;
 
-      final imagesToUpload = List<Uint8List>.from(_localPickedImages);
+      final imagesToUpload = List<Uint8List>.from(currentState.images);
       var type = event.messageType;
 
       if (type == MessageType.text && imagesToUpload.isNotEmpty) {
@@ -124,9 +134,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
 
       emit(
-        ChatLoaded(
+        currentState.copyWith(
           messages: [optimisticMessage] + currentState.messages,
-          images: [..._localPickedImages],
         ),
       );
 
@@ -150,7 +159,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             );
           }).toList(),
         );
-        _localPickedImages.clear();
 
         final latestState = state;
         if (latestState is ChatLoaded) {
@@ -158,9 +166,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
       } catch (e) {
         emit(
-          ChatLoaded(
-            messages: currentState.messages,
-            images: [..._localPickedImages],
+          currentState.copyWith(
             errorText: e.toString(),
           ),
         );
@@ -168,46 +174,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     on<ChatAddImage>((event, emit) {
-      List<MessageModel> currentMessages = [];
-      _localPickedImages.addAll(event.images);
+      final curState = state;
+      if (curState is! ChatLoaded) return;
 
-      if (state is ChatLoaded) {
-        currentMessages = (state as ChatLoaded).messages;
-      }
       emit(
-        ChatLoaded(messages: currentMessages, images: [..._localPickedImages]),
+        curState.copyWith(images: [...curState.images, ...event.images]),
       );
     });
 
     on<ChatDownloadImage>((event, emit) async {
-      List<MessageModel> currentMessages = [];
-      if (state is ChatLoaded) {
-        currentMessages = (state as ChatLoaded).messages;
-      }
       try {
-        emit(
-          ChatLoaded(
-            messages: currentMessages,
-            images: _localPickedImages,
-            errorText: "loading_started",
-          ),
-        );
+        if (state is ChatLoaded) emit((state as ChatLoaded).copyWith(errorText: "loading_started"));
         await _imageRepository.saveImageToGallery(event.imageUrl);
-        emit(
-          ChatLoaded(
-            messages: currentMessages,
-            images: _localPickedImages,
-            errorText: "loading_success",
-          ),
-        );
+        if (state is ChatLoaded) emit((state as ChatLoaded).copyWith(errorText: "loading_success"));
       } catch (e) {
-        emit(
-          ChatLoaded(
-            messages: currentMessages,
-            images: _localPickedImages,
-            errorText: e.toString(),
-          ),
-        );
+        if (state is ChatLoaded) emit((state as ChatLoaded).copyWith(errorText: e.toString()));
       }
     });
 
@@ -250,13 +231,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
       _repository.updateMyReadTime(chatId, myId);
     });
-    
+
     on<ChatMute>((event, emit) {
       _repository.muteChat(chatId, myId);
     });
 
     on<ChatUnmute>((event, emit) {
-      _repository.muteChat(chatId, myId);
+      _repository.unmuteChat(chatId, myId);
     });
   }
 }

@@ -59,4 +59,6 @@ abstract class IChatRepository {
   Future<void> muteChat(String chatId, String myId);
   
   Future<void> unmuteChat(String chatId, String myId);
+
+  Stream<ChatModel> streamChatData(String chatId, String myId);
 }
