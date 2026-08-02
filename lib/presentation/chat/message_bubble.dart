@@ -11,12 +11,14 @@ class MessageBubble extends StatelessWidget {
   final MessageModel message;
   final bool isMe;
   final String chatId;
+  final DateTime? recentRead;
 
   const MessageBubble({
     super.key,
     required this.message,
     required this.isMe,
     required this.chatId,
+    required this.recentRead,
   });
 
   @override
@@ -36,6 +38,16 @@ class MessageBubble extends StatelessWidget {
       bubbleColor = context.colors.incomingMessageBG;
       alignment = AlignmentGeometry.topLeft;
     }
+
+    final MessageStatus status;
+    final DateTime fixedRead = recentRead ?? DateTime(1970);
+    if (message.isPending ?? false) {
+      status = MessageStatus.pending;
+    } else if (message.timestamp.isAfter(fixedRead)) {
+      status = MessageStatus.sent;
+    } else {
+      status = MessageStatus.read;
+    }
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0, left: 8.0, right: 8.0),
       child: Align(
@@ -45,7 +57,7 @@ class MessageBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (!isMe)
-              messageContainer(
+              MessageContainer(
                 blradius: blradius,
                 brradius: brradius,
                 bubbleColor: bubbleColor,
@@ -54,10 +66,31 @@ class MessageBubble extends StatelessWidget {
                 isMe: isMe,
               ),
             SizedBox(width: 8),
-            if (message.isPending ?? false)
-              const Padding(
+            if (isMe)
+              Padding(
                 padding: EdgeInsets.only(top: 4, right: 4),
-                child: Icon(Icons.access_time, size: 12, color: Colors.grey),
+                child: switch (status) {
+                  MessageStatus.pending => Icon(
+                    Icons.access_time,
+                    size: 12,
+                    color: Colors.grey,
+                  ),
+                  MessageStatus.sent => Icon(
+                    Icons.check,
+                    size: 12,
+                    color: Colors.grey,
+                  ),
+                  MessageStatus.read => Icon(
+                    Icons.check_circle,
+                    size: 12,
+                    color: context.colors.defaultButtonColor,
+                  ),
+                  MessageStatus.error => Icon(
+                    Icons.warning,
+                    size: 12,
+                    color: context.colors.leaveDeleteColor,
+                  ),
+                },
               ),
             Text(
               message.timestamp.toMessageTime(),
@@ -65,7 +98,7 @@ class MessageBubble extends StatelessWidget {
             ),
             SizedBox(width: 8),
             if (isMe)
-              messageContainer(
+              MessageContainer(
                 blradius: blradius,
                 brradius: brradius,
                 bubbleColor: bubbleColor,
@@ -80,8 +113,8 @@ class MessageBubble extends StatelessWidget {
   }
 }
 
-class messageContainer extends StatelessWidget {
-  const messageContainer({
+class MessageContainer extends StatelessWidget {
+  const MessageContainer({
     super.key,
     required this.blradius,
     required this.brradius,
@@ -119,6 +152,8 @@ class messageContainer extends StatelessWidget {
     );
   }
 }
+
+enum MessageStatus { pending, sent, read, error }
 
 Widget _buildCellWidget(
   MessageModel msg,

@@ -63,6 +63,10 @@ class _ChatScreenState extends State<ChatScreen> {
     final chat = widget.chat;
     final Widget appBarSubtitle;
     final TextStyle subtitleStyle = TextStyle(fontSize: 16);
+    final cleanReads = (Map<String, DateTime>.from(chat.lastReads)..remove(context.myId!)).values;
+    final DateTime? maxDate = cleanReads.isEmpty 
+      ? null 
+      : cleanReads.reduce((current, next) => current.isAfter(next) ? current : next);
     if (chat.participants.length > 2) {
       appBarSubtitle = Text(
         context.l10n.members(chat.participants.length),
@@ -203,6 +207,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         message: state.messages[index],
                         isMe: isMe,
                         chatId: widget.chat.chatId,
+                        recentRead: maxDate,
                       );
 
                       if (isNewDay) {
