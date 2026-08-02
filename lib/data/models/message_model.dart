@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:messenger/data/models/user_model.dart';
 
 enum MessageType { text, image, system, unknown }
-enum MessageStatus { pending, sent, read, error }
 
 class MessageModel extends Equatable {
   final String id;
