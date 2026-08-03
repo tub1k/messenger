@@ -2,6 +2,7 @@ import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:messenger/data/repository/firebase_chat_repository.dart';
 import 'package:messenger/data/repository/firebase_relations_repository.dart';
 import 'package:messenger/domain/repositories/i_auth_repository.dart';
@@ -31,7 +32,9 @@ import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // hold splash until some other stuff loads
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   // safe firebase initializing
   try {
     if (Firebase.apps.isEmpty) {
@@ -114,6 +117,7 @@ class MyApp extends StatelessWidget {
         ],
         child: BlocBuilder<SettingsBloc, SettingsState>(
           builder: (context, settingsState) {
+            FlutterNativeSplash.remove();
             return MaterialApp(
               title: 'Aura messenger',
               locale: settingsState.locale,
