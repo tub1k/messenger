@@ -415,6 +415,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Today'**
   String get today;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'My profile'**
+  String get myProfile;
+
+  /// No description provided for @tellUsAboutYourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself, your hobbies or projects...'**
+  String get tellUsAboutYourself;
+
+  /// No description provided for @saveAboutMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Save about me'**
+  String get saveAboutMe;
 }
 
 class _AppLocalizationsDelegate

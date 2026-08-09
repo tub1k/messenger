@@ -61,4 +61,6 @@ abstract class IChatRepository {
   Future<void> unmuteChat(String chatId, String myId);
 
   Stream<ChatModel> streamChatData(String chatId, String myId);
+
+  Future<void> changeBio(String newBio, String myId);
 }

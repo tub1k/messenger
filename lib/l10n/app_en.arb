@@ -52,5 +52,8 @@
   "outgoingInvites": "Outgoing Invites",
   "noFriendsYet": "You have no friends yet, add them using search bar above!",
   "yesterday": "Yesterday",
-  "today": "Today"
+  "today": "Today",
+  "myProfile": "My profile",
+  "tellUsAboutYourself": "Tell us about yourself, your hobbies or projects...",
+  "saveAboutMe": "Save about me"
 }

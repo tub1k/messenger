@@ -181,4 +181,14 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get today => 'Сегодня';
+
+  @override
+  String get myProfile => 'Мой профиль';
+
+  @override
+  String get tellUsAboutYourself =>
+      'Расскажите о себе, своих увлечениях или проектах...';
+
+  @override
+  String get saveAboutMe => 'Сохранить о себе';
 }

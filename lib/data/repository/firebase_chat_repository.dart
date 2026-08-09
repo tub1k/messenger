@@ -456,4 +456,9 @@ class FirebaseChatRepository implements IChatRepository {
       return await _getChatModelFromData(data, chatId, myId);
     });
   }
+
+  @override
+  Future<void> changeBio(String newBio, String myId) async {
+    await _firestore.collection('users').doc(myId).update({"aboutMe": newBio});
+  }
 }

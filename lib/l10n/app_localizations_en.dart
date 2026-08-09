@@ -179,4 +179,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get today => 'Today';
+
+  @override
+  String get myProfile => 'My profile';
+
+  @override
+  String get tellUsAboutYourself =>
+      'Tell us about yourself, your hobbies or projects...';
+
+  @override
+  String get saveAboutMe => 'Save about me';
 }

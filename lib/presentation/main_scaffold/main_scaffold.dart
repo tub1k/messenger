@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:messenger/presentation/chat_list/chat_list_screen.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/friends_list/friends_list_screen.dart';
+import 'package:messenger/presentation/profile/my_profile_screen.dart';
 import 'package:messenger/presentation/settings/settings_screen.dart';
 
 class MainScaffold extends StatefulWidget {
@@ -43,6 +44,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   final List<Widget> _screens = [
     const ChatListScreen(),
     const FriendsListScreen(),
+    const MyProfileScreen(),
     const SettingsScreen(),
   ];
 
@@ -59,11 +61,13 @@ class _MainScaffoldState extends State<MainScaffold> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (index) => _onTabTapped(index),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: context.l10n.chats),
           BottomNavigationBarItem(icon: Icon(Icons.people), label: context.l10n.friends),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: context.l10n.myProfile),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: context.l10n.settings,

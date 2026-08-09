@@ -170,6 +170,7 @@ class ProfileContent extends StatelessWidget {
               ),
               SizedBox(height: 16),
               Text(context.l10n.aboutMe, style: TextStyle(fontSize: 16)),
+              Text(user.aboutMe ?? ''),
             ],
           ),
         );
