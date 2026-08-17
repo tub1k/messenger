@@ -1,9 +1,9 @@
+
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
-import 'package:messenger/presentation/core/widgets/detailed_last_seen_widget.dart';
 import 'package:messenger/presentation/profile/bloc/my_profile_bloc.dart';
 import 'package:messenger/presentation/profile/profile_bio_field.dart';
 
@@ -39,6 +39,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
           }
           if (state is MyProfileLoaded) {
             final user = state.user;
+            final selectedImage = state.selectedImage;
             return Scaffold(
               appBar: AppBar(title: Text(state.user.displayName)),
               body: Padding(
@@ -47,19 +48,31 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundImage: user.photoUrl.length > 2
-                              ? FastCachedImageProvider(user.photoUrl)
-                              : null,
-                          child:
-                              (user.photoUrl.length <= 2) &&
-                                  (user.displayName.isNotEmpty)
-                              ? Text(
-                                  user.displayName[0].toUpperCase(),
-                                  style: TextStyle(fontSize: 50),
-                                )
-                              : null,
+                        Ink(
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.primary,
+                            shape: BoxShape.circle,
+                            image: selectedImage != null
+                                ? DecorationImage(
+                                    image: MemoryImage(selectedImage),
+                                    fit: BoxFit.cover,
+                                  )
+                                : DecorationImage(
+                                    image: FastCachedImageProvider(state.user.photoUrl),
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          child: InkWell(
+                            customBorder: const CircleBorder(),
+                            onTap: (){}, // TODO
+                            child: SizedBox(
+                              width: 120,
+                              height: 120,
+                              child: selectedImage != null
+                                  ? null
+                                  : Icon(Icons.add, size: 60 / 2),
+                            ),
+                          ),
                         ),
                         SizedBox(width: 16),
                         Column(

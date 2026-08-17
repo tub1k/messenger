@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger/data/models/user_model.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
@@ -18,8 +20,9 @@ class MyProfileInitial extends MyProfileState {}
 
 class MyProfileLoaded extends MyProfileState {
   final BaseUserModel user;
+  final Uint8List? selectedImage;
 
-  MyProfileLoaded({required this.user});
+  MyProfileLoaded({required this.user, this.selectedImage});
 }
 
 class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
