@@ -7,5 +7,7 @@ abstract class IStorageRepository {
 
   Future<String> getGroupPhotoUrl(String uid);
 
+  Future<String> getProfilePhotoUrl(String uid);
+
   List<String> getMessagePhotos(String chatId, MessageModel message);
 }

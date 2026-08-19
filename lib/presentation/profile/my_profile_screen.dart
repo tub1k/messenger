@@ -1,8 +1,11 @@
+import 'dart:typed_data';
 
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:messenger/domain/repositories/i_chat_repository.dart';
+import 'package:messenger/domain/repositories/i_storage_repository.dart';
 import 'package:messenger/presentation/core/extensions/content_extensions.dart';
 import 'package:messenger/presentation/profile/bloc/my_profile_bloc.dart';
 import 'package:messenger/presentation/profile/profile_bio_field.dart';
@@ -20,6 +23,9 @@ class _MyProfileScreenState extends State<MyProfileScreen>
   @override
   bool get wantKeepAlive => true;
 
+  final _picker = ImagePicker();
+  Uint8List? selectedImage;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -28,6 +34,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>
       create: (context) => MyProfileBloc(
         myId: context.myId!,
         repository: context.read<IChatRepository>(),
+        storageRepository: context.read<IStorageRepository>()
       )..add(MyProfileInit()),
       child: BlocBuilder<MyProfileBloc, MyProfileState>(
         builder: (context, state) {
@@ -58,13 +65,29 @@ class _MyProfileScreenState extends State<MyProfileScreen>
                                     fit: BoxFit.cover,
                                   )
                                 : DecorationImage(
-                                    image: FastCachedImageProvider(state.user.photoUrl),
+                                    image: FastCachedImageProvider(
+                                      state.user.photoUrl,
+                                    ),
                                     fit: BoxFit.cover,
                                   ),
                           ),
                           child: InkWell(
                             customBorder: const CircleBorder(),
-                            onTap: (){}, // TODO
+                            onTap: () async {
+                              final XFile? pickedFile = await _picker.pickImage(
+                                source: ImageSource.gallery,
+                                imageQuality: 60,
+                                maxWidth: 400,
+                                maxHeight: 400,
+                              );
+                              final Uint8List? imageBytes = await pickedFile
+                                  ?.readAsBytes();
+                              if (imageBytes != null && context.mounted) {
+                                context.read<MyProfileBloc>().add(
+                                  MyProfileImagePicked(imageBytes: imageBytes),
+                                );
+                              }
+                            },
                             child: SizedBox(
                               width: 120,
                               height: 120,

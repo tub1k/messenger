@@ -38,6 +38,21 @@ class SupabaseStorageRepository implements IStorageRepository {
   }
   }
 
+  @override
+  Future<String> getProfilePhotoUrl(String uid) async {
+    try {
+  final url = _supabase.storage
+      .from('userAvatars')
+      .getPublicUrl('public/$uid/avatar.png');
+  if (FastCachedImageConfig.isCached(imageUrl: url)) return url;
+  return await checkIfUrlExists(url);
+  } catch (e) {
+  return '';
+  }
+  }
+
+  
+
   Future<String> checkIfUrlExists(String url) async {
     final response = await http.head(Uri.parse(url));
     

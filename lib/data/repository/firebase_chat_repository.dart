@@ -348,6 +348,11 @@ class FirebaseChatRepository implements IChatRepository {
       if (data == null) {
         throw 'failed to get user, make sure this UID exists. ($uid)';
       }
+      try {
+          data['photoUrl'] = await _storageRepository.getProfilePhotoUrl(uid);
+        } catch (_) {
+          data['photoUrl'] = null;
+        }
       final user = BaseUserModel.fromFirebase(data: data);
       if (user.uid.length > 7) {
         _memoryUserCache[uid] = user;
