@@ -62,7 +62,9 @@ class MyProfileBloc extends Bloc<MyProfileEvent, MyProfileState> {
       if (curState is MyProfileLoaded) {
         emit(curState.copyWith(selectedImage: event.imageBytes, isUploadingImage: true));
         try {
-          await storageRepository.uploadImage(event.imageBytes, 'userAvatars', 'public/$myId/avatar');
+          await storageRepository.uploadImage(event.imageBytes, 'userAvatars', 'public/$myId/avatar.png');
+          final url = await storageRepository.getProfilePhotoUrl(myId);
+          await repository.changeUserAvatarUrl(url, myId);
         } catch (e) {
           // TODO
         }

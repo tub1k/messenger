@@ -63,4 +63,6 @@ abstract class IChatRepository {
   Stream<ChatModel> streamChatData(String chatId, String myId);
 
   Future<void> changeBio(String newBio, String myId);
+  
+  Future<void> changeUserAvatarUrl(String newUrl, String myId);
 }
