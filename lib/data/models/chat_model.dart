@@ -64,7 +64,7 @@ class ChatModel extends Equatable {
       chatName = otherUser.displayName;
     }
 
-    if (data['photoUrl'] != null) {
+    if ((data['photoUrl'] as String).length > 4) {
       photoUrl = data['photoUrl'];
     } else if (userModels.length == 2) {
       photoUrl = otherUser.photoUrl;
